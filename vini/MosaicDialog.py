@@ -172,21 +172,21 @@ class MosaicDialog(QtGui.QDialog):
             return 0
         if self.slice_plane.currentIndex() == 1:
             self.plane = 's'
-            self.range_sld.setRange(0, self.dims[0]-1)
+            self.range_sld.setRange(0, int(self.dims[0])-1)
             if self.end >= self.dims[0]:
                 self.end = self.dims[0]-1
                 self.end_le.setText(str(int(self.end)))
             self.range_sld.setUpperPosition(self.end)
         if self.slice_plane.currentIndex() == 2:
             self.plane = 'c'
-            self.range_sld.setRange(0, self.dims[1]-1)
+            self.range_sld.setRange(0, int(self.dims[1])-1)
             if self.end >= self.dims[1]:
                 self.end = self.dims[1]-1
                 self.end_le.setText(str(int(self.end)))
             self.range_sld.setUpperPosition(self.end)
         if self.slice_plane.currentIndex() == 0:
             self.plane = 't'
-            self.range_sld.setRange(0, self.dims[2]-1)
+            self.range_sld.setRange(0, int(self.dims[2])-1)
             if self.end >= self.dims[2]:
                 self.end = self.dims[2]-1
                 self.end_le.setText(str(int(self.end)))

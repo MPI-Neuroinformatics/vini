@@ -495,7 +495,7 @@ class Image(object):
         np.random.shuffle(itervals)
         for i in itervals:
             cc = QtGui.QColor()
-            cc.setHsv(int(i*255.0/value_set.size), 200, 255, alpha=255.0)
+            cc.setHsv(int(i*255.0/value_set.size), 200, 255, alpha=255)
             colors.append(
                 [cc.red(), cc.green(), cc.blue(), int(255*self.alpha)])
             
