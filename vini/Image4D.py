@@ -74,11 +74,11 @@ class Image4D(Image):
 
         self.image = img
 
-        self.image_res = img.get_data()[:,:,:,self.frame]
-        self.time_dim = img.get_data().shape[3] # set beginning from zero.
+        self.image_res = np.asanyarray(img.dataobj)[:,:,:,self.frame]
+        self.time_dim = np.asanyarray(img.dataobj).shape[3] # set beginning from zero.
 
-        self.extremum[0] = img.get_data().min()
-        self.extremum[1] = img.get_data().max()
+        self.extremum[0] = np.asanyarray(img.dataobj).min()
+        self.extremum[1] = np.asanyarray(img.dataobj).max()
 
         self.two_cm = color
         self.dialog.setPreferences(two_cm=self.two_cm, clippings_pos=self.clippings_pos, clippings_neg=self.clippings_neg)
@@ -102,7 +102,7 @@ class Image4D(Image):
             return np.nan
 
     def getOriginalDimensions(self):
-        return self.image.get_data().shape[0:3]
+        return np.asanyarray(self.image.dataobj).shape[0:3]
 
     def getDimensions(self):
         return self.image_res.shape[0:3]
@@ -144,7 +144,7 @@ class Image4D(Image):
         self.affine_res_inv = np.dot(np.linalg.inv(over_affine), t_affine)
         self.res_shape = shape
         self.image_res = resample_image(
-            self.image.get_data()[:,:,:,self.frame],
+            np.asanyarray(self.image.dataobj)[:,:,:,self.frame],
             affine=self.affine_res_inv, shape=shape,
             interpolation=self.interp_type)
         self.state_affine_over = True
@@ -156,7 +156,7 @@ class Image4D(Image):
         t_affine = np.dot(np.linalg.inv(self.image.affine), affine)
         self.res_shape = shape
         self.image_res = resample_image(
-            self.image.get_data()[:,:,:,self.frame], affine=t_affine,
+            np.asanyarray(self.image.dataobj)[:,:,:,self.frame], affine=t_affine,
             shape=shape, interpolation=self.interp_type)
         self.affine_res_inv = np.dot(np.linalg.inv(self.image.affine), affine)
         self.state_affine_over = False
@@ -166,7 +166,7 @@ class Image4D(Image):
         Resample frame with already known affine.
         """
         self.image_res = resample_image(
-            self.image.get_data()[:,:,:,self.frame],
+            np.asanyarray(self.image.dataobj)[:,:,:,self.frame],
             affine=self.affine_res_inv, shape=self.res_shape,
             interpolation=self.interp_type)
 
@@ -175,7 +175,7 @@ class Image4D(Image):
         Same as reresample???
         """
         self.image_res = resample_image(
-            self.image.get_data()[:,:,:,self.frame],
+            np.asanyarray(self.image.dataobj)[:,:,:,self.frame],
             affine=self.affine_res_inv, shape=self.res_shape,
             interpolation=self.interp_type)
 
@@ -199,7 +199,7 @@ class Image4D(Image):
         shape_0 = np.copy(shape)
         shape_0[0] = 1
         self.image_slice_res_sa = resample_image(
-            self.image.get_data()[:,:,:,self.frame], affine=t_affine_0,
+            np.asanyarray(self.image.dataobj)[:,:,:,self.frame], affine=t_affine_0,
             shape=shape_0, interpolation=self.interp_type)[0,:,:]
         
         self.xhairval = self.image_slice_res_sa[self.coord[1], self.coord[2]]
@@ -215,7 +215,7 @@ class Image4D(Image):
        
         
         self.image_slice_res_co = resample_image(
-            self.image.get_data()[:,:,:,self.frame], affine=t_affine_1,
+            np.asanyarray(self.image.dataobj)[:,:,:,self.frame], affine=t_affine_1,
             shape=shape_1, interpolation=self.interp_type)[:,0,:]
         n_coord = np.zeros((3,1))
         n_coord[2] = self.coord[2]
@@ -225,7 +225,7 @@ class Image4D(Image):
         shape_2 = np.copy(shape)
         shape_2[2] = 1
         self.image_slice_res_tr = resample_image(
-            self.image.get_data()[:,:,:,self.frame], affine=t_affine_2,
+            np.asanyarray(self.image.dataobj)[:,:,:,self.frame], affine=t_affine_2,
             shape=shape_2, interpolation=self.interp_type)[:,:,0]
 
         [self.image_slices_pos[0], truth] = \
@@ -402,13 +402,13 @@ class Image4D(Image):
         if self.affine_res_inv is not None and self.timeseries is not None:
             xyz = np.array([self.coord[0], self.coord[1], self.coord[2], 1])
             map_xyz = np.dot(self.affine_res_inv, xyz).astype(np.int32)
-            shp = self.image.get_data().shape
+            shp = np.asanyarray(self.image.dataobj).shape
             # TODO: make this a shorter comparison
             if (map_xyz[0] >= 0 and map_xyz[0] < shp[0] and
                     map_xyz[1] >= 0 and map_xyz[1] < shp[1] and
                     map_xyz[2] >= 0 and map_xyz[2] < shp[2]):
                 self.timeseries.setData(
-                    self.image.get_data()[map_xyz[0],map_xyz[1],map_xyz[2],:],
+                    np.asanyarray(self.image.dataobj)[map_xyz[0],map_xyz[1],map_xyz[2],:],
                     self.frame_time)
             else:
                 self.timeseries.setData(
@@ -487,7 +487,7 @@ class Image4D(Image):
             # compute original data voxel
             xyz = np.array([self.coord[0], self.coord[1], self.coord[2], 1])
             map_xyz = np.dot(self.affine_res_inv, xyz)
-            shp = self.image.get_data().shape
+            shp = np.asanyarray(self.image.dataobj).shape
             # if voxel is in the data
             # TODO: make this a nicer comparison
             if (map_xyz[0] >= 0 and map_xyz[0] < shp[0] and
@@ -495,7 +495,7 @@ class Image4D(Image):
                     map_xyz[2] >= 0 and map_xyz[2] < shp[2]):
                 # retrieve voxel data
                 voxel_data = \
-                    self.image.get_data()[map_xyz[0],map_xyz[1],map_xyz[2],:]
+                    np.asanyarray(self.image.dataobj)[map_xyz[0],map_xyz[1],map_xyz[2],:]
                 # for every condition compute average over trials
                 for cond in range(self.num_cond):
                     data = np.zeros((self.num_pts, len(self.x_pos[cond])))

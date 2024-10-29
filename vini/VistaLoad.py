@@ -281,7 +281,7 @@ def load_vista(fp_input):
     if det == 0:
         print("WARNING! BAD AFFINE (DET=0). SETTING UNIT MATRIX...")
         nii_loaded.affine = nii_loaded.get_base_affine()
-        nii_new = nib.Nifti1Image(nii_loaded.get_data(), np.eye(4), nii_loaded.header)
+        nii_new = nib.Nifti1Image(np.asanyarray(nii_loaded.dataobj), np.eye(4), nii_loaded.header)
         # nii_loaded = nii_new
         
     return nii_loaded

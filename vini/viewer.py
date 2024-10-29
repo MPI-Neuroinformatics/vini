@@ -1291,7 +1291,7 @@ class Viff(QtGui.QMainWindow):
         max_t = -1
         
         for i in range(len(self.images)):
-            sh = self.images[i].image.get_data().shape
+            sh = np.asanyarray(self.images[i].image.dataobj).shape
             if sh[0] > max_c:
                 max_c = sh[0]
             if sh[1] > max_s:
@@ -1764,7 +1764,7 @@ class Viff(QtGui.QMainWindow):
         
         index = self.imagelist.currentRow()
         if index >= 0:
-            value_set = np.unique(self.images[index].image.get_data())
+            value_set = np.unique(np.asanyarray(self.images[index].image.dataobj))
             value_set_int = np.round(value_set).astype(int)
             delta_int = np.linalg.norm(value_set_int-value_set) / float(value_set.size)
             if value_set.size >= 256:
