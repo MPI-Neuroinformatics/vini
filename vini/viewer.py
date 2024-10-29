@@ -3055,7 +3055,7 @@ class Viff(QtGui.QMainWindow):
             alpha_fract = self.images[index].alpha
             alpha = np.round(alpha_fract*100)
 
-        self.alpha_sld.setValue(alpha)
+        self.alpha_sld.setValue(int(alpha))
         
         log1("setAlphaFromSlider called (alpha {})".format(alpha))
         

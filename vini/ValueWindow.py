@@ -21,7 +21,7 @@ class ValueWindow(QtGui.QWidget):
         screen = QtGui.QDesktopWidget().screenGeometry()
         size = self.geometry()
         # Place it in the center of the screen.
-        self.move((screen.width()-size.width())/2, (screen.height()-size.height())/2)
+        self.move(int((screen.width()-size.width())/2), int((screen.height()-size.height())/2))
 
         self.l = QtGui.QGridLayout()
         self.setLayout(self.l)

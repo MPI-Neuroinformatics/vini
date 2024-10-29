@@ -963,7 +963,10 @@ def makeRGBA(*args, **kwds):
 
 def myrescaleData(data, scale, maxi, mini):
     d2 = data-mini
-    d2 = np.multiply(d2, (scale-2)/(maxi-mini)) + 1
+    if (maxi == mini):
+        d2 = np.multiply(d2, 0) + 1
+    else:
+        d2 = np.multiply(d2, (scale-2)/(maxi-mini)) + 1
     d2[np.where(data <= mini)] = 0
     d2[np.where(data >= maxi)] = scale
     data = d2.astype(np.dtype(int))

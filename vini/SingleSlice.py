@@ -26,8 +26,8 @@ class SingleSlice(QtGui.QWidget):
         self.resize(480,480)
         screen = QtGui.QDesktopWidget().screenGeometry()
         size = self.geometry()
-        self.move((screen.width()-size.width())/2,
-                  (screen.height()-size.height())/2)
+        self.move(int((screen.width()-size.width())/2),
+                  int((screen.height()-size.height())/2))
 
         self.l = QtGui.QGridLayout()
         self.setLayout(self.l)
