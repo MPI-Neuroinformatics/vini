@@ -189,7 +189,7 @@ class SliceWidget(GraphicsLayoutWidget):
         """
         self.image_dimensions = dimensions
         self.foreground.setImage(
-            np.zeros((np.int(self.image_dimensions[0]),np.int(self.image_dimensions[1]),4)))
+            np.zeros((int(self.image_dimensions[0]), int(self.image_dimensions[1]),4)))
 
     def addImageItem(self, image_item):
         """

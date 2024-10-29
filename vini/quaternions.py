@@ -24,8 +24,8 @@ they are applied on the left of the vector.  For example:
 import math
 import numpy as np
 
-MAX_FLOAT = np.maximum_sctype(np.float)
-FLOAT_EPS = np.finfo(np.float).eps
+MAX_FLOAT = np.float64
+FLOAT_EPS = np.finfo(float).eps
 
 
 def fillpositive(xyz, w2_thresh=None):
@@ -38,7 +38,7 @@ def fillpositive(xyz, w2_thresh=None):
        threshold to determine if w squared is really negative.
        If None (default) then w2_thresh set equal to
        ``-np.finfo(xyz.dtype).eps``, if possible, otherwise
-       ``-np.finfo(np.float).eps``
+       ``-np.finfo(float).eps``
     Returns
     -------
     wxyz : array shape (4,)

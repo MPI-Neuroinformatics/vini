@@ -1764,8 +1764,8 @@ class Viff(QtGui.QMainWindow):
         index = self.imagelist.currentRow()
         if index >= 0:
             value_set = np.unique(self.images[index].image.get_data())
-            value_set_int = np.round(value_set).astype(np.int)
-            delta_int = np.linalg.norm(value_set_int-value_set) / np.float(value_set.size)
+            value_set_int = np.round(value_set).astype(int)
+            delta_int = np.linalg.norm(value_set_int-value_set) / float(value_set.size)
             if value_set.size >= 256:
                 QtGui.QMessageBox.warning(self,"Warning", "Warning: Image has more than 256 different values. Cannot set random lookup table.")
             elif delta_int > 0.0001:

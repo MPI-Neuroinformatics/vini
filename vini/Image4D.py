@@ -373,7 +373,7 @@ class Image4D(Image):
                 self.design = np.array(self.design)
                 # create colors
                 self.cond_colors = {}
-                self.conds = np.unique(self.design[:,0]).astype(np.int)
+                self.conds = np.unique(self.design[:,0]).astype(int)
                 for i in range(len(self.conds)):
                     color = QtGui.QColor()
                     color.setHsv(

@@ -1205,7 +1205,7 @@ class ViewBox(GraphicsWidget):
         #return scale
 
     def wheelEvent(self, ev, axis=None):
-        mask = np.array(self.state['mouseEnabled'], dtype=np.float)
+        mask = np.array(self.state['mouseEnabled'], dtype=float)
         if axis is not None and axis >= 0 and axis < len(mask):
             mv = mask[axis]
             mask[:] = 0
@@ -1247,7 +1247,7 @@ class ViewBox(GraphicsWidget):
         dif = dif * -1
 
         ## Ignore axes if mouse is disabled
-        mouseEnabled = np.array(self.state['mouseEnabled'], dtype=np.float)
+        mouseEnabled = np.array(self.state['mouseEnabled'], dtype=float)
         mask = mouseEnabled.copy()
         if axis is not None:
             mask[1-axis] = 0.0
