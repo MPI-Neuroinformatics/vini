@@ -25,6 +25,7 @@ by these sections:
 ## Section: Closing the Viewer ##
 """
 
+from PyQt5 import QtCore
 from sip import setapi
 setapi("QDate", 2)
 setapi("QDateTime", 2)
@@ -49,7 +50,7 @@ import sys
 import os.path
 # for saving preferences
 if sys.version_info[0] == 3:
-    from configparser import SafeConfigParser as ConfigParser
+    from configparser import ConfigParser as ConfigParser
 else:
     from ConfigParser import ConfigParser
 

@@ -9,6 +9,10 @@ from .GraphicsObject import GraphicsObject
 from ..Point import Point
 from .. import getConfigOption
 
+try:
+    from collections.abc import Callable
+except ImportError:
+    from collections import Callable
 
 __all__ = ['ImageItem']
 
@@ -347,7 +351,7 @@ class ImageItem(GraphicsObject):
         profile = debug.Profiler()
         if self.image is None or self.image.size == 0:
             return
-        if isinstance(self.lut, collections.Callable):
+        if isinstance(self.lut, Callable):
             lut = self.lut(self.image)
         else:
             lut = self.lut
@@ -578,7 +582,7 @@ class ImageItem(GraphicsObject):
         mask = self.drawMask
         src = dk
         
-        if isinstance(self.drawMode, collections.Callable):
+        if isinstance(self.drawMode, Callable):
             self.drawMode(dk, self.image, mask, ss, ts, ev)
         else:
             src = src[ss]
