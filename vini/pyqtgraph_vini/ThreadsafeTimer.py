@@ -23,7 +23,7 @@ class ThreadsafeTimer(QtCore.QObject):
         isGuiThread = QtCore.QThread.currentThread() == QtCore.QCoreApplication.instance().thread()
         if isGuiThread:
             #print "start timer", self, "from gui thread"
-            self.timer.start(timeout)
+            self.timer.start(round(timeout))
         else:
             #print "start timer", self, "from remote thread"
             self.sigTimerStartRequested.emit(timeout)

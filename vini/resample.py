@@ -11,6 +11,7 @@ from numpy import ctypeslib
 import scipy as sp
 from scipy import ndimage, linalg
 from distutils.version import LooseVersion, StrictVersion
+#from packaging.version import Version
 
 def resample_image(data, affine, shape, interpolation):
 

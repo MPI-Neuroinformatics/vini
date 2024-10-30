@@ -58,7 +58,7 @@ class ImageExporter(Exporter):
             self.fileSaveDialog(filter=filter)
             return
             
-        targetRect = QtCore.QRect(0, 0, self.params['width'], self.params['height'])
+        targetRect = QtCore.QRect(0, 0, round(self.params['width']), round(self.params['height']))
         sourceRect = self.getSourceRect()
         
         

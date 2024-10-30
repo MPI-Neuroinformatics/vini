@@ -53,7 +53,7 @@ class ExportDialog(QtGui.QWidget):
         if not self.shown:
             self.shown = True
             vcenter = self.scene.getViewWidget().geometry().center()
-            self.setGeometry(vcenter.x()-self.width()/2, vcenter.y()-self.height()/2, self.width(), self.height())
+            self.setGeometry(round(vcenter.x()-self.width()/2), round(vcenter.y()-self.height()/2), self.width(), self.height())
         
     def updateItemList(self, select=None):
         self.ui.itemTree.clear()

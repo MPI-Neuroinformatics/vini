@@ -680,7 +680,7 @@ class PlotDataItem(GraphicsObject):
             y = np.interp(x2, x, y)
             x = x2
         f = np.fft.fft(y) / len(y)
-        y = abs(f[1:len(f)/2])
+        y = abs(f[1:round(len(f)/2)])
         dt = x[-1] - x[0]
         x = np.linspace(0, 0.5*len(x)/dt, len(y))
         return x, y
