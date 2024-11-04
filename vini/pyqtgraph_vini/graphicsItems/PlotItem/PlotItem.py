@@ -480,6 +480,8 @@ class PlotItem(GraphicsWidget):
             newData = plot.yData * (n-1) / float(n) + y * 1.0 / float(n)
             plot.setData(plot.xData, newData, stepMode=stepMode)
         else:
+            if x is None or y is None:
+                raise Exception("operation currently not supported for time series data")
             plot.setData(x, y, stepMode=stepMode)
         
     def autoBtnClicked(self):

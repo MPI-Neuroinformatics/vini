@@ -75,8 +75,9 @@ class MatplotlibExporter(Exporter):
             #ax.grid(True)
             for item in self.item.curves:
                 x, y = item.getData()
+                if x is None or y is None:
+                    raise Exception("operation currently not supported for time series data")
                 opts = item.opts
-                print(type(item))
                 pen = fn.mkPen(opts['pen'])
                 if pen.style() == QtCore.Qt.NoPen:
                     linestyle = ''

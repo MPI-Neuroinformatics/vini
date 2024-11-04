@@ -3646,6 +3646,8 @@ class Viff(QtGui.QMainWindow):
         # from pyqtgraph_vini.exporters import ImageExporter
         
         filename = QtGui.QFileDialog.getSaveFileName(self, 'Export Images')[0]
+        if not filename:
+            return
         dp_write = os.path.split(filename)[0]
         fn_base = os.path.split(filename)[1].split(".")[0]
         fp_base = os.path.join(dp_write, fn_base+".png")
