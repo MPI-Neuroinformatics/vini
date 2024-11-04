@@ -1723,41 +1723,47 @@ class Viff(QtGui.QMainWindow):
         """
         Opens the dialog to set the oversampling ratio.
         """
-        self.os_setting = QtGui.QDialog()
-        self.os_setting.resize(40,40)
 
-        ratio_le = QtGui.QLineEdit()
-        ratio_le.setText(str(self.preferences['os_ratio']))
+        try:
+            raise Exception("OSRatio currently cant be set") 
 
-        def save():
-            if testFloat(ratio_le.text()):
-                self.preferences['os_ratio'][0] = float(ratio_le.text())
-            self.os_setting.close()
+            self.os_setting = QtGui.QDialog()
+            self.os_setting.resize(40,40)
 
-        ratio_le.returnPressed.connect(save)
-        ratio_le.editingFinished.connect(save)
+            ratio_le = QtGui.QLineEdit()
+            ratio_le.setText(str(self.preferences['os_ratio']))
 
-        resample_button = QtGui.QPushButton("Resample now!", self)
-        resample_button.setFocusPolicy(QtCore.Qt.NoFocus)
-        resample_button.clicked.connect(self.reresample)
+            def save():
+                if testFloat(ratio_le.text()):
+                    self.preferences['os_ratio'][0]= float(ratio_le.text())
+                self.os_setting.close()
 
-        # transform_box = QtGui.QComboBox(self)
-        # transform_box.addItem("Use affine transformation")
-        # transform_box.addItem("Use current image's CS")
-        # transform_box.addItem("Ignore affines and guess one")
+            ratio_le.returnPressed.connect(save)
+            ratio_le.editingFinished.connect(save)
 
-        form = QtGui.QFormLayout()
-        form.addRow("Oversampling ratio:", ratio_le)
-        form.addRow("Apply resampling:", resample_button)
-        # form.addRow("Resampling transformation:", transform_box)
-        self.os_setting.setLayout(form)
+            resample_button = QtGui.QPushButton("Resample now!", self)
+            resample_button.setFocusPolicy(QtCore.Qt.NoFocus)
+            resample_button.clicked.connect(self.reresample)
 
-        quit = QtGui.QAction('Quit', self)
-        quit.setShortcut(QtGui.QKeySequence.Quit)
-        quit.triggered.connect(self.os_setting.close)
-        self.os_setting.addAction(quit)
+            # transform_box = QtGui.QComboBox(self)
+            # transform_box.addItem("Use affine transformation")
+            # transform_box.addItem("Use current image's CS")
+            # transform_box.addItem("Ignore affines and guess one")
 
-        self.os_setting.show()
+            form = QtGui.QFormLayout()
+            form.addRow("Oversampling ratio:", ratio_le)
+            form.addRow("Apply resampling:", resample_button)
+            # form.addRow("Resampling transformation:", transform_box)
+            self.os_setting.setLayout(form)
+
+            quit = QtGui.QAction('Quit', self)
+            quit.setShortcut(QtGui.QKeySequence.Quit)
+            quit.triggered.connect(self.os_setting.close)
+            self.os_setting.addAction(quit)
+
+            self.os_setting.show()
+        except Exception as e:
+            QtGui.QMessageBox.warning(self, "Warning", f"Warning: {e}")
         
     def setDiscreteCM(self):
         log2("setting discrete colormap")

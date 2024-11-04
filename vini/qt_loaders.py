@@ -16,12 +16,12 @@ import sys
 import types
 from functools import partial
 
-from distutils.version import LooseVersion
+from packaging.version import Version
 
 def check_version(a, b):
     """compare versions"""
     try:
-        return LooseVersion(a) >= LooseVersion(b)
+        return Version(a) >= Version(b)
     except TypeError:
         # assume unparseable versions are latest dev
         return True
@@ -122,14 +122,14 @@ def has_binding(api):
                    QT_API_PYQT_DEFAULT: 'PyQt4'}
     module_name = module_name[api]
 
-    import imp
+    import importlib.util as imp
     try:
         #importing top level PyQt4/PySide module is ok...
         mod = __import__(module_name)
         #...importing submodules is not
-        imp.find_module('QtCore', mod.__path__)
-        imp.find_module('QtGui', mod.__path__)
-        imp.find_module('QtSvg', mod.__path__)
+        imp.find_spec('QtCore', mod.__path__)
+        imp.find_spec('QtGui', mod.__path__)
+        imp.find_spec('QtSvg', mod.__path__)
         if api == QT_API_PYQT5:
             # QT5 requires QtWidgets too
             imp.find_module('QtWidgets', mod.__path__)
