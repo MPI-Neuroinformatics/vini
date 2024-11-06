@@ -3508,6 +3508,9 @@ class Viff(QtGui.QMainWindow):
         else:
             self.mosaic_dialog.increment_label.setText(
                 "increment: " + str(increment))
+        #to avoid ZeroDivisionError in np.arrange
+        if increment == 0:
+            increment = 0.001
         # +0.5*increment to avoid rounding problems
         coords = np.arange(start, end+0.5*increment, increment)
         coords = np.round(coords,0).astype(int)
@@ -3588,6 +3591,9 @@ class Viff(QtGui.QMainWindow):
         start = self.mosaic_dialog.start
         end = self.mosaic_dialog.end
         increment = float(end-start)/float(number-1.0)
+        #to avoid ZeroDivisionError in np.arrange
+        if increment == 0:
+            increment = 0.001
         # +0.5*increment to avoid rounding problems
         coords = np.arange(start, end+0.5*increment, increment)
         coords = np.round(coords,0).astype(int)
@@ -3623,6 +3629,9 @@ class Viff(QtGui.QMainWindow):
         start = self.mosaic_dialog.start
         end = self.mosaic_dialog.end
         increment = float(end-start)/float(number-1.0)
+        #to avoid ZeroDivisionError in np.arrange
+        if increment == 0:
+            increment = 0.001
         # +0.5*increment to avoid rounding problems
         coords = np.arange(start, end+0.5*increment, increment)
         coords = np.round(coords,0).astype(int)
