@@ -27,13 +27,13 @@ by these sections:
 
 from PyQt5 import QtCore
 from sip import setapi
-setapi("QDate", 2)
+'''setapi("QDate", 2)
 setapi("QDateTime", 2)
 setapi("QTextStream", 2)
 setapi("QTime", 2)
 setapi("QVariant", 2)
 setapi("QString", 2)
-setapi("QUrl", 2)
+setapi("QUrl", 2)'''
 
 verbose_level = 5
 from .QxtSpanSlider import QxtSpanSlider
@@ -1193,6 +1193,8 @@ class Viff(QtGui.QMainWindow):
         # connect to update slices and imageitems
         self.images[0].pos_gradient.sigGradientChanged.connect(self.updateImages)
         self.images[0].neg_gradient.sigGradientChanged.connect(self.updateImages)
+        self.images[0].pos_gradient.sigDiscreteCM.connect(self.setDiscreteCM)
+        self.images[0].neg_gradient.sigDiscreteCM.connect(self.setDiscreteCM)
 
         self.images[0].dialog.setWindowTitle(itemname)
 
@@ -2430,7 +2432,7 @@ class Viff(QtGui.QMainWindow):
             self.images[index].pos_gradient.show()
             self.slider_pos.setEnabled(True)
 
-            if self.images[index].type() is "one":
+            if self.images[index].type() == "one":
                 self.slider_neg.setSpan(0,1000)
                 self.disableSliderNeg()
                 self.min_neg.setHidden(True)
@@ -2441,7 +2443,7 @@ class Viff(QtGui.QMainWindow):
                     self.images[index].getPosSldValueHigh())
                 
                 
-            if self.images[index].type() is "two":
+            if self.images[index].type() == "two":
                 self.enableSliderNeg()
                 self.min_neg.setHidden(False)
                 self.max_neg.setHidden(False)
@@ -2499,7 +2501,7 @@ class Viff(QtGui.QMainWindow):
 
     def enableControls(self):
         index = self.imagelist.currentRow()
-        if self.images[index].type() is "two":
+        if self.images[index].type() == "two":
             self.min_neg.setEnabled(True)
             self.max_neg.setEnabled(True)
             self.slider_neg.setEnabled(True)
@@ -3646,12 +3648,7 @@ class Viff(QtGui.QMainWindow):
                     rgba_slice = self.images[img_ind].mosaicSlice(plane, coords[coord_ind])
                     img = ImageItemMod()
                     img.setImage(rgba_slice)
-                    img.setZValue(-img_ind)
-                    # Use composition mode?
-                    img.setCompositionMode(self.images[img_ind].mode)
-                    self.mosaic_view.viewboxes[coord_ind].addItem(img)
-        self.mosaic_view.show()
-        
+                    img.setZ
     #%% export    
     def export(self):
         """

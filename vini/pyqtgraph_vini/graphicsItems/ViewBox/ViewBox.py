@@ -1081,7 +1081,10 @@ class ViewBox(GraphicsWidget):
         self.updateViewRange()
         self.update()
         self.sigStateChanged.emit(self)
-        self.sigYRangeChanged.emit(self, tuple(self.state['viewRange'][ax]))
+        if ax:
+            self.sigYRangeChanged.emit(self, tuple(self.state['viewRange'][ax]))
+        else:
+            self.sigXRangeChanged.emit(self, tuple(self.state['viewRange'][ax]))
 
     def invertY(self, b=True):
         """
