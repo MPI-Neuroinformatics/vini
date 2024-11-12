@@ -24,7 +24,8 @@ class SingleSlice(QtGui.QWidget):
 
         # <ake it 400x400px large and place it in the center of the screen.
         self.resize(480,480)
-        screen = QtGui.QDesktopWidget().screenGeometry()
+        #screen =  QtGui.QScreen().availableGeometry()#QtGui.QDesktopWidget().screenGeometry()
+        screen = QtGui.QGuiApplication.primaryScreen().availableGeometry()
         size = self.geometry()
         self.move(int((screen.width()-size.width())/2),
                   int((screen.height()-size.height())/2))
@@ -40,7 +41,7 @@ class SingleSlice(QtGui.QWidget):
         self.l.addWidget(self.sw, 0, 0, 10, 10)
 
         self.close_view = QtGui.QAction('close view', self)
-        self.close_view.setShortcut(QtGui.QKeySequence.Quit)
+        self.close_view.setShortcut(QtGui.QKeySequence.StandardKey.Quit)
         self.close_view.triggered.connect(self.close)
         self.addAction(self.close_view)
 
@@ -50,12 +51,12 @@ class SingleSlice(QtGui.QWidget):
         self.addAction(self.reset_view)
 
         self.zoom_in = QtGui.QAction('ZoomIn', self)
-        self.zoom_in.setShortcut(QtGui.QKeySequence.ZoomIn)
+        self.zoom_in.setShortcut(QtGui.QKeySequence.StandardKey.ZoomIn)
         self.zoom_in.triggered.connect(self.sw.zoomIn)
         self.addAction(self.zoom_in)
 
         self.zoom_out = QtGui.QAction('ZoomOut', self)
-        self.zoom_out.setShortcut(QtGui.QKeySequence.ZoomOut)
+        self.zoom_out.setShortcut(QtGui.QKeySequence.StandardKey.ZoomOut)
         self.zoom_out.triggered.connect(self.sw.zoomOut)
         self.addAction(self.zoom_out)
 

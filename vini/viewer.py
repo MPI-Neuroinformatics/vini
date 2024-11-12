@@ -25,9 +25,10 @@ by these sections:
 ## Section: Closing the Viewer ##
 """
 
-from PyQt5 import QtCore
+'''
+from PyQt6 import QtCore
 from sip import setapi
-'''setapi("QDate", 2)
+setapi("QDate", 2)
 setapi("QDateTime", 2)
 setapi("QTextStream", 2)
 setapi("QTime", 2)
@@ -338,7 +339,7 @@ class Viff(QtGui.QMainWindow):
         # checkbox" bug
         self.imagelist.currentItemChanged.connect(self.selectionChange)
         self.imagelist.itemClicked.connect(self.selectionChange)
-        self.imagelist.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.imagelist.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         
         ypos = 0
         imagelist_layout.addWidget(self.imagelist, 0, 0, 4, 2)
@@ -412,7 +413,7 @@ class Viff(QtGui.QMainWindow):
         button_row_crosshair.addWidget(self.reset_button, 2)
         
         spacer = QtGui.QWidget()
-        spacer.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        spacer.setSizePolicy(QtGui.QSizePolicy.Policy.Minimum, QtGui.QSizePolicy.Policy.Fixed)
         button_row_crosshair.addWidget(spacer,5)
         
         self.l.addLayout(button_row_crosshair, 1, self.listoffset+2, 1, 1)
@@ -421,7 +422,7 @@ class Viff(QtGui.QMainWindow):
         # alpha slider
         # ypos = 8
         button_row_alpha = QtGui.QHBoxLayout()
-        self.alpha_sld = JumpSlider(QtCore.Qt.Horizontal)
+        self.alpha_sld = JumpSlider(QtCore.Qt.Orientation.Horizontal)
         self.alpha_sld.setMinimum(0)
         self.alpha_sld.setMaximum(100)
         self.alpha_sld.setValue(100)
@@ -430,7 +431,7 @@ class Viff(QtGui.QMainWindow):
         button_row_alpha.addWidget(self.alpha_sld, 2)
         
         self.alpha_label = QtGui.QLabel('100% opacity')
-        self.alpha_label.setAlignment( QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft)
+        self.alpha_label.setAlignment( QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft)
         button_row_alpha.addWidget(self.alpha_label, 3)
         self.l.addLayout(button_row_alpha, 2, self.listoffset+2, 1, 1)
         
@@ -480,7 +481,7 @@ class Viff(QtGui.QMainWindow):
         
         
         spacer = QtGui.QWidget()
-        spacer.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+        spacer.setSizePolicy(QtGui.QSizePolicy.Policy.Minimum, QtGui.QSizePolicy.Policy.Minimum)
         button_row_coordinates.addWidget(spacer,5)
         
         self.l.addLayout(button_row_coordinates, 3, self.listoffset+2, 1, 1)
@@ -527,7 +528,7 @@ class Viff(QtGui.QMainWindow):
         # Lineedit for frame number
         self.frame_box = QtGui.QLineEdit('0')
         self.frame_box.setAlignment(
-            QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
+            QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignRight)
         self.frame_box.returnPressed.connect(self.setFrameFromBox)
         self.frame_box.editingFinished.connect(self.setFrameFromBox)
         self.frame_box.setToolTip("enter volume")
@@ -537,7 +538,7 @@ class Viff(QtGui.QMainWindow):
         button_row_fmri.addWidget(self.frame_box)
         
         spacer = QtGui.QWidget()
-        spacer.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        spacer.setSizePolicy(QtGui.QSizePolicy.Policy.Minimum, QtGui.QSizePolicy.Policy.Fixed)
         button_row_fmri.addWidget(spacer,5)
         self.l.addLayout(button_row_fmri, 4, self.listoffset+2, 1, 1)
 
@@ -545,7 +546,7 @@ class Viff(QtGui.QMainWindow):
         
         # frame slider (time)
         button_row_fmrislider = QtGui.QHBoxLayout()
-        self.frame_sld = JumpSlider(QtCore.Qt.Horizontal)
+        self.frame_sld = JumpSlider(QtCore.Qt.Orientation.Horizontal)
         self.frame_sld.setMinimum(0)
         self.frame_sld.setMaximum(0)
         self.frame_sld.setValue(0)
@@ -557,7 +558,7 @@ class Viff(QtGui.QMainWindow):
         
         button_row_fmrislider.addWidget(self.frame_sld,3)
         spacer = QtGui.QWidget()
-        spacer.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        spacer.setSizePolicy(QtGui.QSizePolicy.Policy.Minimum, QtGui.QSizePolicy.Policy.Fixed)
         button_row_fmrislider.addWidget(spacer,1)
         
         self.l.addLayout(button_row_fmrislider, 5, self.listoffset+2, 1, 1)
@@ -568,11 +569,11 @@ class Viff(QtGui.QMainWindow):
                 
         row_intensity = QtGui.QHBoxLayout()
         self.intensity_value = QtGui.QLabel('none')
-        self.intensity_value.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft)
+        self.intensity_value.setAlignment(QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft)
         row_intensity.addWidget(self.intensity_value,1)
         
         self.intensity_image_name= QtGui.QLabel('')
-        self.intensity_image_name.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft)
+        self.intensity_image_name.setAlignment(QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft)
         row_intensity.addWidget(self.intensity_image_name,1)
         
         self.l.addLayout(row_intensity, 6, self.listoffset+2, 1, 4)
@@ -1333,7 +1334,7 @@ class Viff(QtGui.QMainWindow):
         """ helper function for refreshing the positive and negative colormap and sliders"""
 
         spacer = QtGui.QWidget()
-        spacer.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+        spacer.setSizePolicy(QtGui.QSizePolicy.Policy.Minimum, QtGui.QSizePolicy.Policy.Minimum)
 
 
         pos_gradient.setMaxDim(pixels=self.grad_size)

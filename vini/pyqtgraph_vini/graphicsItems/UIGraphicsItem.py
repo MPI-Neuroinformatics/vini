@@ -1,7 +1,7 @@
-from ..Qt import QtGui, QtCore, USE_PYSIDE
+from ..Qt import QtGui, QtCore, USE_PYQT4
 import weakref
 from .GraphicsObject import GraphicsObject
-if not USE_PYSIDE:
+if USE_PYQT4:
     import sip
 
 __all__ = ['UIGraphicsItem']

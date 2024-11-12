@@ -5,7 +5,7 @@ Copyright 2010  Luke Campagnola
 Distributed under MIT/X11 license. See license.txt for more infomation.
 """
 
-from ..Qt import QtCore, QtGui, USE_PYSIDE
+from ..Qt import QtCore, QtGui, QtWidgets, USE_PYSIDE
 
 try:
     from ..Qt import QtOpenGL
@@ -83,21 +83,21 @@ class GraphicsView(QtGui.QGraphicsView):
         
         self.useOpenGL(useOpenGL)
         
-        self.setCacheMode(self.CacheBackground)
+        self.setCacheMode(self.CacheModeFlag.CacheBackground)
         
         ## This might help, but it's probably dangerous in the general case..
         #self.setOptimizationFlag(self.DontSavePainterState, True)
         
-        self.setBackgroundRole(QtGui.QPalette.NoRole)
+        self.setBackgroundRole(QtGui.QPalette.ColorRole.NoRole)
         self.setBackground(background)
         
-        self.setFocusPolicy(QtCore.Qt.StrongFocus)
-        self.setFrameShape(QtGui.QFrame.NoFrame)
-        self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.setTransformationAnchor(QtGui.QGraphicsView.NoAnchor)
-        self.setResizeAnchor(QtGui.QGraphicsView.AnchorViewCenter)
-        self.setViewportUpdateMode(QtGui.QGraphicsView.MinimalViewportUpdate)
+        self.setFocusPolicy(QtCore.Qt.FocusPolicy.StrongFocus)
+        self.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
+        self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.setTransformationAnchor(QtWidgets.QGraphicsView.ViewportAnchor.NoAnchor)
+        self.setResizeAnchor(QtWidgets.QGraphicsView.ViewportAnchor.AnchorViewCenter)
+        self.setViewportUpdateMode(QtWidgets.QGraphicsView.ViewportUpdateMode.MinimalViewportUpdate)
         
         
         self.lockedViewports = []

@@ -13,8 +13,8 @@ if QT_LIB == 'PySide':
     from .CanvasTemplate_pyside import *
 elif QT_LIB == 'PyQt4':
     from .CanvasTemplate_pyqt import *
-elif QT_LIB == 'PyQt5':
-    from .CanvasTemplate_pyqt5 import *
+elif QT_LIB == 'PyQt6':
+    from .CanvasTemplate_pyqt6 import *
     
 import numpy as np
 from .. import debug

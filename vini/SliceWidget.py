@@ -65,7 +65,7 @@ class SliceWidget(GraphicsLayoutWidget):
         self.sb.addItem(self.foreground)
         self.foreground.setZValue(1000)
         self.foreground.setCompositionMode(
-            QtGui.QPainter.CompositionMode_SourceOver)
+            QtGui.QPainter.CompositionMode.CompositionMode_SourceOver)
         self.foreground.setImage(np.zeros((100,100,4)))
 
     def keyPressEvent(self, event):

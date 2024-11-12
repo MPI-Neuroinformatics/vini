@@ -267,7 +267,7 @@ class ForkedProcess(RemoteEventHandler):
             sys.excepthook = excepthook 
             
             ## Make it harder to access QApplication instance
-            for qtlib in ('PyQt4', 'PySide', 'PyQt5'):
+            for qtlib in ('PyQt4', 'PySide', 'PyQt6'):
                 if qtlib in sys.modules:
                     sys.modules[qtlib+'.QtGui'].QApplication = None
                     sys.modules.pop(qtlib+'.QtGui', None)

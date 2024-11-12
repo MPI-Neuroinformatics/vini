@@ -265,7 +265,7 @@ def mkBrush(*args, **kwds):
     elif len(args) == 1:
         arg = args[0]
         if arg is None:
-            return QtGui.QBrush(QtCore.Qt.NoBrush)
+            return QtGui.QBrush(QtCore.Qt.BrushStyle.NoBrush)
         elif isinstance(arg, QtGui.QBrush):
             return QtGui.QBrush(arg)
         else:
@@ -303,7 +303,7 @@ def mkPen(*args, **kargs):
         if isinstance(arg, QtGui.QPen):
             return QtGui.QPen(arg)  ## return a copy of this pen
         elif arg is None:
-            style = QtCore.Qt.NoPen
+            style = QtCore.Qt.PenStyle.NoPen
         else:
             color = arg
     if len(args) > 1:
@@ -2399,7 +2399,13 @@ def isosurface(data, level):
 
     return vertexes, faces
 
-
+def _pinv_fallback(tr):
+    arr = np.array([tr.m11(), tr.m12(), tr.m13(),
+                    tr.m21(), tr.m22(), tr.m23(),
+                    tr.m31(), tr.m32(), tr.m33()])
+    arr.shape = (3, 3)
+    pinv = np.linalg.pinv(arr)
+    return QtGui.QTransform(*pinv.ravel().tolist())
 
 def invertQTransform(tr):
     """Return a QTransform that is the inverse of *tr*.
@@ -2409,7 +2415,7 @@ def invertQTransform(tr):
     bugs in that method. (specifically, Qt has floating-point precision issues
     when determining whether a matrix is invertible)
     """
-    try:
+    '''try:
         import numpy.linalg
         arr = np.array([[tr.m11(), tr.m12(), tr.m13()], [tr.m21(), tr.m22(), tr.m23()], [tr.m31(), tr.m32(), tr.m33()]])
         inv = numpy.linalg.inv(arr)
@@ -2418,7 +2424,16 @@ def invertQTransform(tr):
         inv = tr.inverted()
         if inv[1] is False:
             raise Exception("Transform is not invertible.")
-        return inv[0]
+        return inv[0]'''
+
+    try:
+        det = tr.determinant()
+        detr = 1.0 / det    # let singular matrices raise ZeroDivisionError
+        inv = tr.adjoint()
+        inv *= detr
+        return inv
+    except ZeroDivisionError:
+        return _pinv_fallback(tr)
 
 
 def pseudoScatter(data, spacing=None, shuffle=True, bidir=False):

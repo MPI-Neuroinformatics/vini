@@ -801,7 +801,7 @@ class Tick(QtGui.QGraphicsWidget):  ## NOTE: Making this a subclass of GraphicsO
 
     # When making Tick a subclass of QtGui.QGraphicsObject as origin,
     # ..GraphicsScene.items(self, *args) will get Tick object as a
-    # class of QtGui.QMultimediaWidgets.QGraphicsVideoItem in python2.7-PyQt5(5.4.0)
+    # class of QtGui.QMultimediaWidgets.QGraphicsVideoItem in python2.7-PyQt6(5.4.0)
 
     sigMoving = QtCore.Signal(object)
     sigMoved = QtCore.Signal(object)

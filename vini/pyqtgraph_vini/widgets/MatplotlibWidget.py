@@ -1,7 +1,7 @@
-from ..Qt import QtGui, QtCore, USE_PYSIDE, USE_PYQT5
+from ..Qt import QtGui, QtCore, USE_PYSIDE, USE_PYQT6
 import matplotlib
 
-if not USE_PYQT5:
+if not USE_PYQT6:
     if USE_PYSIDE:
         matplotlib.rcParams['backend.qt4']='PySide'
 

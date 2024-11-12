@@ -83,17 +83,17 @@ class MosaicDialog(QtGui.QDialog):
 
         self.increment_label = QtGui.QLabel("increment:")
         self.increment_label.setAlignment(
-            QtCore.Qt.AlignVCenter | QtCore.Qt.AlignCenter)
+           QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignCenter)
 
         # close button
         self.close_button = QtGui.QPushButton('close', self)
-        self.close_button.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.close_button.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
         self.close_button.clicked.connect(self.closeEvent)
-        self.close_button.setShortcut(QtGui.QKeySequence.Quit)
+        self.close_button.setShortcut(QtGui.QKeySequence.StandardKey.Quit)
 
         # Slice Button
         self.slice_button = QtGui.QPushButton('Slice to mosaic!', self)
-        self.slice_button.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.slice_button.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
         self.slice_button.clicked.connect(self.slice)
 
         self.layout.addWidget(self.form_part, 0, 0, 6, 6)

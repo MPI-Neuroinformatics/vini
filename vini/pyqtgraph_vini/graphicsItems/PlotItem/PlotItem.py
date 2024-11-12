@@ -39,8 +39,8 @@ if QT_LIB == 'PyQt4':
     from .plotConfigTemplate_pyqt import *
 elif QT_LIB == 'PySide':
     from .plotConfigTemplate_pyside import *
-elif QT_LIB == 'PyQt5':
-    from .plotConfigTemplate_pyqt5 import *
+elif QT_LIB == 'PyQt6':
+    from .plotConfigTemplate_pyqt6 import *
 
 __all__ = ['PlotItem']
 

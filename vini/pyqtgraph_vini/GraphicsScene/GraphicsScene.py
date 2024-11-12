@@ -394,7 +394,7 @@ class GraphicsScene(QtGui.QGraphicsScene):
         #return item
         return self.translateGraphicsItem(item)
 
-    def itemsNearEvent(self, event, selMode=QtCore.Qt.IntersectsItemShape, sortOrder=QtCore.Qt.DescendingOrder, hoverable=False):
+    def itemsNearEvent(self, event, selMode=QtCore.Qt.ItemSelectionMode.IntersectsItemShape, sortOrder=QtCore.Qt.SortOrder.DescendingOrder, hoverable=False):
         """
         Return an iterator that iterates first through the items that directly intersect point (in Z order)
         followed by any other items that are within the scene's click radius.

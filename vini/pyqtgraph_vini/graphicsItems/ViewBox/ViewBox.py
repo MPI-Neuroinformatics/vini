@@ -2,7 +2,7 @@ import weakref
 import sys
 from copy import deepcopy
 import numpy as np
-from ...Qt import QtGui, QtCore
+from ...Qt import QtGui, QtCore, QtWidgets
 from ...python2_3 import sortList, basestring, cmp
 from ...Point import Point
 from ... import functions as fn
@@ -52,7 +52,7 @@ class ChildGroup(ItemGroup):
 
     def itemChange(self, change, value):
         ret = ItemGroup.itemChange(self, change, value)
-        if change == self.ItemChildAddedChange or change == self.ItemChildRemovedChange:
+        if change == self.GraphicsItemChange.ItemChildAddedChange or change == self.GraphicsItemChange.ItemChildRemovedChange:
             try:
                 itemsChangedListeners = self.itemsChangedListeners
             except AttributeError:
@@ -173,8 +173,8 @@ class ViewBox(GraphicsWidget):
 
         self.locateGroup = None  ## items displayed when using ViewBox.locate(item)
 
-        self.setFlag(self.ItemClipsChildrenToShape)
-        self.setFlag(self.ItemIsFocusable, True)  ## so we can receive key presses
+        self.setFlag(self.GraphicsItemFlag.ItemClipsChildrenToShape)
+        self.setFlag(self.GraphicsItemFlag.ItemIsFocusable, True)  ## so we can receive key presses
 
         ## childGroup is required so that ViewBox has local coordinates similar to device coordinates.
         ## this is a workaround for a Qt + OpenGL bug that causes improper clipping
@@ -209,7 +209,7 @@ class ViewBox(GraphicsWidget):
         self.axHistoryPointer = -1 # pointer into the history. Allows forward/backward movement, not just "undo"
 
         self.setZValue(-100)
-        self.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding))
+        self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding))
 
         self.setAspectLocked(lockAspect)
 
@@ -1428,7 +1428,7 @@ class ViewBox(GraphicsWidget):
                 #else:
                     #bounds, useX, useY = bounds
             else:
-                if int(item.flags() & item.ItemHasNoContents) > 0:
+                if item.flags() & item.GraphicsItemFlag.ItemHasNoContents:
                     continue
                 else:
                     bounds = item.boundingRect()

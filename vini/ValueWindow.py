@@ -18,7 +18,7 @@ class ValueWindow(QtGui.QWidget):
         super(ValueWindow, self).__init__()
 
         self.resize(400,200)
-        screen = QtGui.QDesktopWidget().screenGeometry()
+        screen = QtGui.QGuiApplication.primaryScreen().geometry()
         size = self.geometry()
         # Place it in the center of the screen.
         self.move(int((screen.width()-size.width())/2), int((screen.height()-size.height())/2))
@@ -29,7 +29,7 @@ class ValueWindow(QtGui.QWidget):
 
         self.cross_values_lbl = QtGui.QLabel("<b>Values at the crosshair</b>")
         self.cross_values_lbl.setAlignment(
-            QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft)
+            QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft)
         self.l.addWidget(self.cross_values_lbl, 0, 0, 1, 6)
 
         self.cross_names_lbl = QtGui.QLabel("")
@@ -41,7 +41,7 @@ class ValueWindow(QtGui.QWidget):
 
         self.cursor_values_lbl = QtGui.QLabel("<b>Values at the cursor</b>")
         self.cursor_values_lbl.setAlignment(
-            QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft)
+            QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft)
         self.l.addWidget(self.cursor_values_lbl, 6, 0, 1, 6)
 
         self.cursor_names_lbl = QtGui.QLabel("")
@@ -52,7 +52,7 @@ class ValueWindow(QtGui.QWidget):
         self.l.addWidget(self.cursor_coords_lbl, 7, 4, 5, 2)
 
         self.close_view = QtGui.QAction('close view', self)
-        self.close_view.setShortcut(QtGui.QKeySequence.Quit)
+        self.close_view.setShortcut(QtGui.QKeySequence.StandardKey.Quit)
         self.close_view.triggered.connect(self.close)
         self.addAction(self.close_view)
 

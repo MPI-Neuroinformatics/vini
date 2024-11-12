@@ -42,9 +42,9 @@ class ColorMapWidgetObj(GraphicsView):
         self.item.sigGradientChangeFinished.connect(self.sigGradientChangeFinished)
         self.setCentralItem(self.item)
         self.setOrientation(orientation)
-        self.setCacheMode(self.CacheNone)
-        self.setRenderHints(QtGui.QPainter.Antialiasing | QtGui.QPainter.TextAntialiasing)
-        self.setFrameStyle(QtGui.QFrame.NoFrame | QtGui.QFrame.Plain)
+        self.setCacheMode(self.CacheModeFlag.CacheNone)
+        self.setRenderHints(QtGui.QPainter.RenderHint.Antialiasing | QtGui.QPainter.RenderHint.TextAntialiasing)
+        self.setFrameStyle(QtGui.QFrame.Shape.NoFrame | QtGui.QFrame.Shadow.Plain)
         
         #self.setBackgroundRole(QtGui.QPalette.NoRole)
         #self.setBackgroundBrush(QtGui.QBrush(QtCore.Qt.NoBrush))

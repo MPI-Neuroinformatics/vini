@@ -411,15 +411,15 @@ class ColorMapItem(TickSliderItem):
         self.rectSize = 20
         self.gradRect = QtGui.QGraphicsRectItem(QtCore.QRectF(0, self.rectSize, 100, self.rectSize))
         self.backgroundRect = QtGui.QGraphicsRectItem(QtCore.QRectF(0, -self.rectSize, 100, self.rectSize))
-        self.backgroundRect.setBrush(QtGui.QBrush(QtCore.Qt.DiagCrossPattern))
+        self.backgroundRect.setBrush(QtGui.QBrush(QtCore.Qt.BrushStyle.DiagCrossPattern)) 
         self.colorMode = 'rgb'
         self.name = 'grey'
 
         TickSliderItem.__init__(self, *args, **kargs)
 
         self.colorDialog = QtGui.QColorDialog()
-        self.colorDialog.setOption(QtGui.QColorDialog.ShowAlphaChannel, True)
-        self.colorDialog.setOption(QtGui.QColorDialog.DontUseNativeDialog, True)
+        self.colorDialog.setOption(QtGui.QColorDialog.ColorDialogOption.ShowAlphaChannel, True)
+        self.colorDialog.setOption(QtGui.QColorDialog.ColorDialogOption.DontUseNativeDialog, True)
 
         self.colorDialog.currentColorChanged.connect(self.currentColorChanged)
         self.colorDialog.rejected.connect(self.currentColorRejected)
@@ -825,7 +825,7 @@ class Tick(QtGui.QGraphicsWidget):  ## NOTE: Making this a subclass of GraphicsO
 
     # When making Tick a subclass of QtGui.QGraphicsObject as origin,
     # ..GraphicsScene.items(self, *args) will get Tick object as a
-    # class of QtGui.QMultimediaWidgets.QGraphicsVideoItem in python2.7-PyQt5(5.4.0)
+    # class of QtGui.QMultimediaWidgets.QGraphicsVideoItem in python2.7-PyQt6(5.4.0)
 
     sigMoving = QtCore.Signal(object)
     sigMoved = QtCore.Signal(object)
