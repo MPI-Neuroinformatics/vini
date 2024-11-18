@@ -76,7 +76,7 @@ def renderSymbol(symbol, size, pen, brush, device=None):
     ## Render a spot with the given parameters to a pixmap
     penPxWidth = max(np.ceil(pen.widthF()), 1)
     if device is None:
-        device = QtGui.QImage(int(size+penPxWidth), int(size+penPxWidth), QtGui.QImage.Format_ARGB32)
+        device = QtGui.QImage(int(size+penPxWidth), int(size+penPxWidth), QtGui.QImage.Format.Format_ARGB32)
         device.fill(0)
     p = QtGui.QPainter(device)
     try:
@@ -828,7 +828,7 @@ class ScatterPlotItem(GraphicsObject):
 
 
     def mouseClickEvent(self, ev):
-        if ev.button() == QtCore.Qt.LeftButton:
+        if ev.button() == QtCore.Qt.MouseButton.LeftButton:
             pts = self.pointsAt(ev.pos())
             if len(pts) > 0:
                 self.ptsClicked = pts

@@ -53,9 +53,9 @@ class TableWidget(QtGui.QTableWidget):
         
         self.itemClass = TableWidgetItem
         
-        self.setVerticalScrollMode(self.ScrollPerPixel)
+        self.setVerticalScrollMode(self.ScrollMode.ScrollPerPixel)
         self.setSelectionMode(QtGui.QAbstractItemView.ContiguousSelection)
-        self.setSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        self.setSizePolicy(QtGui.QSizePolicy.Policy.Preferred, QtGui.QSizePolicy.Policy.Preferred)
         self.clear()
         
         kwds.setdefault('sortable', True)
@@ -371,7 +371,7 @@ class TableWidgetItem(QtGui.QTableWidgetItem):
         self._defaultFormat = '%0.3g'
         self.sortMode = 'value'
         self.index = index
-        flags = QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled
+        flags = QtCore.Qt.ItemFlag.ItemIsSelectable | QtCore.Qt.ItemFlag.ItemIsEnabled
         self.setFlags(flags)
         self.setValue(val)
         self.setFormat(format)
@@ -381,9 +381,9 @@ class TableWidgetItem(QtGui.QTableWidgetItem):
         Set whether this item is user-editable.
         """
         if editable:
-            self.setFlags(self.flags() | QtCore.Qt.ItemIsEditable)
+            self.setFlags(self.flags() | QtCore.Qt.ItemFlag.ItemIsEditable)
         else:
-            self.setFlags(self.flags() & ~QtCore.Qt.ItemIsEditable)
+            self.setFlags(self.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
             
     def setSortMode(self, mode):
         """

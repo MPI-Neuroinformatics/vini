@@ -135,7 +135,7 @@ class QxtSpanSliderH(QSlider):
                 self.lowerPositionChanged.emit(lower)
             if self.hasTracking() and not self.blockTracking:
                 main = (self.mainControl == QxtSpanSliderH.LowerHandle)
-                self.triggerAction(QxtSpanSliderH.SliderMove, main)
+                self.triggerAction(QxtSpanSliderH.SliderAction.SliderMove, main)
                 
 
     @Property(int)
@@ -152,7 +152,7 @@ class QxtSpanSliderH(QSlider):
                 self.upperPositionChanged.emit(upper)
             if self.hasTracking() and not self.blockTracking:
                 main = (self.mainControl == QxtSpanSliderH.UpperHandle)
-                self.triggerAction(QxtSpanSliderH.SliderMove, main)
+                self.triggerAction(QxtSpanSliderH.SliderAction.SliderMove, main)
              
              
     @Property(object)
@@ -179,11 +179,11 @@ class QxtSpanSliderH(QSlider):
         if self.lastPressed == QxtSpanSliderH.LowerHandle:
             if self.lowerPos != self.lower:
                 main = (self.mainControl == QxtSpanSliderH.LowerHandle)
-                self.triggerAction(QAbstractSlider.SliderMove, main)
+                self.triggerAction(QAbstractSlider.SliderAction.SliderMove, main)
         elif self.lastPressed == QxtSpanSliderH.UpperHandle:
             if self.upperPos != self.upper:
                 main = (self.mainControl == QxtSpanSliderH.UpperHandle)
-                self.triggerAction(QAbstractSlider.SliderMove, main)
+                self.triggerAction(QAbstractSlider.SliderAction.SliderMove, main)
                 
 
     def pick(self, p):
@@ -207,27 +207,27 @@ class QxtSpanSliderH(QSlider):
         
         isUpperHandle = (main and self.mainControl == QxtSpanSliderH.UpperHandle) or (not main and altControl == QxtSpanSliderH.UpperHandle)
         
-        if action == QAbstractSlider.SliderSingleStepAdd:
+        if action == QAbstractSlider.SliderAction.SliderSingleStepAdd:
             if isUpperHandle:
                 value = clamp(self.upper + self.singleStep(), my_min, my_max)
                 up = True
             else:
                 value = clamp(self.lower + self.singleStep(), my_min, my_max)
-        elif action == QAbstractSlider.SliderSingleStepSub:
+        elif action == QAbstractSlider.SliderAction.SliderSingleStepSub:
             if isUpperHandle:
                 value = clamp(self.upper - self.singleStep(), my_min, my_max)
                 up = True
             else:
                 value = clamp(self.lower - self.singleStep(), my_min, my_max)
-        elif action == QAbstractSlider.SliderToMinimum:
+        elif action == QAbstractSlider.SliderAction.SliderToMinimum:
             value = my_min
             if isUpperHandle:
                 up = True
-        elif action == QAbstractSlider.SliderToMaximum:
+        elif action == QAbstractSlider.SliderAction.SliderToMaximum:
             value = my_max
             if isUpperHandle:
                 up = True
-        elif action == QAbstractSlider.SliderMove:
+        elif action == QAbstractSlider.SliderAction.SliderMove:
             if isUpperHandle:
                 up = True
             no = True
@@ -288,27 +288,27 @@ class QxtSpanSliderH(QSlider):
         # ticks
         opt = QStyleOptionSlider()
         self.initStyleOption(opt)
-        opt.subControls = QStyle.SC_SliderTickmarks
-        painter.drawComplexControl(QStyle.CC_Slider, opt)
+        opt.subControls = QStyle.SubControl.SC_SliderTickmarks
+        painter.drawComplexControl(QStyle.ComplexControl.CC_Slider, opt)
 
         # groove
         opt.sliderPosition = 20
         opt.sliderValue = 0
-        opt.subControls = QStyle.SC_SliderGroove
-        painter.drawComplexControl(QStyle.CC_Slider, opt)
+        opt.subControls = QStyle.SubControl.SC_SliderGroove
+        painter.drawComplexControl(QStyle.ComplexControl.CC_Slider, opt)
 
         # handle rects
         opt.sliderPosition = self.lowerPos
-        lr = self.style().subControlRect(QStyle.CC_Slider, opt, QStyle.SC_SliderHandle, self)
+        lr = self.style().subControlRect(QStyle.ComplexControl.CC_Slider, opt, QStyle.SubControl.SC_SliderHandle, self)
         lrv  = self.pick(lr.center())
         opt.sliderPosition = self.upperPos
-        ur = self.style().subControlRect(QStyle.CC_Slider, opt, QStyle.SC_SliderHandle, self)
+        ur = self.style().subControlRect(QStyle.ComplexControl.CC_Slider, opt, QStyle.SubControl.SC_SliderHandle, self)
         urv  = self.pick(ur.center())
 
         # span
         minv = min(lrv, urv)
         maxv = max(lrv, urv)
-        c = self.style().subControlRect(QStyle.CC_Slider, opt, QStyle.SC_SliderGroove, self).center()
+        c = self.style().subControlRect(QStyle.ComplexControl.CC_Slider, opt, QStyle.SubControl.SC_SliderGroove, self).center()
         spanRect = QRect(QPoint(c.x() - 2, minv), QPoint(c.x() + 1, maxv))
         if self.orientation() == Qt.Orientation.Horizontal:
             spanRect = QRect(QPoint(minv, c.y() - 2), QPoint(maxv, c.y() + 1))
@@ -324,7 +324,7 @@ class QxtSpanSliderH(QSlider):
             
 
     def setupPainter(self, painter, orientation, x1, y1, x2, y2):
-        highlight = self.palette().color(QPalette.Highlight)
+        highlight = self.palette().color(QPalette.ColorRole.Highlight)
         gradient = QLinearGradient(x1, y1, x2, y2)
         gradient.setColorAt(0, highlight.darker(120))
         gradient.setColorAt(1, highlight.lighter(108))
@@ -341,7 +341,7 @@ class QxtSpanSliderH(QSlider):
         QSlider.initStyleOption(self, opt)
 
         # area
-        groove = self.style().subControlRect(QStyle.CC_Slider, opt, QStyle.SC_SliderGroove, self)
+        groove = self.style().subControlRect(QStyle.ComplexControl.CC_Slider, opt, QStyle.SubControl.SC_SliderGroove, self)
         if opt.orientation == Qt.Orientation.Horizontal:
             groove.adjust(0, 0, -1, 0);
         else:
@@ -365,15 +365,15 @@ class QxtSpanSliderH(QSlider):
     def drawHandle(self, painter, handle):
         opt = QStyleOptionSlider()
         self._initStyleOption(opt, handle)
-        opt.subControls = QStyle.SC_SliderHandle
+        opt.subControls = QStyle.SubControl.SC_SliderHandle
         pressed = self.upperPressed
         if handle == QxtSpanSliderH.LowerHandle:
             pressed = self.lowerPressed
         
-        if pressed == QStyle.SC_SliderHandle:
+        if pressed == QStyle.SubControl.SC_SliderHandle:
             opt.activeSubControls = pressed
-            opt.state |= QStyle.State_Sunken
-        painter.drawComplexControl(QStyle.CC_Slider, opt)
+            opt.state |= QStyle.StateFlag.State_Sunken
+        painter.drawComplexControl(QStyle.ComplexControl.CC_Slider, opt)
         
     
     def _initStyleOption(self, option, handle):
@@ -392,9 +392,9 @@ class QxtSpanSliderH(QSlider):
         opt = QStyleOptionSlider()
         self._initStyleOption(opt, handle)
         oldControl = control
-        control = self.style().hitTestComplexControl(QStyle.CC_Slider, opt, pos, self)
-        sr = self.style().subControlRect(QStyle.CC_Slider, opt, QStyle.SC_SliderHandle, self)
-        if control == QStyle.SC_SliderHandle:
+        control = self.style().hitTestComplexControl(QStyle.ComplexControl.CC_Slider, opt, pos, self)
+        sr = self.style().subControlRect(QStyle.ComplexControl.CC_Slider, opt, QStyle.SubControl.SC_SliderHandle, self)
+        if control == QStyle.SubControl.SC_SliderHandle:
             self.position = value
             self.offset = self.pick(pos - sr.topLeft())
             self.lastPressed = handle
@@ -411,7 +411,7 @@ class QxtSpanSliderH(QSlider):
             return
 
         self.upperPressed = self.handleMousePress(event.pos(), self.upperPressed, self.upper, QxtSpanSliderH.UpperHandle)
-        if self.upperPressed != QStyle.SC_SliderHandle:
+        if self.upperPressed != QStyle.SubControl.SC_SliderHandle:
             self.lowerPressed = self.handleMousePress(event.pos(), self.lowerPressed, self.lower, QxtSpanSliderH.LowerHandle)
 
         self.firstMovement = True
@@ -419,13 +419,13 @@ class QxtSpanSliderH(QSlider):
         
     
     def mouseMoveEvent(self, event):
-        if self.lowerPressed != QStyle.SC_SliderHandle and self.upperPressed != QStyle.SC_SliderHandle:
+        if self.lowerPressed != QStyle.SubControl.SC_SliderHandle and self.upperPressed != QStyle.SubControl.SC_SliderHandle:
             event.ignore()
             return
 
         opt = QStyleOptionSlider()
         self.initStyleOption(opt)
-        m = self.style().pixelMetric(QStyle.PM_MaximumDragDistance, opt, self)
+        m = self.style().pixelMetric(QStyle.PixelMetric.PM_MaximumDragDistance, opt, self)
         newPosition = self.pixelPosToRangeValue(self.pick(event.pos()) - self.offset)
         if m >= 0:
             r = self.rect().adjusted(-m, -m, m, m)
@@ -441,7 +441,7 @@ class QxtSpanSliderH(QSlider):
             else:
                 self.firstMovement = False
 
-        if self.lowerPressed == QStyle.SC_SliderHandle:
+        if self.lowerPressed == QStyle.SubControl.SC_SliderHandle:
             if self.movement == QxtSpanSliderH.NoCrossing:
                 newPosition = min(newPosition, self.upper)
             elif self.movement == QxtSpanSliderH.NoOverlapping:
@@ -452,7 +452,7 @@ class QxtSpanSliderH(QSlider):
                 self.setUpperPosition(newPosition)
             else:
                 self.setLowerPosition(newPosition)
-        elif self.upperPressed == QStyle.SC_SliderHandle:
+        elif self.upperPressed == QStyle.SubControl.SC_SliderHandle:
             if self.movement == QxtSpanSliderH.NoCrossing:
                 newPosition = max(newPosition, self.lowerValue)
             elif self.movement == QxtSpanSliderH.NoOverlapping:
@@ -469,8 +469,8 @@ class QxtSpanSliderH(QSlider):
     def mouseReleaseEvent(self, event):
         QSlider.mouseReleaseEvent(self, event)
         self.setSliderDown(False)
-        self.lowerPressed = QStyle.SC_None
-        self.upperPressed = QStyle.SC_None
+        self.lowerPressed = QStyle.SubControl.SC_None
+        self.upperPressed = QStyle.SubControl.SC_None
         self.update()
         
     
@@ -481,8 +481,8 @@ class QxtSpanSliderH(QSlider):
         sliderMin = 0
         sliderMax = 0
         sliderLength = 0
-        gr = self.style().subControlRect(QStyle.CC_Slider, opt, QStyle.SC_SliderGroove, self)
-        sr = self.style().subControlRect(QStyle.CC_Slider, opt, QStyle.SC_SliderHandle, self)
+        gr = self.style().subControlRect(QStyle.ComplexControl.CC_Slider, opt, QStyle.SubControl.SC_SliderGroove, self)
+        sr = self.style().subControlRect(QStyle.ComplexControl.CC_Slider, opt, QStyle.SubControl.SC_SliderHandle, self)
         if self.orientation() == Qt.Orientation.Horizontal:
             sliderLength = sr.width()
             sliderMin = gr.x()
@@ -506,7 +506,7 @@ if __name__ == "__main__":
     slider.setGradientLeftColor(color)
     slider.setGradientRightColor(color)
     slider.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 
 # """ For license see https://github.com/mkilling/QxtSpanSliderH.py """
@@ -554,8 +554,8 @@ if __name__ == "__main__":
 #         self.offset = 0
 #         self.position = 0
 #         self.lastPressed = QxtSpanSliderH.NoHandle
-#         self.upperPressed = QStyle.SC_None
-#         self.lowerPressed = QStyle.SC_None
+#         self.upperPressed = QStyle.SubControl.SC_None
+#         self.lowerPressed = QStyle.SubControl.SC_None
 #         self.movement = QxtSpanSliderH.FreeMovement
 #         self.mainControl = QxtSpanSliderH.LowerHandle
 #         self.firstMovement = False
@@ -609,7 +609,7 @@ if __name__ == "__main__":
 #                 self.emit(SIGNAL("lowerPositionChanged(int)"), lower)
 #             if self.hasTracking() and not self.blockTracking:
 #                 main = (self.mainControl == QxtSpanSliderH.LowerHandle)
-#                 self.triggerAction(QxtSpanSliderH.SliderMove, main)
+#                 self.triggerAction(QxtSpanSliderH.SliderAction.SliderMove, main)
 
 #     def upperPosition(self):
 #         return self.upperPos
@@ -623,7 +623,7 @@ if __name__ == "__main__":
 #                 self.emit(SIGNAL("upperPositionChanged(int)"), upper)
 #             if self.hasTracking() and not self.blockTracking:
 #                 main = (self.mainControl == QxtSpanSliderH.UpperHandle)
-#                 self.triggerAction(QxtSpanSliderH.SliderMove, main)
+#                 self.triggerAction(QxtSpanSliderH.SliderAction.SliderMove, main)
 
 #     def gradientLeftColor(self):
 #         return self.gradientLeft
@@ -643,11 +643,11 @@ if __name__ == "__main__":
 #         if self.lastPressed == QxtSpanSliderH.LowerHandle:
 #             if self.lowerPos != self.lower:
 #                 main = (self.mainControl == QxtSpanSliderH.LowerHandle)
-#                 self.triggerAction(QAbstractSlider.SliderMove, main)
+#                 self.triggerAction(QAbstractSlider.SliderAction.SliderMove, main)
 #         elif self.lastPressed == QxtSpanSliderH.UpperHandle:
 #             if self.upperPos != self.upper:
 #                 main = (self.mainControl == QxtSpanSliderH.UpperHandle)
-#                 self.triggerAction(QAbstractSlider.SliderMove, main)
+#                 self.triggerAction(QAbstractSlider.SliderAction.SliderMove, main)
 
 #     def pick(self, p):
 #         if self.orientation() == QtCore.Qt.Orientation.Horizontal:
@@ -669,27 +669,27 @@ if __name__ == "__main__":
 
 #         isUpperHandle = (main and self.mainControl == QxtSpanSliderH.UpperHandle) or (not main and altControl == QxtSpanSliderH.UpperHandle)
 
-#         if action == QAbstractSlider.SliderSingleStepAdd:
+#         if action == QAbstractSlider.SliderAction.SliderSingleStepAdd:
 #             if isUpperHandle:
 #                 value = clamp(self.upper + self.singleStep(), my_min, my_max)
 #                 up = True
 #             else:
 #                 value = clamp(self.lower + self.singleStep(), my_min, my_max)
-#         elif action == QAbstractSlider.SliderSingleStepSub:
+#         elif action == QAbstractSlider.SliderAction.SliderSingleStepSub:
 #             if isUpperHandle:
 #                 value = clamp(self.upper - self.singleStep(), my_min, my_max)
 #                 up = True
 #             else:
 #                 value = clamp(self.lower - self.singleStep(), my_min, my_max)
-#         elif action == QAbstractSlider.SliderToMinimum:
+#         elif action == QAbstractSlider.SliderAction.SliderToMinimum:
 #             value = my_min
 #             if isUpperHandle:
 #                 up = True
-#         elif action == QAbstractSlider.SliderToMaximum:
+#         elif action == QAbstractSlider.SliderAction.SliderToMaximum:
 #             value = my_max
 #             if isUpperHandle:
 #                 up = True
-#         elif action == QAbstractSlider.SliderMove:
+#         elif action == QAbstractSlider.SliderAction.SliderMove:
 #             if isUpperHandle:
 #                 up = True
 #             no = True
@@ -747,27 +747,27 @@ if __name__ == "__main__":
 #         # ticks
 #         opt = QStyleOptionSlider()
 #         self.initStyleOption(opt)
-#         opt.subControls = QStyle.SC_SliderTickmarks
-#         painter.drawComplexControl(QStyle.CC_Slider, opt)
+#         opt.subControls = QStyle.SubControl.SC_SliderTickmarks
+#         painter.drawComplexControl(QStyle.ComplexControl.CC_Slider, opt)
 
 #         # groove
 #         opt.sliderPosition = 20
 #         opt.sliderValue = 0
-#         opt.subControls = QStyle.SC_SliderGroove
-#         painter.drawComplexControl(QStyle.CC_Slider, opt)
+#         opt.subControls = QStyle.SubControl.SC_SliderGroove
+#         painter.drawComplexControl(QStyle.ComplexControl.CC_Slider, opt)
 
 #         # handle rects
 #         opt.sliderPosition = self.lowerPos
-#         lr = self.style().subControlRect(QStyle.CC_Slider, opt, QStyle.SC_SliderHandle, self)
+#         lr = self.style().subControlRect(QStyle.ComplexControl.CC_Slider, opt, QStyle.SubControl.SC_SliderHandle, self)
 #         lrv  = self.pick(lr.center())
 #         opt.sliderPosition = self.upperPos
-#         ur = self.style().subControlRect(QStyle.CC_Slider, opt, QStyle.SC_SliderHandle, self)
+#         ur = self.style().subControlRect(QStyle.ComplexControl.CC_Slider, opt, QStyle.SubControl.SC_SliderHandle, self)
 #         urv  = self.pick(ur.center())
 
 #         # span
 #         minv = min(lrv, urv)
 #         maxv = max(lrv, urv)
-#         c = self.style().subControlRect(QStyle.CC_Slider, opt, QStyle.SC_SliderGroove, self).center()
+#         c = self.style().subControlRect(QStyle.ComplexControl.CC_Slider, opt, QStyle.SubControl.SC_SliderGroove, self).center()
 #         spanRect = QRect(QPoint(c.x() - 2, minv), QPoint(c.x() + 1, maxv))
 #         if self.orientation() == QtCore.Qt.Orientation.Horizontal:
 #             spanRect = QRect(QPoint(minv, c.y() - 2), QPoint(maxv, c.y() + 1))
@@ -798,7 +798,7 @@ if __name__ == "__main__":
 #         QSlider.initStyleOption(self, opt)
 
 #         # area
-#         groove = self.style().subControlRect(QStyle.CC_Slider, opt, QStyle.SC_SliderGroove, self)
+#         groove = self.style().subControlRect(QStyle.ComplexControl.CC_Slider, opt, QStyle.SubControl.SC_SliderGroove, self)
 #         if opt.orientation == QtCore.Qt.Orientation.Horizontal:
 #             groove.adjust(0, 0, -1, 0);
 #         else:
@@ -821,15 +821,15 @@ if __name__ == "__main__":
 #     def drawHandle(self, painter, handle):
 #         opt = QStyleOptionSlider()
 #         self._initStyleOption(opt, handle)
-#         opt.subControls = QStyle.SC_SliderHandle
+#         opt.subControls = QStyle.SubControl.SC_SliderHandle
 #         pressed = self.upperPressed
 #         if handle == QxtSpanSliderH.LowerHandle:
 #             pressed = self.lowerPressed
 
-#         if pressed == QStyle.SC_SliderHandle:
+#         if pressed == QStyle.SubControl.SC_SliderHandle:
 #             opt.activeSubControls = pressed
-#             opt.state |= QStyle.State_Sunken
-#         painter.drawComplexControl(QStyle.CC_Slider, opt)
+#             opt.state |= QStyle.StateFlag.State_Sunken
+#         painter.drawComplexControl(QStyle.ComplexControl.CC_Slider, opt)
 
 #     def _initStyleOption(self, option, handle):
 #         self.initStyleOption(option)
@@ -846,9 +846,9 @@ if __name__ == "__main__":
 #         opt = QStyleOptionSlider()
 #         self._initStyleOption(opt, handle)
 #         oldControl = control
-#         control = self.style().hitTestComplexControl(QStyle.CC_Slider, opt, pos, self)
-#         sr = self.style().subControlRect(QStyle.CC_Slider, opt, QStyle.SC_SliderHandle, self)
-#         if control == QStyle.SC_SliderHandle:
+#         control = self.style().hitTestComplexControl(QStyle.ComplexControl.CC_Slider, opt, pos, self)
+#         sr = self.style().subControlRect(QStyle.ComplexControl.CC_Slider, opt, QStyle.SubControl.SC_SliderHandle, self)
+#         if control == QStyle.SubControl.SC_SliderHandle:
 #             self.position = value
 #             self.offset = self.pick(pos - sr.topLeft())
 #             self.lastPressed = handle
@@ -864,20 +864,20 @@ if __name__ == "__main__":
 #             return
 
 #         self.upperPressed = self.handleMousePress(event.pos(), self.upperPressed, self.upper, QxtSpanSliderH.UpperHandle)
-#         if self.upperPressed != QStyle.SC_SliderHandle:
+#         if self.upperPressed != QStyle.SubControl.SC_SliderHandle:
 #             self.lowerPressed = self.handleMousePress(event.pos(), self.lowerPressed, self.lower, QxtSpanSliderH.LowerHandle)
 
 #         self.firstMovement = True
 #         event.accept()
 
 #     def mouseMoveEvent(self, event):
-#         if self.lowerPressed != QStyle.SC_SliderHandle and self.upperPressed != QStyle.SC_SliderHandle:
+#         if self.lowerPressed != QStyle.SubControl.SC_SliderHandle and self.upperPressed != QStyle.SubControl.SC_SliderHandle:
 #             event.ignore()
 #             return
 
 #         opt = QStyleOptionSlider()
 #         self.initStyleOption(opt)
-#         m = self.style().pixelMetric(QStyle.PM_MaximumDragDistance, opt, self)
+#         m = self.style().pixelMetric(QStyle.PixelMetric.PM_MaximumDragDistance, opt, self)
 #         newPosition = self.pixelPosToRangeValue(self.pick(event.pos()) - self.offset)
 #         if m >= 0:
 #             r = self.rect().adjusted(-m, -m, m, m)
@@ -893,7 +893,7 @@ if __name__ == "__main__":
 #             else:
 #                 self.firstMovement = False
 
-#         if self.lowerPressed == QStyle.SC_SliderHandle:
+#         if self.lowerPressed == QStyle.SubControl.SC_SliderHandle:
 #             if self.movement == QxtSpanSliderH.NoCrossing:
 #                 newPosition = min(newPosition, self.upper)
 #             elif self.movement == QxtSpanSliderH.NoOverlapping:
@@ -904,7 +904,7 @@ if __name__ == "__main__":
 #                 self.setUpperPosition(newPosition)
 #             else:
 #                 self.setLowerPosition(newPosition)
-#         elif self.upperPressed == QStyle.SC_SliderHandle:
+#         elif self.upperPressed == QStyle.SubControl.SC_SliderHandle:
 #             if self.movement == QxtSpanSliderH.NoCrossing:
 #                 newPosition = max(newPosition, self.lowerValue)
 #             elif self.movement == QxtSpanSliderH.NoOverlapping:
@@ -920,8 +920,8 @@ if __name__ == "__main__":
 #     def mouseReleaseEvent(self, event):
 #         QSlider.mouseReleaseEvent(self, event)
 #         self.setSliderDown(False)
-#         self.lowerPressed = QStyle.SC_None
-#         self.upperPressed = QStyle.SC_None
+#         self.lowerPressed = QStyle.SubControl.SC_None
+#         self.upperPressed = QStyle.SubControl.SC_None
 #         self.update()
 
 #     def pixelPosToRangeValue(self, pos):
@@ -931,8 +931,8 @@ if __name__ == "__main__":
 #         sliderMin = 0
 #         sliderMax = 0
 #         sliderLength = 0
-#         gr = self.style().subControlRect(QStyle.CC_Slider, opt, QStyle.SC_SliderGroove, self)
-#         sr = self.style().subControlRect(QStyle.CC_Slider, opt, QStyle.SC_SliderHandle, self)
+#         gr = self.style().subControlRect(QStyle.ComplexControl.CC_Slider, opt, QStyle.SubControl.SC_SliderGroove, self)
+#         sr = self.style().subControlRect(QStyle.ComplexControl.CC_Slider, opt, QStyle.SubControl.SC_SliderHandle, self)
 #         if self.orientation() == QtCore.Qt.Orientation.Horizontal:
 #             sliderLength = sr.width()
 #             sliderMin = gr.x()

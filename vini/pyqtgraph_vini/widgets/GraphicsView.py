@@ -133,9 +133,9 @@ class GraphicsView(QtGui.QGraphicsView):
         """Enable or disable default antialiasing.
         Note that this will only affect items that do not specify their own antialiasing options."""
         if aa:
-            self.setRenderHints(self.renderHints() | QtGui.QPainter.Antialiasing)
+            self.setRenderHints(self.renderHints() | QtGui.QPainter.RenderHint.Antialiasing)
         else:
-            self.setRenderHints(self.renderHints() & ~QtGui.QPainter.Antialiasing)
+            self.setRenderHints(self.renderHints() & ~QtGui.QPainter.RenderHint.Antialiasing)
         
     def setBackground(self, background):
         """
@@ -373,13 +373,13 @@ class GraphicsView(QtGui.QGraphicsView):
         if self.clickAccepted:  ## Ignore event if an item in the scene has already claimed it.
             return
         
-        if ev.buttons() == QtCore.Qt.RightButton:
+        if ev.buttons() == QtCore.Qt.MouseButton.RightButton:
             delta = Point(np.clip(delta[0], -50, 50), np.clip(-delta[1], -50, 50))
             scale = 1.01 ** delta
             self.scale(scale[0], scale[1], center=self.mapToScene(self.mousePressPos))
             self.sigDeviceRangeChanged.emit(self, self.range)
 
-        elif ev.buttons() in [QtCore.Qt.MidButton, QtCore.Qt.LeftButton]:  ## Allow panning by left or mid button.
+        elif ev.buttons() in [QtCore.Qt.MouseButton.MiddleButton, QtCore.Qt.MouseButton.LeftButton]:  ## Allow panning by left or mid button.
             px = self.pixelSize()
             tr = -delta * px
             

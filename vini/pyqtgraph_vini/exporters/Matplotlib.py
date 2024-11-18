@@ -79,7 +79,7 @@ class MatplotlibExporter(Exporter):
                     raise Exception("operation currently not supported for time series data")
                 opts = item.opts
                 pen = fn.mkPen(opts['pen'])
-                if pen.style() == QtCore.Qt.NoPen:
+                if pen.style() == QtCore.Qt.PenStyle.NoPen:
                     linestyle = ''
                 else:
                     linestyle = '-'

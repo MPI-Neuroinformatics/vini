@@ -27,7 +27,7 @@ class ImageItemMod(ImageItem):
         ev.accept()
 
         self.sigMouseDrag.emit(ev)
-        if ev.button() != QtCore.Qt.LeftButton:
+        if ev.button() != QtCore.Qt.MouseButton.LeftButton:
             ev.ignore()
             return
         elif self.drawKernel is not None:

@@ -84,7 +84,7 @@ class Ui_Form(object):
         self.clearExceptionBtn.setEnabled(False)
         self.clearExceptionBtn.setObjectName("clearExceptionBtn")
         self.gridLayout_2.addWidget(self.clearExceptionBtn, 0, 4, 1, 1)
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.gridLayout_2.addItem(spacerItem, 0, 3, 1, 1)
         self.gridLayout.addWidget(self.splitter, 0, 0, 1, 1)
 

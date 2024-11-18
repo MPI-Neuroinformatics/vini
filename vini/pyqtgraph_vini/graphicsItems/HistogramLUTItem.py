@@ -83,7 +83,7 @@ class HistogramLUTItem(GraphicsWidget):
         
         if image is not None:
             self.setImageItem(image)
-        #self.setSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Expanding)
+        #self.setSizePolicy(QtGui.QSizePolicy.Policy.Preferred, QtGui.QSizePolicy.Policy.Expanding)
         
     def fillHistogram(self, fill=True, level=0.0, color=(100, 100, 200)):
         if fill:

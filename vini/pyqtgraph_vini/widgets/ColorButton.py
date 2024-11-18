@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ..Qt import QtGui, QtCore
+from ..Qt import QtGui, QtCore, QtWidgets
 from .. import functions as functions
 
 __all__ = ['ColorButton']
@@ -22,9 +22,9 @@ class ColorButton(QtGui.QPushButton):
     def __init__(self, parent=None, color=(128,128,128)):
         QtGui.QPushButton.__init__(self, parent)
         self.setColor(color)
-        self.colorDialog = QtGui.QColorDialog()
-        self.colorDialog.setOption(QtGui.QColorDialog.ShowAlphaChannel, True)
-        self.colorDialog.setOption(QtGui.QColorDialog.DontUseNativeDialog, True)
+        self.colorDialog = QtWidgets.QColorDialog()
+        self.colorDialog.setOption(QtWidgets.QColorDialog.ColorDialogOption.ShowAlphaChannel, True)
+        self.colorDialog.setOption(QtWidgets.QColorDialog.ColorDialogOption.DontUseNativeDialog, True)
         self.colorDialog.currentColorChanged.connect(self.dialogColorChanged)
         self.colorDialog.rejected.connect(self.colorRejected)
         self.colorDialog.colorSelected.connect(self.colorSelected)
@@ -41,7 +41,7 @@ class ColorButton(QtGui.QPushButton):
         ## draw white base, then texture for indicating transparency, then actual color
         p.setBrush(functions.mkBrush('w'))
         p.drawRect(rect)
-        p.setBrush(QtGui.QBrush(QtCore.Qt.DiagCrossPattern))
+        p.setBrush(QtGui.QBrush(QtCore.Qt.BrushStyle.DiagCrossPattern))
         p.drawRect(rect)
         p.setBrush(functions.mkBrush(self._color))
         p.drawRect(rect)

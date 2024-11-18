@@ -507,8 +507,8 @@ class Flowchart(Node):
             if startDir is None:
                 startDir = '.'
             self.fileDialog = FileDialog(None, "Load Flowchart..", startDir, "Flowchart (*.fc)")
-            #self.fileDialog.setFileMode(QtGui.QFileDialog.AnyFile)
-            #self.fileDialog.setAcceptMode(QtGui.QFileDialog.AcceptSave) 
+            #self.fileDialog.setFileMode(QtWidgets.QFileDialog.FileMode.AnyFile)
+            #self.fileDialog.setAcceptMode(QtWidgets.QFileDialog.AcceptMode.AcceptSave) 
             self.fileDialog.show()
             self.fileDialog.fileSelected.connect(self.loadFile)
             return
@@ -528,8 +528,8 @@ class Flowchart(Node):
             if startDir is None:
                 startDir = '.'
             self.fileDialog = FileDialog(None, "Save Flowchart..", startDir, "Flowchart (*.fc)")
-            #self.fileDialog.setFileMode(QtGui.QFileDialog.AnyFile)
-            self.fileDialog.setAcceptMode(QtGui.QFileDialog.AcceptSave) 
+            #self.fileDialog.setFileMode(QtWidgets.QFileDialog.FileMode.AnyFile)
+            self.fileDialog.setAcceptMode(QtWidgets.QFileDialog.AcceptMode.AcceptSave) 
             #self.fileDialog.setDirectory(startDir)
             self.fileDialog.show()
             self.fileDialog.fileSelected.connect(self.saveFile)
@@ -768,7 +768,7 @@ class FlowchartWidget(dockarea.DockArea):
         self.ctrl = ctrl
         self.hoverItem = None
         #self.setMinimumWidth(250)
-        #self.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Expanding))
+        #self.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Policy.Preferred, QtGui.QSizePolicy.Policy.Expanding))
         
         #self.ui = FlowchartTemplate.Ui_Form()
         #self.ui.setupUi(self)
@@ -849,7 +849,7 @@ class FlowchartWidget(dockarea.DockArea):
     
     def showViewMenu(self, ev):
         #QtGui.QPushButton.mouseReleaseEvent(self.ui.addNodeBtn, ev)
-        #if ev.button() == QtCore.Qt.RightButton:
+        #if ev.button() == QtCore.Qt.MouseButton.RightButton:
             #self.menuPos = self.view.mapToScene(ev.pos())
             #self.nodeMenu.popup(ev.globalPos())
         #print "Flowchart.showViewMenu called"

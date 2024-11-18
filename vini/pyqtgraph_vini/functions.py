@@ -1323,9 +1323,9 @@ def makeQImage(imgData, alpha=None, copy=True, transpose=True):
             raise Exception('Array has only 3 channels; cannot make QImage without copying.')
 
     if alpha:
-        imgFormat = QtGui.QImage.Format_ARGB32
+        imgFormat = QtGui.QImage.Format.Format_ARGB32
     else:
-        imgFormat = QtGui.QImage.Format_RGB32
+        imgFormat = QtGui.QImage.Format.Format_RGB32
 
     if transpose:
         imgData = imgData.transpose((1, 0, 2))  ## QImage expects the row/column order to be opposite
@@ -1618,7 +1618,7 @@ def arrayToQPath(x, y, connect='all'):
 
     path.strn = byteview.data[12:lastInd+4] # make sure data doesn't run away
     try:
-        buf = QtCore.QByteArray.fromRawData(path.strn)
+        buf = QtCore.QByteArray(bytes(path, 'utf-8'))
     except TypeError:
         buf = QtCore.QByteArray(bytes(path.strn))
     #profiler('create buffer')

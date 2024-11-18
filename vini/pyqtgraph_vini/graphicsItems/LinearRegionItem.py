@@ -183,7 +183,7 @@ class LinearRegionItem(UIGraphicsItem):
             #return
         #for l in self.lines:
             #l.mousePressEvent(ev)  ## pass event to both lines so they move together
-        ##if self.movable and ev.button() == QtCore.Qt.LeftButton:
+        ##if self.movable and ev.button() == QtCore.Qt.MouseButton.LeftButton:
             ##ev.accept()
             ##self.pressDelta = self.mapToParent(ev.pos()) - QtCore.QPointF(*self.p)
         ##else:
@@ -205,7 +205,7 @@ class LinearRegionItem(UIGraphicsItem):
         ##self.emit(QtCore.SIGNAL('dragged'), self)
 
     def mouseDragEvent(self, ev):
-        if not self.movable or int(ev.button() & QtCore.Qt.LeftButton) == 0:
+        if not self.movable or int(ev.button() & QtCore.Qt.MouseButton.LeftButton) == 0:
             return
         ev.accept()
         
@@ -234,7 +234,7 @@ class LinearRegionItem(UIGraphicsItem):
             self.sigRegionChanged.emit(self)
             
     def mouseClickEvent(self, ev):
-        if self.moving and ev.button() == QtCore.Qt.RightButton:
+        if self.moving and ev.button() == QtCore.Qt.MouseButton.RightButton:
             ev.accept()
             for i, l in enumerate(self.lines):
                 l.setPos(self.startPositions[i])
@@ -244,7 +244,7 @@ class LinearRegionItem(UIGraphicsItem):
 
 
     def hoverEvent(self, ev):
-        if self.movable and (not ev.isExit()) and ev.acceptDrags(QtCore.Qt.LeftButton):
+        if self.movable and (not ev.isExit()) and ev.acceptDrags(QtCore.Qt.MouseButton.LeftButton):
             self.setMouseHover(True)
         else:
             self.setMouseHover(False)
@@ -280,7 +280,7 @@ class LinearRegionItem(UIGraphicsItem):
     #def updateHoverBrush(self, hover=None):
         #if hover is None:
             #scene = self.scene()
-            #hover = scene.claimEvent(self, QtCore.Qt.LeftButton, scene.Drag)
+            #hover = scene.claimEvent(self, QtCore.Qt.MouseButton.LeftButton, scene.Drag)
         
         #if hover:
             #self.currentBrush = fn.mkBrush(255, 0,0,100)

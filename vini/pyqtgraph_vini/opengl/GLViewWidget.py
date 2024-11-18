@@ -300,10 +300,10 @@ class GLViewWidget(QtOpenGL.QGLWidget):
         diff = ev.pos() - self.mousePos
         self.mousePos = ev.pos()
         
-        if ev.buttons() == QtCore.Qt.LeftButton:
+        if ev.buttons() == QtCore.Qt.MouseButton.LeftButton:
             self.orbit(-diff.x(), diff.y())
             #print self.opts['azimuth'], self.opts['elevation']
-        elif ev.buttons() == QtCore.Qt.MidButton:
+        elif ev.buttons() == QtCore.Qt.MouseButton.MiddleButton:
             if (ev.modifiers() & QtCore.Qt.ControlModifier):
                 self.pan(diff.x(), 0, diff.y(), relative=True)
             else:

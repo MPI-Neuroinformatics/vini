@@ -308,7 +308,7 @@ class Node(QtCore.QObject):
                 else:
                     self.setOutputNoSignal(**out)
             for n,t in self.inputs().items():
-                t.setValueAcceptable(True)
+                t.setValueacceptable(True)
             self.clearException()
         except:
             #printExc( "Exception while processing %s:" % self.name())
@@ -347,7 +347,7 @@ class Node(QtCore.QObject):
                 #if t is term:
                     #continue
                 #t.inputChanged(term)
-            term.setValueAcceptable(True)
+            term.setValueacceptable(True)
 
     def setException(self, exc):
         self.exception = exc
@@ -456,8 +456,8 @@ class NodeGraphicsItem(GraphicsObject):
         self.hovered = False
         
         self.node = node
-        flags = self.ItemIsMovable | self.ItemIsSelectable | self.ItemIsFocusable |self.ItemSendsGeometryChanges
-        #flags =  self.ItemIsFocusable |self.ItemSendsGeometryChanges
+        flags = self.ItemIsMovable | self.ItemIsSelectable | self.GraphicsItemFlag.ItemIsFocusable |self.ItemSendsGeometryChanges
+        #flags =  self.GraphicsItemFlag.ItemIsFocusable |self.ItemSendsGeometryChanges
 
         self.setFlags(flags)
         self.bounds = QtCore.QRectF(0, 0, 100, 100)
@@ -564,7 +564,7 @@ class NodeGraphicsItem(GraphicsObject):
 
     def mouseClickEvent(self, ev):
         #print "Node.mouseClickEvent called."
-        if int(ev.button()) == int(QtCore.Qt.LeftButton):
+        if int(ev.button()) == int(QtCore.Qt.MouseButton.LeftButton):
             ev.accept()
             #print "    ev.button: left"
             sel = self.isSelected()
@@ -577,7 +577,7 @@ class NodeGraphicsItem(GraphicsObject):
                 self.update()
             #return ret
         
-        elif int(ev.button()) == int(QtCore.Qt.RightButton):
+        elif int(ev.button()) == int(QtCore.Qt.MouseButton.RightButton):
             #print "    ev.button: right"
             ev.accept()
             #pos = ev.screenPos()
@@ -586,13 +586,13 @@ class NodeGraphicsItem(GraphicsObject):
             
     def mouseDragEvent(self, ev):
         #print "Node.mouseDrag"
-        if ev.button() == QtCore.Qt.LeftButton:
+        if ev.button() == QtCore.Qt.MouseButton.LeftButton:
             ev.accept()
             self.setPos(self.pos()+self.mapToParent(ev.pos())-self.mapToParent(ev.lastPos()))
         
     def hoverEvent(self, ev):
-        if not ev.isExit() and ev.acceptClicks(QtCore.Qt.LeftButton):
-            ev.acceptDrags(QtCore.Qt.LeftButton)
+        if not ev.isExit() and ev.acceptClicks(QtCore.Qt.MouseButton.LeftButton):
+            ev.acceptDrags(QtCore.Qt.MouseButton.LeftButton)
             self.hovered = True
         else:
             self.hovered = False

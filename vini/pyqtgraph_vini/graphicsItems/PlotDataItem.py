@@ -1,6 +1,6 @@
 import numpy as np
 from .. import metaarray as metaarray
-from ..Qt import QtCore
+from ..Qt import QtCore, QtWidgets
 from .GraphicsObject import GraphicsObject
 from .PlotCurveItem import PlotCurveItem
 from .ScatterPlotItem import ScatterPlotItem
@@ -125,7 +125,7 @@ class PlotDataItem(GraphicsObject):
             ==========   ================================================
         """
         GraphicsObject.__init__(self)
-        self.setFlag(self.ItemHasNoContents)
+        self.setFlag(QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemHasNoContents)
         self.xData = None
         self.yData = None
         self.xDisp = None

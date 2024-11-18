@@ -91,5 +91,5 @@ if __name__ == '__main__':
     ## Start Qt event loop unless running in interactive mode.
     import sys
     if sys.flags.interactive != 1:
-        app.exec_()
+        app.exec()
         

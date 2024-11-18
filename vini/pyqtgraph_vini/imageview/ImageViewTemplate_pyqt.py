@@ -64,7 +64,7 @@ class Ui_Form(object):
         self.menuBtn.setObjectName(_fromUtf8("menuBtn"))
         self.gridLayout.addWidget(self.menuBtn, 1, 2, 1, 1)
         self.roiPlot = PlotWidget(self.splitter)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy.Preferred, QtGui.QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.roiPlot.sizePolicy().hasHeightForWidth())

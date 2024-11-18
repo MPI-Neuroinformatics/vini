@@ -73,7 +73,7 @@ class Terminal(object):
             if val is not None:
                 self._value.update(val)
             
-        self.setValueAcceptable(None)  ## by default, input values are 'unchecked' until Node.update(). 
+        self.setValueacceptable(None)  ## by default, input values are 'unchecked' until Node.update(). 
         if self.isInput() and process:
             self.node().update()
             
@@ -112,11 +112,11 @@ class Terminal(object):
         else:
             self.setValue(term.value(self), process=process)
             
-    def valueIsAcceptable(self):
+    def valueIsacceptable(self):
         """Returns True->acceptable  None->unknown  False->Unacceptable"""
         return self.valueOk
         
-    def setValueAcceptable(self, v=True):
+    def setValueacceptable(self, v=True):
         self.valueOk = v
         self.recolor()
         
@@ -234,9 +234,9 @@ class Terminal(object):
                 color = QtGui.QColor(200,200,0)
             elif self._value is None or fn.eq(self._value, {}):  ## terminal is connected but has no data (possibly due to processing error) 
                 color = QtGui.QColor(255,255,255)
-            elif self.valueIsAcceptable() is None:   ## terminal has data, but it is unknown if the data is ok
+            elif self.valueIsacceptable() is None:   ## terminal has data, but it is unknown if the data is ok
                 color = QtGui.QColor(200, 200, 0)
-            elif self.valueIsAcceptable() is True:   ## terminal has good input, all ok
+            elif self.valueIsacceptable() is True:   ## terminal has good input, all ok
                 color = QtGui.QColor(0, 200, 0)
             else:                                    ## terminal has bad input
                 color = QtGui.QColor(200, 0, 0)
@@ -343,10 +343,10 @@ class TerminalGraphicsItem(GraphicsObject):
         ev.ignore() ## necessary to allow click/drag events to process correctly
 
     def mouseClickEvent(self, ev):
-        if ev.button() == QtCore.Qt.LeftButton:
+        if ev.button() == QtCore.Qt.MouseButton.LeftButton:
             ev.accept()
-            self.label.setFocus(QtCore.Qt.MouseFocusReason)
-        elif ev.button() == QtCore.Qt.RightButton:
+            self.label.setFocus(QtCore.Qt.FocusReason.MouseFocusReason)
+        elif ev.button() == QtCore.Qt.MouseButton.RightButton:
             ev.accept()
             self.raiseContextMenu(ev)
             
@@ -387,7 +387,7 @@ class TerminalGraphicsItem(GraphicsObject):
         self.term.node().removeTerminal(self.term)
         
     def mouseDragEvent(self, ev):
-        if ev.button() != QtCore.Qt.LeftButton:
+        if ev.button() != QtCore.Qt.MouseButton.LeftButton:
             ev.ignore()
             return
         
@@ -424,9 +424,9 @@ class TerminalGraphicsItem(GraphicsObject):
                 self.newConnection.setTarget(self.mapToView(ev.pos()))
         
     def hoverEvent(self, ev):
-        if not ev.isExit() and ev.acceptDrags(QtCore.Qt.LeftButton):
-            ev.acceptClicks(QtCore.Qt.LeftButton) ## we don't use the click, but we also don't want anyone else to use it.
-            ev.acceptClicks(QtCore.Qt.RightButton)
+        if not ev.isExit() and ev.acceptDrags(QtCore.Qt.MouseButton.LeftButton):
+            ev.acceptClicks(QtCore.Qt.MouseButton.LeftButton) ## we don't use the click, but we also don't want anyone else to use it.
+            ev.acceptClicks(QtCore.Qt.MouseButton.RightButton)
             self.box.setBrush(fn.mkBrush('w'))
         else:
             self.box.setBrush(self.brush)
@@ -447,7 +447,7 @@ class ConnectionItem(GraphicsObject):
         GraphicsObject.__init__(self)
         self.setFlags(
             self.ItemIsSelectable | 
-            self.ItemIsFocusable
+            self.GraphicsItemFlag.ItemIsFocusable
         )
         self.source = source
         self.target = target
@@ -523,7 +523,7 @@ class ConnectionItem(GraphicsObject):
         ev.ignore()
         
     def mouseClickEvent(self, ev):
-        if ev.button() == QtCore.Qt.LeftButton:
+        if ev.button() == QtCore.Qt.MouseButton.LeftButton:
             ev.accept()
             sel = self.isSelected()
             self.setSelected(True)
@@ -532,7 +532,7 @@ class ConnectionItem(GraphicsObject):
                 self.update()
                 
     def hoverEvent(self, ev):
-        if (not ev.isExit()) and ev.acceptClicks(QtCore.Qt.LeftButton):
+        if (not ev.isExit()) and ev.acceptClicks(QtCore.Qt.MouseButton.LeftButton):
             self.hovered = True
         else:
             self.hovered = False

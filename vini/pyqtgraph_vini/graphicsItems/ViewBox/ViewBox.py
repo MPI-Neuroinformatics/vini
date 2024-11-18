@@ -1225,7 +1225,7 @@ class ViewBox(GraphicsWidget):
 
 
     def mouseClickEvent(self, ev):
-        if ev.button() == QtCore.Qt.RightButton and self.menuEnabled():
+        if ev.button() == QtCore.Qt.MouseButton.RightButton and self.menuEnabled():
             ev.accept()
             self.raiseContextMenu(ev)
 
@@ -1256,7 +1256,7 @@ class ViewBox(GraphicsWidget):
             mask[1-axis] = 0.0
 
         ## Scale or translate based on mouse button
-        if ev.button() & (QtCore.Qt.LeftButton | QtCore.Qt.MidButton):
+        if ev.button() & (QtCore.Qt.MouseButton.LeftButton | QtCore.Qt.MouseButton.MiddleButton):
             if self.state['mouseMode'] == ViewBox.RectMode:
                 if ev.isFinish():  ## This is the final move in the drag; change the view scale now
                     #print "finish"
@@ -1280,7 +1280,7 @@ class ViewBox(GraphicsWidget):
                 if x is not None or y is not None:
                     self.translateBy(x=x, y=y)
                 self.sigRangeChangedManually.emit(self.state['mouseEnabled'])
-        elif ev.button() & QtCore.Qt.RightButton:
+        elif ev.button() & QtCore.Qt.MouseButton.RightButton:
             #print "vb.rightDrag"
             if self.state['aspectLocked'] is not False:
                 mask[0] = 0
@@ -1296,7 +1296,7 @@ class ViewBox(GraphicsWidget):
             x = s[0] if mouseEnabled[0] == 1 else None
             y = s[1] if mouseEnabled[1] == 1 else None
 
-            center = Point(tr.map(ev.buttonDownPos(QtCore.Qt.RightButton)))
+            center = Point(tr.map(ev.buttonDownPos(QtCore.Qt.MouseButton.RightButton)))
             self._resetTarget()
             self.scaleBy(x=x, y=y, center=center)
             self.sigRangeChangedManually.emit(self.state['mouseEnabled'])

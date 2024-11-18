@@ -73,7 +73,7 @@ class TickSliderItem(GraphicsWidget):
         
         self.setOrientation(orientation)
         #self.setFrameStyle(QtGui.QFrame.NoFrame | QtGui.QFrame.Plain)
-        #self.setBackgroundRole(QtGui.QPalette.NoRole)
+        #self.setBackgroundRole(QtGui.QPalette.ColorRole.NoRole)
         #self.setMouseTracking(True)
         
     #def boundingRect(self):
@@ -185,7 +185,7 @@ class TickSliderItem(GraphicsWidget):
         pass
     
     def tickClicked(self, tick, ev):
-        if ev.button() == QtCore.Qt.RightButton:
+        if ev.button() == QtCore.Qt.MouseButton.RightButton:
             self.removeTick(tick)
     
     def widgetLength(self):
@@ -227,18 +227,18 @@ class TickSliderItem(GraphicsWidget):
             
         #pos = self.mapToScene(ev.pos())
             
-        #if ev.button() == QtCore.Qt.LeftButton and self.allowAdd:
+        #if ev.button() == QtCore.Qt.MouseButton.LeftButton and self.allowAdd:
             #if pos.x() < 0 or pos.x() > self.length:
                 #return
             #if pos.y() < 0 or pos.y() > self.tickSize:
                 #return
             #pos.setX(min(max(pos.x(), 0), self.length))
             #self.addTick(pos.x()/self.length)
-        #elif ev.button() == QtCore.Qt.RightButton:
+        #elif ev.button() == QtCore.Qt.MouseButton.RightButton:
             #self.showMenu(ev)
             
     def mouseClickEvent(self, ev):
-        if ev.button() == QtCore.Qt.LeftButton and self.allowAdd:
+        if ev.button() == QtCore.Qt.MouseButton.LeftButton and self.allowAdd:
             pos = ev.pos()
             if pos.x() < 0 or pos.x() > self.length:
                 return
@@ -246,10 +246,10 @@ class TickSliderItem(GraphicsWidget):
                 return
             pos.setX(min(max(pos.x(), 0), self.length))
             self.addTick(pos.x()/self.length)
-        elif ev.button() == QtCore.Qt.RightButton:
+        elif ev.button() == QtCore.Qt.MouseButton.RightButton:
             self.showMenu(ev)
 
-        #if  ev.button() == QtCore.Qt.RightButton:
+        #if  ev.button() == QtCore.Qt.MouseButton.RightButton:
             #if self.moving:
                 #ev.accept()
                 #self.setPos(self.startPosition)
@@ -262,8 +262,8 @@ class TickSliderItem(GraphicsWidget):
                 ###remove
 
     def hoverEvent(self, ev):
-        if (not ev.isExit()) and ev.acceptClicks(QtCore.Qt.LeftButton):
-            ev.acceptClicks(QtCore.Qt.RightButton)
+        if (not ev.isExit()) and ev.acceptClicks(QtCore.Qt.MouseButton.LeftButton):
+            ev.acceptClicks(QtCore.Qt.MouseButton.RightButton)
             ## show ghost tick
             #self.currentPen = fn.mkPen(255, 0,0)
         #else:
@@ -398,8 +398,8 @@ class GradientEditorItem(TickSliderItem):
         TickSliderItem.__init__(self, *args, **kargs)
         
         self.colorDialog = QtGui.QColorDialog()
-        self.colorDialog.setOption(QtGui.QColorDialog.ShowAlphaChannel, True)
-        self.colorDialog.setOption(QtGui.QColorDialog.DontUseNativeDialog, True)
+        self.colorDialog.setOption(QtWidgets.QColorDialog.ColorDialogOption.ShowAlphaChannel, True)
+        self.colorDialog.setOption(QtWidgets.QColorDialog.ColorDialogOption.DontUseNativeDialog, True)
         
         self.colorDialog.currentColorChanged.connect(self.currentColorChanged)
         self.colorDialog.rejected.connect(self.currentColorRejected)
@@ -549,9 +549,9 @@ class GradientEditorItem(TickSliderItem):
         
     def tickClicked(self, tick, ev):
         #private
-        if ev.button() == QtCore.Qt.LeftButton:
+        if ev.button() == QtCore.Qt.MouseButton.LeftButton:
             self.raiseColorDialog(tick)
-        elif ev.button() == QtCore.Qt.RightButton:
+        elif ev.button() == QtCore.Qt.MouseButton.RightButton:
             self.raiseTickContextMenu(tick, ev)
             
     def raiseColorDialog(self, tick):
@@ -834,7 +834,7 @@ class Tick(QtGui.QGraphicsWidget):  ## NOTE: Making this a subclass of GraphicsO
         return self.pg
 
     def paint(self, p, *args):
-        p.setRenderHints(QtGui.QPainter.Antialiasing)
+        p.setRenderHints(QtGui.QPainter.RenderHint.Antialiasing)
         p.fillPath(self.pg, fn.mkBrush(self.color))
         
         p.setPen(self.currentPen)
@@ -842,7 +842,7 @@ class Tick(QtGui.QGraphicsWidget):  ## NOTE: Making this a subclass of GraphicsO
 
 
     def mouseDragEvent(self, ev):
-        if self.movable and ev.button() == QtCore.Qt.LeftButton:
+        if self.movable and ev.button() == QtCore.Qt.MouseButton.LeftButton:
             if ev.isStart():
                 self.moving = True
                 self.cursorOffset = self.pos() - self.mapToParent(ev.buttonDownPos())
@@ -864,7 +864,7 @@ class Tick(QtGui.QGraphicsWidget):  ## NOTE: Making this a subclass of GraphicsO
                 self.view().tickMoveFinished(self)
 
     def mouseClickEvent(self, ev):
-        if  ev.button() == QtCore.Qt.RightButton and self.moving:
+        if  ev.button() == QtCore.Qt.MouseButton.RightButton and self.moving:
             ev.accept()
             self.setPos(self.startPosition)
             self.view().tickMoved(self, self.startPosition)
@@ -876,9 +876,9 @@ class Tick(QtGui.QGraphicsWidget):  ## NOTE: Making this a subclass of GraphicsO
             ##remove
 
     def hoverEvent(self, ev):
-        if (not ev.isExit()) and ev.acceptDrags(QtCore.Qt.LeftButton):
-            ev.acceptClicks(QtCore.Qt.LeftButton)
-            ev.acceptClicks(QtCore.Qt.RightButton)
+        if (not ev.isExit()) and ev.acceptDrags(QtCore.Qt.MouseButton.LeftButton):
+            ev.acceptClicks(QtCore.Qt.MouseButton.LeftButton)
+            ev.acceptClicks(QtCore.Qt.MouseButton.RightButton)
             self.currentPen = self.hoverPen
         else:
             self.currentPen = self.pen

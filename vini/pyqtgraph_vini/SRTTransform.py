@@ -90,7 +90,7 @@ class SRTTransform(QtGui.QTransform):
         self.update()
         
     def translate(self, *args):
-        """Acceptable arguments are: 
+        """acceptable arguments are: 
            x, y
            [x, y]
            Point(x,y)"""
@@ -98,7 +98,7 @@ class SRTTransform(QtGui.QTransform):
         self.setTranslate(self._state['pos']+t)
         
     def setTranslate(self, *args):
-        """Acceptable arguments are: 
+        """acceptable arguments are: 
            x, y
            [x, y]
            Point(x,y)"""
@@ -106,7 +106,7 @@ class SRTTransform(QtGui.QTransform):
         self.update()
         
     def scale(self, *args):
-        """Acceptable arguments are: 
+        """acceptable arguments are: 
            x, y
            [x, y]
            Point(x,y)"""
@@ -114,7 +114,7 @@ class SRTTransform(QtGui.QTransform):
         self.setScale(self._state['scale'] * s)
         
     def setScale(self, *args):
-        """Acceptable arguments are: 
+        """acceptable arguments are: 
            x, y
            [x, y]
            Point(x,y)"""

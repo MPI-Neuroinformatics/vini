@@ -173,7 +173,7 @@ class SliceWidget(GraphicsLayoutWidget):
         """
         Change crosshair coordinates when left clicked.
         """
-        if ev.button() & QtCore.Qt.LeftButton:
+        if ev.button() & QtCore.Qt.MouseButton.LeftButton:
             coordinates = self.foreground.mapFromScene(ev.scenePos())
             self.crosshair_pos[0] = int(coordinates.x())
             self.crosshair_pos[1] = int(coordinates.y())
@@ -251,10 +251,10 @@ def main():
     # Create ImageItems
     img1 = ImageItemMod.ImageItemMod()
     img1.setImage(image1)
-    img1.setCompositionMode(QtGui.QPainter.CompositionMode_SourceOver)
+    img1.setCompositionMode(QtGui.QPainter.CompositionMode.CompositionMode_SourceOver)
     img2 = ImageItemMod.ImageItemMod()
     img2.setImage(rgba)
-    img2.setCompositionMode(QtGui.QPainter.CompositionMode_SourceOver)
+    img2.setCompositionMode(QtGui.QPainter.CompositionMode.CompositionMode_SourceOver)
 
     img1.setZValue(-1)
     img2.setZValue(1)
@@ -270,7 +270,7 @@ def main():
 
     #widget.addImage(image)
     widget.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 
 if __name__ == '__main__':

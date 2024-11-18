@@ -107,7 +107,7 @@ class Ui_Form(object):
         self.gridAlphaSlider = QtGui.QSlider(self.gridGroup)
         self.gridAlphaSlider.setMaximum(255)
         self.gridAlphaSlider.setProperty("value", 128)
-        self.gridAlphaSlider.setOrientation(QtCore.Qt.Horizontal)
+        self.gridAlphaSlider.setOrientation(QtCore.Qt.Orientation.Horizontal)
         self.gridAlphaSlider.setObjectName("gridAlphaSlider")
         self.gridLayout_2.addWidget(self.gridAlphaSlider, 2, 1, 1, 1)
         self.label = QtGui.QLabel(self.gridGroup)
@@ -126,7 +126,7 @@ class Ui_Form(object):
         self.alphaSlider = QtGui.QSlider(self.alphaGroup)
         self.alphaSlider.setMaximum(1000)
         self.alphaSlider.setProperty("value", 1000)
-        self.alphaSlider.setOrientation(QtCore.Qt.Horizontal)
+        self.alphaSlider.setOrientation(QtCore.Qt.Orientation.Horizontal)
         self.alphaSlider.setObjectName("alphaSlider")
         self.horizontalLayout.addWidget(self.alphaSlider)
 

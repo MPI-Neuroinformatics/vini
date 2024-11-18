@@ -431,7 +431,7 @@ def startQtEventLoop(name, port, authkey, ppid, debug=False):
     global HANDLER
     HANDLER = RemoteQtEventHandler(conn, name, ppid, debug=debug)
     HANDLER.startEventTimer()
-    app.exec_()
+    app.exec()
 
 import threading
 class FileForwarder(threading.Thread):

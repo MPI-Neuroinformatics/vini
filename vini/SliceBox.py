@@ -147,7 +147,7 @@ class SliceBox(ViewBox):
             mask[1-axis] = 0.0
 
         ## Scale or translate based on mouse button
-        if ev.button() & (QtCore.Qt.RightButton | QtCore.Qt.MidButton):
+        if ev.button() & (QtCore.Qt.MouseButton.RightButton | QtCore.Qt.MouseButton.MiddleButton):
 
             if self.state['mouseMode'] == SliceBox.RectMode:
                 if ev.isFinish():  ## This is the final move in the drag; change the view scale now
@@ -174,7 +174,7 @@ class SliceBox(ViewBox):
                     self.translateBy(x=x, y=y)
                 self.sigRangeChangedManually.emit(self.state['mouseEnabled'])
         """
-        if ev.button() & QtCore.Qt.RightButton:
+        if ev.button() & QtCore.Qt.MouseButton.RightButton:
             #print "vb.rightDrag"
             if self.state['aspectLocked'] is not False:
                 mask[0] = 0
@@ -190,7 +190,7 @@ class SliceBox(ViewBox):
             x = s[0] if mouseEnabled[0] == 1 else None
             y = s[1] if mouseEnabled[1] == 1 else None
 
-            center = Point(tr.map(ev.buttonDownPos(QtCore.Qt.RightButton)))
+            center = Point(tr.map(ev.buttonDownPos(QtCore.Qt.MouseButton.RightButton)))
             self._resetTarget()
             self.scaleBy(x=x, y=y, center=center)
             self.sigRangeChangedManually.emit(self.state['mouseEnabled'])

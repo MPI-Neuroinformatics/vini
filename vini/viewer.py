@@ -709,13 +709,13 @@ class Viff(QtGui.QMainWindow):
         ## keyboard shortcuts ##
         # zooming in
         self.zoom_in = QtGui.QAction('ZoomIn', self)
-        self.zoom_in.setShortcut(QtGui.QKeySequence.ZoomIn)
+        self.zoom_in.setShortcut(QtGui.QKeySequence.StandardKey.ZoomIn)
         self.zoom_in.triggered.connect(self.zoomIn)
         self.addAction(self.zoom_in)
 
         # zooming out
         self.zoom_out = QtGui.QAction('ZoomOut', self)
-        self.zoom_out.setShortcut(QtGui.QKeySequence.ZoomOut)
+        self.zoom_out.setShortcut(QtGui.QKeySequence.StandardKey.ZoomOut)
         self.zoom_out.triggered.connect(self.zoomOut)
         self.addAction(self.zoom_out)
 
@@ -724,14 +724,14 @@ class Viff(QtGui.QMainWindow):
         self.visibility.setShortcut(QtGui.QKeySequence('v'))
         self.visibility.triggered.connect(self.toggleVisibility)
         # makes the shortcut possible when other window is focused:
-        self.visibility.setShortcutContext(QtCore.Qt.ApplicationShortcut)
+        self.visibility.setShortcutContext(QtCore.Qt.ShortcutContext.ApplicationShortcut)
         self.addAction(self.visibility)
 
         # toggling off the visibility of all but the current image
         self.deselect = QtGui.QAction('deselect', self)
         self.deselect.setShortcut(QtGui.QKeySequence('d'))
         self.deselect.triggered.connect(self.toggleDeselect)
-        self.deselect.setShortcutContext(QtCore.Qt.ApplicationShortcut)
+        self.deselect.setShortcutContext(QtCore.Qt.ShortcutContext.ApplicationShortcut)
         self.addAction(self.deselect)
 
         # reset view
@@ -744,7 +744,7 @@ class Viff(QtGui.QMainWindow):
         self.crosshair_ac = QtGui.QAction('crosshair toggle', self)
         self.crosshair_ac.setShortcut(QtGui.QKeySequence('x'))
         self.crosshair_ac.triggered.connect(self.toggleCrosshairs)
-        self.crosshair_ac.setShortcutContext(QtCore.Qt.ApplicationShortcut)
+        self.crosshair_ac.setShortcutContext(QtCore.Qt.ShortcutContext.ApplicationShortcut)
         self.addAction(self.crosshair_ac)
 
         # move image up (in list and z-value)
@@ -752,7 +752,7 @@ class Viff(QtGui.QMainWindow):
         self.set_current_higher.setShortcut(QtGui.QKeySequence('w'))
         self.set_current_higher.triggered.connect(self.setCurrentHigher)
         self.set_current_higher.setShortcutContext(
-            QtCore.Qt.ApplicationShortcut)
+            QtCore.Qt.ShortcutContext.ApplicationShortcut)
         self.addAction(self.set_current_higher)
 
         # move image down (in list and z-value)
@@ -760,28 +760,28 @@ class Viff(QtGui.QMainWindow):
         self.set_current_lower.setShortcut(QtGui.QKeySequence('s'))
         self.set_current_lower.triggered.connect(self.setCurrentLower)
         self.set_current_lower.setShortcutContext(
-            QtCore.Qt.ApplicationShortcut)
+            QtCore.Qt.ShortcutContext.ApplicationShortcut)
         self.addAction(self.set_current_lower)
 
         # go to next frame
         self.next_frame = QtGui.QAction('next frame', self)
         self.next_frame.setShortcut(QtGui.QKeySequence('n'))
         self.next_frame.triggered.connect(self.nextFrame)
-        self.next_frame.setShortcutContext(QtCore.Qt.ApplicationShortcut)
+        self.next_frame.setShortcutContext(QtCore.Qt.ShortcutContext.ApplicationShortcut)
         self.addAction(self.next_frame)
 
         # go to previous frame
         self.prev_frame = QtGui.QAction('previous frame', self)
         self.prev_frame.setShortcut(QtGui.QKeySequence('b'))
         self.prev_frame.triggered.connect(self.prevFrame)
-        self.prev_frame.setShortcutContext(QtCore.Qt.ApplicationShortcut)
+        self.prev_frame.setShortcutContext(QtCore.Qt.ShortcutContext.ApplicationShortcut)
         self.addAction(self.prev_frame)
 
         # play frames
         self.play_func = QtGui.QAction('play functional frames', self)
         self.play_func.setShortcut(QtGui.QKeySequence(' '))
         self.play_func.triggered.connect(self.shortcutPlay)
-        self.play_func.setShortcutContext(QtCore.Qt.ApplicationShortcut)
+        self.play_func.setShortcutContext(QtCore.Qt.ShortcutContext.ApplicationShortcut)
         self.addAction(self.play_func)
 
         # disables the functional play buttons and sliders
@@ -1469,9 +1469,9 @@ class Viff(QtGui.QMainWindow):
         item = QtGui.QListWidgetItem(name)
 
         item.setFlags(item.flags() |
-                      QtCore.Qt.ItemIsUserCheckable |
-                      QtCore.Qt.ItemIsEditable)
-        item.setCheckState(QtCore.Qt.Checked)
+                      QtCore.Qt.ItemFlag.ItemIsUserCheckable |
+                      QtCore.Qt.ItemFlag.ItemIsEditable)
+        item.setCheckState(QtCore.Qt.CheckState.Checked)
             
         self.imagelist.insertItem(0, item)
         # self.imagelist.selectedItems(item, True)
@@ -1745,7 +1745,7 @@ class Viff(QtGui.QMainWindow):
             ratio_le.editingFinished.connect(save)
 
             resample_button = QtGui.QPushButton("Resample now!", self)
-            resample_button.setFocusPolicy(QtCore.Qt.NoFocus)
+            resample_button.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
             resample_button.clicked.connect(self.reresample)
 
             # transform_box = QtGui.QComboBox(self)
@@ -1760,7 +1760,7 @@ class Viff(QtGui.QMainWindow):
             self.os_setting.setLayout(form)
 
             quit = QtGui.QAction('Quit', self)
-            quit.setShortcut(QtGui.QKeySequence.Quit)
+            quit.setShortcut(QtGui.QKeySequence.StandardKey.Quit)
             quit.triggered.connect(self.os_setting.close)
             self.os_setting.addAction(quit)
 
@@ -2227,7 +2227,7 @@ class Viff(QtGui.QMainWindow):
                 self.imagelist.item(index).setCheckState(QtCore.Qt.Unchecked)
                 self.deactivateImage()
             else:
-                self.imagelist.item(index).setCheckState(QtCore.Qt.Checked)
+                self.imagelist.item(index).setCheckState(QtCore.Qt.CheckState.Checked)
                 self.activateImage()
 
     def toggleDeselect(self):
@@ -2247,7 +2247,7 @@ class Viff(QtGui.QMainWindow):
         else:
             # select all
             for i in range(len(self.images)):
-                self.imagelist.item(i).setCheckState(QtCore.Qt.Checked)
+                self.imagelist.item(i).setCheckState(QtCore.Qt.CheckState.Checked)
                 self.activateImageIndex(i)
             self.deselected = False
 
@@ -2265,7 +2265,7 @@ class Viff(QtGui.QMainWindow):
         """
         if self.states[ind] == False:
             self.enableControls()
-            self.imagelist.item(ind).setCheckState(QtCore.Qt.Checked)
+            self.imagelist.item(ind).setCheckState(QtCore.Qt.CheckState.Checked)
             self.states[ind] = True
             image_item_list_tmp = []
             image_item_list_tmp_po = []
@@ -2289,7 +2289,7 @@ class Viff(QtGui.QMainWindow):
     def deactivateImageIndex(self, ind):
         if self.states[ind]:
             self.disableControls()
-            self.imagelist.item(ind).setCheckState(QtCore.Qt.Unchecked)
+            self.imagelist.item(ind).setCheckState(QtCore.Qt.CheckState.Unchecked)
             self.states[ind] = False
             self.removeFromSliceWidget(ind, 0)
             image_item_list_tmp = [None] * 3
@@ -3649,7 +3649,7 @@ class Viff(QtGui.QMainWindow):
                     rgba_slice = self.images[img_ind].mosaicSlice(plane, coords[coord_ind])
                     img = ImageItemMod()
                     img.setImage(rgba_slice)
-                    img.setZ
+                    img.setZValue(coord_ind)
     #%% export    
     def export(self):
         """
@@ -3677,7 +3677,7 @@ class Viff(QtGui.QMainWindow):
             x.parameters()['height'] = ydim 
             img = x.export(toBytes=True)
             ptr = img.bits()
-            ptr.setsize(img.byteCount())
+            ptr.setsize(img.sizeInBytes())
             arr = np.asarray(ptr).reshape(img.height(), img.width(), 4)
             arr_swapped = np.copy(arr)
             arr_swapped[:,:,0] = arr[:,:,2]
@@ -3754,7 +3754,7 @@ class Viff(QtGui.QMainWindow):
         self.sr_setting.setLayout(form)
 
         quit = QtGui.QAction('Quit', self)
-        quit.setShortcut(QtGui.QKeySequence.Quit)
+        quit.setShortcut(QtGui.QKeySequence.StandardKey.Quit)
         quit.triggered.connect(self.sr_setting.close)
         self.sr_setting.addAction(quit)
 
@@ -3765,7 +3765,7 @@ class Viff(QtGui.QMainWindow):
         Loads the settings from the config file and opens the settings window.
         """
         self.loadPreferences()
-        self.settings.exec_()
+        self.settings.exec()
 
    
     def setDefaultPreferences(self):
@@ -4049,13 +4049,13 @@ def main():
 
         
 
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 # def start_viewer():
 #     app = QtGui.QApplication([])
 #     viewer = Viff()
 #     viewer.show()
-#     app.exec_()
+#     app.exec()
 
 def show(*argv):
     """ 
@@ -4083,7 +4083,7 @@ def show(*argv):
     viewer.checkIf2DAndRemovePanes()
     # viewer.show()
     
-    app.exec_()
+    app.exec()
     
     
     

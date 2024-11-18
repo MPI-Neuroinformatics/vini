@@ -46,8 +46,8 @@ class ColorMapWidgetObj(GraphicsView):
         self.setRenderHints(QtGui.QPainter.RenderHint.Antialiasing | QtGui.QPainter.RenderHint.TextAntialiasing)
         self.setFrameStyle(QtGui.QFrame.Shape.NoFrame | QtGui.QFrame.Shadow.Plain)
         
-        #self.setBackgroundRole(QtGui.QPalette.NoRole)
-        #self.setBackgroundBrush(QtGui.QBrush(QtCore.Qt.NoBrush))
+        #self.setBackgroundRole(QtGui.QPalette.ColorRole.NoRole)
+        #self.setBackgroundBrush(QtGui.QBrush(QtCore.Qt.BrushStyle.NoBrush))
         #self.setAutoFillBackground(False)
         #self.setAttribute(QtCore.Qt.WA_PaintOnScreen, False)
         #self.setAttribute(QtCore.Qt.WA_OpaquePaintEvent, True)

@@ -19,7 +19,7 @@ class ImageExporter(Exporter):
             scene = item
         bgbrush = scene.views()[0].backgroundBrush()
         bg = bgbrush.color()
-        if bgbrush.style() == QtCore.Qt.NoBrush:
+        if bgbrush.style() == QtCore.Qt.BrushStyle.NoBrush:
             bg.setAlpha(0)
             
         self.params = Parameter(name='params', type='group', children=[
@@ -62,7 +62,7 @@ class ImageExporter(Exporter):
         sourceRect = self.getSourceRect()
         
         
-        #self.png = QtGui.QImage(targetRect.size(), QtGui.QImage.Format_ARGB32)
+        #self.png = QtGui.QImage(targetRect.size(), QtGui.QImage.Format.Format_ARGB32)
         #self.png.fill(pyqtgraph.mkColor(self.params['background']))
         w, h = self.params['width'], self.params['height']
         if w == 0 or h == 0:
@@ -85,7 +85,7 @@ class ImageExporter(Exporter):
         #dtr = painter.deviceTransform()
         try:
             self.setExportMode(True, {'antialias': self.params['antialias'], 'background': self.params['background'], 'painter': painter, 'resolutionScale': resolutionScale})
-            painter.setRenderHint(QtGui.QPainter.Antialiasing, self.params['antialias'])
+            painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing, self.params['antialias'])
             self.getScene().render(painter, QtCore.QRectF(targetRect), QtCore.QRectF(sourceRect))
         finally:
             self.setExportMode(False)

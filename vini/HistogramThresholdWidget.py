@@ -35,7 +35,7 @@ class HistogramThresholdWidget(GraphicsWindow):
         self.lr_neg = None
 
         exit_action = QtGui.QAction(QtGui.QIcon.fromTheme("window-close"), '&Exit', self)
-        exit_action.setShortcut(QtGui.QKeySequence.Quit)
+        exit_action.setShortcut(QtGui.QKeySequence.StandardKey.Quit)
         exit_action.triggered.connect(self.closeHist)
         self.addAction(exit_action)
         

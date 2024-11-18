@@ -9,7 +9,7 @@ class JumpSlider(QtGui.QSlider):
 
     def mousePressEvent(self, ev):
         """ Jump to click position """
-        self.setValue(QtGui.QStyle.sliderValueFromPosition(self.minimum(), self.maximum(), ev.x()-8, self.width()-16))
+        self.setValue(QtGui.QStyle.sliderValueFromPosition(self.minimum(), self.maximum(), int(ev.position().x())-8, self.width()-16))
         self.sliderPressed.emit()
 
     def mouseReleaseEvent(self, ev):
@@ -17,4 +17,4 @@ class JumpSlider(QtGui.QSlider):
 
     def mouseMoveEvent(self, ev):
         """ Jump to pointer position while moving """
-        self.setValue(QtGui.QStyle.sliderValueFromPosition(self.minimum(), self.maximum(), ev.x()-8, self.width()-16))
+        self.setValue(QtGui.QStyle.sliderValueFromPosition(self.minimum(), self.maximum(),int(ev.position().x())-8, self.width()-16))

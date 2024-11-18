@@ -1,7 +1,7 @@
 from .Exporter import Exporter
 from ..python2_3 import asUnicode
 from ..parametertree import Parameter
-from ..Qt import QtGui, QtCore, QtSvg, USE_PYSIDE
+from ..Qt import QtGui, QtCore, QtSvg, USE_PYSIDE, QtWidgets
 from .. import debug
 from .. import functions as fn
 import re
@@ -169,8 +169,8 @@ def _generateItemSvg(item, nodes=None, root=None):
         buf = QtCore.QBuffer(arr)
         svg = QtSvg.QSvgGenerator()
         svg.setOutputDevice(buf)
-        dpi = QtGui.QDesktopWidget().physicalDpiX()
-        svg.setResolution(dpi)
+        dpi = QtGui.QGuiApplication.primaryScreen().logicalDotsPerInchX()
+        svg.setResolution(int(dpi))
 
         p = QtGui.QPainter()
         p.begin(svg)
@@ -235,9 +235,9 @@ def _generateItemSvg(item, nodes=None, root=None):
     
     ## If this item clips its children, we need to take care of that.
     childGroup = g1  ## add children directly to this node unless we are clipping
-    if not isinstance(item, QtGui.QGraphicsScene):
+    if not isinstance(item, QtWidgets.QGraphicsScene):
         ## See if this item clips its children
-        if int(item.flags() & item.ItemClipsChildrenToShape) > 0:
+        if item.flags() & item.GraphicsItemFlag.ItemClipsChildrenToShape:
             ## Generate svg for just the path
             #if isinstance(root, QtGui.QGraphicsScene):
                 #path = QtGui.QGraphicsPathItem(item.mapToScene(item.shape()))
@@ -363,11 +363,11 @@ def correctCoordinates(node, defs, item):
                 families = ch.getAttribute('font-family').split(',')
                 if len(families) == 1:
                     font = QtGui.QFont(families[0].strip('" '))
-                    if font.style() == font.SansSerif:
+                    if font.style() == font.StyleHint.SansSerif:
                         families.append('sans-serif')
-                    elif font.style() == font.Serif:
+                    elif font.style() == font.StyleHint.Serif:
                         families.append('serif')
-                    elif font.style() == font.Courier:
+                    elif font.style() == font.StyleHint.Courier:
                         families.append('monospace')
                     ch.setAttribute('font-family', ', '.join([f if ' ' not in f else '"%s"'%f for f in families]))
                 
@@ -396,7 +396,7 @@ def itemTransform(item, root):
         return tr
         
     
-    if int(item.flags() & item.ItemIgnoresTransformations) > 0:
+    if item.flags() & item.GraphicsItemFlag.ItemIgnoresTransformations:
         pos = item.pos()
         parent = item.parentItem()
         if parent is not None:
@@ -413,7 +413,7 @@ def itemTransform(item, root):
             if nextRoot is None:
                 nextRoot = root
                 break
-            if nextRoot is root or int(nextRoot.flags() & nextRoot.ItemIgnoresTransformations) > 0:
+            if nextRoot is root or (nextRoot.flags() & nextRoot.GraphicsItemFlag.ItemIgnoresTransformations):
                 break
         
         if isinstance(nextRoot, QtGui.QGraphicsScene):

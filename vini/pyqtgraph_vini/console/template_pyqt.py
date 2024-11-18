@@ -98,7 +98,7 @@ class Ui_Form(object):
         self.exceptionInfoLabel = QtGui.QLabel(self.exceptionGroup)
         self.exceptionInfoLabel.setObjectName(_fromUtf8("exceptionInfoLabel"))
         self.gridLayout_2.addWidget(self.exceptionInfoLabel, 1, 0, 1, 7)
-        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Policy.Expanding, QtGui.QSizePolicy.Minimum)
         self.gridLayout_2.addItem(spacerItem, 0, 5, 1, 1)
         self.label = QtGui.QLabel(self.exceptionGroup)
         self.label.setObjectName(_fromUtf8("label"))

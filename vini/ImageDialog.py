@@ -24,7 +24,7 @@ class ImageDialog(QtGui.QDialog):
         super(ImageDialog, self).__init__()
 
         self.alpha = 0
-        self.comp_mode = QtGui.QPainter.CompositionMode_SourceOver
+        self.comp_mode = QtGui.QPainter.CompositionMode.CompositionMode_SourceOver
         self.interpolation = 0
         self.two_colormaps = False
         self.clips_pos = [False, False]
@@ -65,7 +65,7 @@ class ImageDialog(QtGui.QDialog):
 
         # Generate a discrete colormap
         self.discrete_cm = QtGui.QPushButton("Discrete CM")
-        self.discrete_cm.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.discrete_cm.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
         self.discrete_cm.clicked.connect(self.setDiscreteCM)
         self.form.addRow("Use a discrete color map:", self.discrete_cm)
 
@@ -85,7 +85,7 @@ class ImageDialog(QtGui.QDialog):
         self.form.addRow("Clip lower neg. threshold:", self.clip_cb_low_neg)
 
         self.quit = QtGui.QAction('Quit', self)
-        self.quit.setShortcut(QtGui.QKeySequence.Quit)
+        self.quit.setShortcut(QtGui.QKeySequence.StandardKey.Quit)
         self.quit.triggered.connect(self.closeDialog)
         self.addAction(self.quit)
 
@@ -125,7 +125,7 @@ class ImageDialog(QtGui.QDialog):
         if testFloat(self.alpha_le.text()):
             self.alpha = float(self.alpha_le.text())
         if self.comp_menu.currentIndex() == 0:
-            self.comp_mode = QtGui.QPainter.CompositionMode_SourceOver
+            self.comp_mode = QtGui.QPainter.CompositionMode.CompositionMode_SourceOver
         else:
             self.comp_mode = QtGui.QPainter.CompositionMode_Plus
         self.interpolation = self.interp_menu.currentIndex()

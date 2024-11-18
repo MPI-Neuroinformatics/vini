@@ -24,7 +24,8 @@ class SliceWindow(QtGui.QWidget):
         super(SliceWindow, self).__init__()
 
         self.resize(960,320)
-        screen = QtGui.QDesktopWidget().screenGeometry()
+        #screen = QtGui.QDesktopWidget().screenGeometry()
+        screen = QtGui.QGuiApplication.primaryScreen().geometry()
         size = self.geometry()
         self.id = window_number
         # Place it in the center of the screen.
@@ -49,7 +50,7 @@ class SliceWindow(QtGui.QWidget):
         self.l.addWidget(self.sw_t, 0, 24, 12, 12)
 
         self.close_view = QtGui.QAction('close view', self)
-        self.close_view.setShortcut(QtGui.QKeySequence.Quit)
+        self.close_view.setShortcut(QtGui.QKeySequence.StandardKey.Quit)
         self.close_view.triggered.connect(self.close)
         self.addAction(self.close_view)
 

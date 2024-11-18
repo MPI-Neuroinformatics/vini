@@ -78,7 +78,7 @@ class Image(object):
 
         # Use as an alpha for the whole image.
         self.alpha = 1.0
-        self.mode = QtGui.QPainter.CompositionMode_SourceOver
+        self.mode = QtGui.QPainter.CompositionMode.CompositionMode_SourceOver
 
         # Clippings for histograms
         # Not needed anymore?
@@ -614,7 +614,7 @@ class Image(object):
         """
         Open image dialog.
         """
-        self.dialog.exec_()
+        self.dialog.exec()
 
     def writeProps(self):
         """

@@ -152,11 +152,11 @@ class WidgetParameterItem(ParameterItem):
         ## filter widget's events
         ## catch TAB to change focus
         ## catch focusOut to hide editor
-        if ev.type() == ev.KeyPress:
-            if ev.key() == QtCore.Qt.Key_Tab:
+        if ev.type() == ev.Type.KeyPress:
+            if ev.key() == QtCore.Qt.Key.Key_Tab:
                 self.focusNext(forward=True)
                 return True ## don't let anyone else see this event
-            elif ev.key() == QtCore.Qt.Key_Backtab:
+            elif ev.key() == QtCore.Qt.Key.Key_Backtab:
                 self.focusNext(forward=False)
                 return True ## don't let anyone else see this event
             
@@ -358,10 +358,10 @@ class GroupParameterItem(ParameterItem):
             w.setLayout(l)
             l.addWidget(self.addWidget)
             l.addStretch()
-            #l.addItem(QtGui.QSpacerItem(200, 10, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum))
+            #l.addItem(QtGui.QSpacerItem(200, 10, QtGui.QSizePolicy.Policy.Expanding, QtGui.QSizePolicy.Minimum))
             self.addWidgetBox = w
             self.addItem = QtGui.QTreeWidgetItem([])
-            self.addItem.setFlags(QtCore.Qt.ItemIsEnabled)
+            self.addItem.setFlags(QtCore.Qt.ItemFlag.ItemIsEnabled)
             ParameterItem.addChild(self, self.addItem)
             
     def updateDepth(self, depth):

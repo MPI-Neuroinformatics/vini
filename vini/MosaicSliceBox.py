@@ -147,7 +147,7 @@ class MosaicSliceBox(ViewBox):
             mask[1-axis] = 0.0
 
         ## Scale or translate based on mouse button
-        if ev.button() & (QtCore.Qt.RightButton | QtCore.Qt.MidButton):
+        if ev.button() & (QtCore.Qt.MouseButton.RightButton | QtCore.Qt.MouseButton.MiddleButton):
 
             if self.state['mouseMode'] == MosaicSliceBox.RectMode:
                 if ev.isFinish():  ## This is the final move in the drag; change the view scale now
