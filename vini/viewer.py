@@ -3649,7 +3649,12 @@ class Viff(QtGui.QMainWindow):
                     rgba_slice = self.images[img_ind].mosaicSlice(plane, coords[coord_ind])
                     img = ImageItemMod()
                     img.setImage(rgba_slice)
-                    img.setZValue(coord_ind)
+                    img.setZValue(-img_ind)
+                    # Use composition mode?
+                    img.setCompositionMode(self.images[img_ind].mode)
+                    self.mosaic_view.viewboxes[coord_ind].addItem(img)
+        self.mosaic_view.show()
+
     #%% export    
     def export(self):
         """
