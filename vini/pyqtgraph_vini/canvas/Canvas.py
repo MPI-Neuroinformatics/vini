@@ -198,7 +198,7 @@ class Canvas(QtGui.QWidget):
             citem.show()
         else:
             for i in range(item.childCount()):
-                item.child(i).setCheckState(0, QtCore.Qt.Unchecked)
+                item.child(i).setCheckState(0, QtCore.Qt.CheckState.Unchecked)
             citem.hide()
 
     def treeItemSelected(self):
@@ -410,7 +410,7 @@ class Canvas(QtGui.QWidget):
         if citem.opts['visible']:
             node.setCheckState(0, QtCore.Qt.CheckState.Checked)
         else:
-            node.setCheckState(0, QtCore.Qt.Unchecked)
+            node.setCheckState(0, QtCore.Qt.CheckState.Unchecked)
         
         node.name = name
         #if citem.opts['parent'] != None:
@@ -515,7 +515,7 @@ class Canvas(QtGui.QWidget):
             if vis:
                 listItem.setCheckState(0, QtCore.Qt.CheckState.Checked)
             else:
-                listItem.setCheckState(0, QtCore.Qt.Unchecked)
+                listItem.setCheckState(0, QtCore.Qt.CheckState.Unchecked)
 
     def removeItem(self, item):
         if isinstance(item, QtGui.QTreeWidgetItem):

@@ -2224,7 +2224,7 @@ class Viff(QtGui.QMainWindow):
         index = self.imagelist.currentRow()
         if index >= 0:
             if self.states[index]:
-                self.imagelist.item(index).setCheckState(QtCore.Qt.Unchecked)
+                self.imagelist.item(index).setCheckState(QtCore.Qt.CheckState.Unchecked)
                 self.deactivateImage()
             else:
                 self.imagelist.item(index).setCheckState(QtCore.Qt.CheckState.Checked)
@@ -2241,7 +2241,7 @@ class Viff(QtGui.QMainWindow):
             index = self.imagelist.currentRow()
             for i in range(len(self.images)):
                 if index != i:
-                    self.imagelist.item(i).setCheckState(QtCore.Qt.Unchecked)
+                    self.imagelist.item(i).setCheckState(QtCore.Qt.CheckState.Unchecked)
                     self.deactivateImageIndex(i)
             self.deselected = True
         else:
@@ -2570,7 +2570,7 @@ class Viff(QtGui.QMainWindow):
         index = self.imagelist.currentRow()
         if index >= 0:
             if self.states[index]:
-                self.imagelist.item(index).setCheckState(QtCore.Qt.Unchecked)
+                self.imagelist.item(index).setCheckState(QtCore.Qt.CheckState.Unchecked)
                 self.deactivateImage()
 
     def newWindowInd(self, index):

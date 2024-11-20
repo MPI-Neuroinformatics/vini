@@ -222,7 +222,7 @@ class TreeWidgetItem(QtGui.QTreeWidgetItem):
         
         
     def setChecked(self, column, checked):
-        self.setCheckState(column, QtCore.Qt.CheckState.Checked if checked else QtCore.Qt.Unchecked)
+        self.setCheckState(column, QtCore.Qt.CheckState.Checked if checked else QtCore.Qt.CheckState.Unchecked)
         
     def setWidget(self, column, widget):
         if column in self._widgets:

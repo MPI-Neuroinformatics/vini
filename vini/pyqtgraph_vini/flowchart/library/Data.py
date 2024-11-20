@@ -66,7 +66,7 @@ class ColumnSelectNode(Node):
             if c in self.columns:
                 item.setCheckState(QtCore.Qt.CheckState.Checked)
             else:
-                item.setCheckState(QtCore.Qt.Unchecked)
+                item.setCheckState(QtCore.Qt.CheckState.Unchecked)
             self.columnList.addItem(item)
         self.columnList.blockSignals(False)
         

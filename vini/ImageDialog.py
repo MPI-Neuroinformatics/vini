@@ -127,7 +127,7 @@ class ImageDialog(QtGui.QDialog):
         if self.comp_menu.currentIndex() == 0:
             self.comp_mode = QtGui.QPainter.CompositionMode.CompositionMode_SourceOver
         else:
-            self.comp_mode = QtGui.QPainter.CompositionMode_Plus
+            self.comp_mode = QtGui.QPainter.CompositionMode.CompositionMode_Plus
         self.interpolation = self.interp_menu.currentIndex()
         self.two_colormaps = self.color_menu.currentIndex() != 0
         self.clips_pos = [self.clip_cb_low_pos.isChecked(),

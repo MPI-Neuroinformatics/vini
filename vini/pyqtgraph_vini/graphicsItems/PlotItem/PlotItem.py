@@ -94,9 +94,9 @@ class PlotItem(GraphicsWidget):
     ==================== =======================================================================
     """
     
-    sigRangeChanged = QtCore.Signal(object, object)    ## Emitted when the ViewBox range has changed
-    sigYRangeChanged = QtCore.Signal(object, object)   ## Emitted when the ViewBox Y range has changed
-    sigXRangeChanged = QtCore.Signal(object, object)   ## Emitted when the ViewBox X range has changed
+    sigRangeChanged = QtCore.pyqtSignal(object, object)    ## Emitted when the ViewBox range has changed
+    sigYRangeChanged = QtCore.pyqtSignal(object, object)   ## Emitted when the ViewBox Y range has changed
+    sigXRangeChanged = QtCore.pyqtSignal(object, object)   ## Emitted when the ViewBox X range has changed
     
     
     lastFileDir = None
@@ -686,7 +686,7 @@ class PlotItem(GraphicsWidget):
                     if p in self.paramList and self.paramList[p] is True:
                         i.setCheckState(QtCore.Qt.CheckState.Checked)
                     else:
-                        i.setCheckState(QtCore.Qt.Unchecked)
+                        i.setCheckState(QtCore.Qt.CheckState.Unchecked)
                     self.ctrl.avgParamList.addItem(i)
                 else:
                     i = matches[0]
