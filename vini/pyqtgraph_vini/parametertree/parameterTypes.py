@@ -230,7 +230,7 @@ class WidgetParameterItem(ParameterItem):
     def showEditor(self):
         self.widget.show()
         self.displayLabel.hide()
-        self.widget.setFocus(QtCore.Qt.OtherFocusReason)
+        self.widget.setFocus(QtCore.Qt.FocusReason.OtherFocusReason)
         if isinstance(self.widget, SpinBox):
             self.widget.selectNumber()  # select the numerical portion of the text for quick editing
 

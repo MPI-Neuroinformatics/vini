@@ -20,13 +20,24 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-from PyQt6.QtWidgets import (QApplication,
-                            QAbstractSlider, QSlider,
-                            QStyle, QStylePainter, QStyleOptionSlider)
-from PyQt6.QtGui import QPalette, QLinearGradient, QPen, QColor
-from PyQt6.QtCore import (Qt, 
-                         QRect, QRectF, QPoint,
-                         pyqtSignal as Signal, pyqtProperty as Property)
+
+try:
+    from PyQt6.QtWidgets import (QApplication,
+                                QAbstractSlider, QSlider,
+                                QStyle, QStylePainter, QStyleOptionSlider)
+    from PyQt6.QtGui import QPalette, QLinearGradient, QPen, QColor
+    from PyQt6.QtCore import (Qt, 
+                            QRect, QRectF, QPoint,
+                            pyqtSignal as Signal, pyqtProperty as Property)
+except ImportError:
+    from PyQt5.QtWidgets import (QApplication,
+                                QAbstractSlider, QSlider,
+                                QStyle, QStylePainter, QStyleOptionSlider)
+    from PyQt5.QtGui import QPalette, QLinearGradient, QPen, QColor
+    from PyQt5.QtCore import (Qt, 
+                            QRect, QRectF, QPoint,
+                            pyqtSignal as Signal, pyqtProperty as Property) 
+
 #qtpy can also be used
 #from qtpy.QtWidgets import (QApplication,
 #                            QAbstractSlider, QSlider,

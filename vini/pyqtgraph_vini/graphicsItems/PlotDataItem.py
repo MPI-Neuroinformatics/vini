@@ -514,7 +514,8 @@ class PlotDataItem(GraphicsObject):
         if self.xDisp is None:
             x = self.xData
             y = self.yData
-            
+            x = np.clip(x, 1e-10, np.inf) 
+            y = np.clip(y, 1e-10, np.inf) 
             
             #ds = self.opts['downsample']
             #if isinstance(ds, int) and ds > 1:

@@ -6,8 +6,8 @@ if QT_LIB == 'PyQt4':
     from .axisCtrlTemplate_pyqt import Ui_Form as AxisCtrlTemplate
 elif QT_LIB == 'PySide':
     from .axisCtrlTemplate_pyside import Ui_Form as AxisCtrlTemplate
-elif QT_LIB == 'PyQt6':
-    from .axisCtrlTemplate_pyqt6 import Ui_Form as AxisCtrlTemplate
+elif QT_LIB == 'PyQt6' or QT_LIB == 'PyQt5':   
+    from .axisCtrlTemplate_pyqt6_pyqt5 import Ui_Form as AxisCtrlTemplate
     
 import weakref 
 

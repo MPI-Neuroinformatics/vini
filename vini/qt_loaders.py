@@ -29,6 +29,7 @@ def check_version(a, b):
 # Available APIs.
 QT_API_PYQT = 'pyqt'
 QT_API_PYQT6 = 'pyqt6'
+QT_API_PYQT5 = 'pyqt5'
 QT_API_PYQTv1 = 'pyqtv1'
 QT_API_PYQT_DEFAULT = 'pyqtdefault' # don't set SIP explicitly
 QT_API_PYSIDE = 'pyside'
@@ -69,11 +70,18 @@ def commit_api(api):
     if api == QT_API_PYSIDE:
         ID.forbid('PyQt4')
         ID.forbid('PyQt6')
+        ID.forbid('PyQt5')
     elif api == QT_API_PYQT6:
         ID.forbid('PySide')
         ID.forbid('PyQt4')
+        ID.forbid('PyQt5')
+    elif api == QT_API_PYQT5:
+        ID.forbid('PySide')
+        ID.forbid('PyQt4')
+        ID.forbid('PyQt6')
     else:   # There are three other possibilities, all representing PyQt4
         ID.forbid('PyQt6')
+        ID.forbid('PyQt5')
         ID.forbid('PySide')
 
 
@@ -119,6 +127,7 @@ def has_binding(api):
                    QT_API_PYQT: 'PyQt4',
                    QT_API_PYQTv1: 'PyQt4',
                    QT_API_PYQT6: 'PyQt6',
+                   QT_API_PYQT6: 'PyQt5',
                    QT_API_PYQT_DEFAULT: 'PyQt4'}
     module_name = module_name[api]
 
@@ -231,6 +240,28 @@ def import_pyqt6():
     api = QT_API_PYQT6
     return QtCore, QtGuiCompat, QtSvg, api
 
+def import_pyqt5():
+    """
+    Import PyQt5
+
+    ImportErrors rasied within this function are non-recoverable
+    """
+    import sip
+
+    from PyQt5 import QtCore, QtSvg, QtWidgets, QtGui
+
+    # Alias PyQt-specific functions for PySide compatibility.
+    QtCore.Signal = QtCore.pyqtSignal
+    QtCore.Slot = QtCore.pyqtSlot
+
+    # Join QtGui and QtWidgets for Qt4 compatibility.
+    QtGuiCompat = types.ModuleType('QtGuiCompat')
+    QtGuiCompat.__dict__.update(QtGui.__dict__)
+    QtGuiCompat.__dict__.update(QtWidgets.__dict__)
+
+    api = QT_API_PYQT5
+    return QtCore, QtGuiCompat, QtSvg, api
+
 
 def import_pyside():
     """
@@ -271,6 +302,7 @@ def load_qt(api_options):
     loaders = {QT_API_PYSIDE: import_pyside,
                QT_API_PYQT: import_pyqt4,
                QT_API_PYQT6: import_pyqt6,
+               QT_API_PYQT5: import_pyqt5,
                QT_API_PYQTv1: partial(import_pyqt4, version=1),
                QT_API_PYQT_DEFAULT: partial(import_pyqt4, version=None)
                }

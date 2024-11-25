@@ -25,17 +25,6 @@ by these sections:
 ## Section: Closing the Viewer ##
 """
 
-'''
-from PyQt6 import QtCore
-from sip import setapi
-setapi("QDate", 2)
-setapi("QDateTime", 2)
-setapi("QTextStream", 2)
-setapi("QTime", 2)
-setapi("QVariant", 2)
-setapi("QString", 2)
-setapi("QUrl", 2)'''
-
 verbose_level = 5
 from .QxtSpanSlider import QxtSpanSlider
 
@@ -418,7 +407,9 @@ class Viff(QtGui.QMainWindow):
         
         self.l.addLayout(button_row_crosshair, 1, self.listoffset+2, 1, 1)
         
-        
+        self.debounce_timer = QtCore.QTimer(self)
+        self.debounce_timer.setSingleShot(True)
+        self.debounce_timer.timeout.connect(self.setAlphaFromSlider)
         # alpha slider
         # ypos = 8
         button_row_alpha = QtGui.QHBoxLayout()
@@ -427,7 +418,8 @@ class Viff(QtGui.QMainWindow):
         self.alpha_sld.setMaximum(100)
         self.alpha_sld.setValue(100)
         self.alpha_sld.setToolTip("change opacity of selected image")
-        self.alpha_sld.valueChanged.connect(self.setAlphaFromSlider)
+        self.alpha_sld.valueChanged.connect(self.debounceSetAlpha)
+        #self.alpha_sld.valueChanged.connect(self.setAlphaFromSlider)
         button_row_alpha.addWidget(self.alpha_sld, 2)
         
         self.alpha_label = QtGui.QLabel('100% opacity')
@@ -501,7 +493,7 @@ class Viff(QtGui.QMainWindow):
 
         
         # play button
-        self.play_button = QtGui.QToolButton(self)
+        self.play_button = QtWidgets.QPushButton(self)
         self.play_button.pressed.connect(self.playFuncPressed)
         self.play_button.released.connect(self.playFuncReleased)
         
@@ -513,7 +505,7 @@ class Viff(QtGui.QMainWindow):
         button_row_fmri.addWidget(self.play_button)
         
         # forward one frame button
-        self.forward_button = QtGui.QToolButton(self)
+        self.forward_button = QtWidgets.QPushButton(self)#QToolButton(self)
         self.forward_button.pressed.connect(self.nextFrame)
         self.forward_button.released.connect(self.setSliceStateOff)
         icon_forward = QtGui.QIcon(pkg_resources.resource_filename(__name__, 'icons/next.svg'))
@@ -2382,8 +2374,8 @@ class Viff(QtGui.QMainWindow):
             self.addPosNegWidget(self.images[index].pos_gradient, self.images[index].neg_gradient)
             
             # only the checkbox is checked or unchecked
-            if bool(item.checkState()) != self.states[index]:
-                if item.checkState():
+            if bool(item.checkState().value if hasattr(item.checkState(), "value") else item.checkState()) != self.states[index]:
+                if item.checkState() == QtCore.Qt.CheckState.Checked:
                     self.activateImage()
                 else:
                     self.deactivateImage()
@@ -2872,7 +2864,7 @@ class Viff(QtGui.QMainWindow):
         """
         Goes to the next frame.
         """
-        
+        start_time = time.time()
         self.frame = self.frame+1
         if self.frame >= self.time_dim:
             self.frame = self.time_dim - 1
@@ -2883,6 +2875,8 @@ class Viff(QtGui.QMainWindow):
             self.setFrameToBox()
             self.setFrameToSlider()
             self.setSliceStateOff()
+        print("nextFrame took: ", time.time()-start_time)
+        
             
             
             
@@ -3033,7 +3027,9 @@ class Viff(QtGui.QMainWindow):
         self.refreshMosaicView()
         log1("setFrame called (self.frame {})".format(self.frame))
         
-        
+    def debounceSetAlpha(self):
+        # Reset the timer to trigger after a short delay
+        self.debounce_timer.start(50)
     def setAlphaFromSlider(self):
         """
         Sets the alpha value of the current image
