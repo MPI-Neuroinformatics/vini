@@ -129,7 +129,7 @@ class QxtSpanSlider(QSlider):
         if changed:
             self.spanChanged.emit(self.lower, self.upper)
             self.update()
-            
+
 
     @Property(int)
     def lowerPosition(self):

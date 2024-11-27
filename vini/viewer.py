@@ -121,6 +121,9 @@ class Viff(QtGui.QMainWindow):
         """Initialize vini object"""
         super(Viff, self).__init__(parent)
 
+        self.called = 0
+        self.wasset = 0
+
         # 'img_coord' contains the coordinates of the crosshair/slices within
         # the resampled image data.
         self.img_coord = [0, 0, 0]
@@ -407,9 +410,9 @@ class Viff(QtGui.QMainWindow):
         
         self.l.addLayout(button_row_crosshair, 1, self.listoffset+2, 1, 1)
         
-        self.debounce_timer = QtCore.QTimer(self)
-        self.debounce_timer.setSingleShot(True)
-        self.debounce_timer.timeout.connect(self.setAlphaFromSlider)
+        self.alpha_sld_timer = QtCore.QTimer(self)
+        self.alpha_sld_timer.setSingleShot(True)
+        self.alpha_sld_timer.timeout.connect(self.setAlphaFromSlider)
         # alpha slider
         # ypos = 8
         button_row_alpha = QtGui.QHBoxLayout()
@@ -418,8 +421,7 @@ class Viff(QtGui.QMainWindow):
         self.alpha_sld.setMaximum(100)
         self.alpha_sld.setValue(100)
         self.alpha_sld.setToolTip("change opacity of selected image")
-        self.alpha_sld.valueChanged.connect(self.debounceSetAlpha)
-        #self.alpha_sld.valueChanged.connect(self.setAlphaFromSlider)
+        self.alpha_sld.valueChanged.connect(self.startSetAlphaTimer)
         button_row_alpha.addWidget(self.alpha_sld, 2)
         
         self.alpha_label = QtGui.QLabel('100% opacity')
@@ -587,6 +589,10 @@ class Viff(QtGui.QMainWindow):
         self.slider_color_off = QtGui.QColor()
         self.slider_color_off.setRgb(150, 150, 150)
 
+        self.slider_pos_timer = QtCore.QTimer(self)
+        self.slider_pos_timer.setSingleShot(True) 
+        self.slider_pos_timer.timeout.connect(self.setPosThresholdFromSliders)
+
         self.slider_pos = QxtSpanSlider()
         self.slider_pos.setGradientLeftColor(self.slider_color)
         self.slider_pos.setGradientRightColor(self.slider_color)
@@ -594,8 +600,12 @@ class Viff(QtGui.QMainWindow):
         self.slider_pos.setSpan(0, 1000)
         self.slider_pos.setEnabled(False)
         self.slider_pos.setMinimumWidth(100)
-        self.slider_pos.spanChanged.connect(self.setPosThresholdFromSliders)
+        self.slider_pos.spanChanged.connect(self.startPosSliderTimer)
         self.slider_pos.setToolTip("change positive thresholds")
+
+        self.slider_neg_timer = QtCore.QTimer(self)
+        self.slider_neg_timer.setSingleShot(True) 
+        self.slider_neg_timer.timeout.connect(self.setNegThresholdFromSliders)
         
         self.slider_neg = QxtSpanSlider()
         self.slider_neg.setGradientLeftColor(self.slider_color)
@@ -603,7 +613,7 @@ class Viff(QtGui.QMainWindow):
         self.slider_neg.setRange(0, 1000)
         self.slider_neg.setSpan(0, 1000)
         self.disableSliderNeg()
-        self.slider_neg.spanChanged.connect(self.setNegThresholdFromSliders)
+        self.slider_neg.spanChanged.connect(self.startNegSliderTimer)
         self.slider_neg.setToolTip("change negative thresholds")
         # small fix, otherwise layout will be messed up!
         not_resize = self.slider_neg.sizePolicy()
@@ -678,17 +688,19 @@ class Viff(QtGui.QMainWindow):
         self.l.addLayout(button_row_thresh_neg, 10, self.listoffset+2, 1, 1)
         self.l.addWidget(self.slider_neg, 11, self.listoffset+2, 1, 1)
         
-        
+        self.crosshair_timer = QtCore.QTimer(self)
+        self.crosshair_timer.setSingleShot(True)
+        self.crosshair_timer.timeout.connect(self.setCrosshair)
         
 
         # connect crosshair and cursor move events
         # for crosshair
-        self.c_slice_widget.sigCPChanged.connect(self.CrosshairMoved)
-        self.s_slice_widget.sigCPChanged.connect(self.CrosshairMoved)
-        self.t_slice_widget.sigCPChanged.connect(self.CrosshairMoved)
-        self.slice_popouts[0].sw.sigCPChanged.connect(self.CrosshairMoved)
-        self.slice_popouts[1].sw.sigCPChanged.connect(self.CrosshairMoved)
-        self.slice_popouts[2].sw.sigCPChanged.connect(self.CrosshairMoved)
+        self.c_slice_widget.sigCPChanged.connect(self.startCrosshairTimer)
+        self.s_slice_widget.sigCPChanged.connect(self.startCrosshairTimer)
+        self.t_slice_widget.sigCPChanged.connect(self.startCrosshairTimer)
+        self.slice_popouts[0].sw.sigCPChanged.connect(self.startCrosshairTimer)
+        self.slice_popouts[1].sw.sigCPChanged.connect(self.startCrosshairTimer)
+        self.slice_popouts[2].sw.sigCPChanged.connect(self.startCrosshairTimer)
 
         # for cursor
         self.c_slice_widget.sigMouseOver.connect(self.MouseMoved)
@@ -942,6 +954,8 @@ class Viff(QtGui.QMainWindow):
         viewer. (It is assumed there are no further extra windows.)
         For subsequent images use loadNewImage.
         """
+        print("loadImagesFromFiles")
+        st = time.time()
         # Don't do anything for an empty list.
         if len(filename_list) == 0:
             return
@@ -1054,6 +1068,7 @@ class Viff(QtGui.QMainWindow):
 
         # This will automatically scale and pan the images in the slices.
         self.autoRange()
+        print("loadImagesFromFiles took: ", time.time()-st)
 
     def loadNewImageObject(self, fileobj, filename='NiftiObj'):
         """
@@ -1122,7 +1137,7 @@ class Viff(QtGui.QMainWindow):
                     self, "Warning",
                     "Warning: TR not found. Set it automatically in the \
                     functional image dialog.")
-
+                
         self.resetFuncView()
 
         self.resetZValues()
@@ -1135,6 +1150,8 @@ class Viff(QtGui.QMainWindow):
         """
         Loads a new file.
         """
+        print("loading new image")
+        st = time.time()    
         # Gets the image instance from 
         img = loadImageFromFile(unicode(filename), self.preferences, 0)
         # save path as prefered
@@ -1206,6 +1223,7 @@ class Viff(QtGui.QMainWindow):
         self.imagelist.setCurrentRow(0)
         self.updateSelected()
         self.autoRange()
+        print("loading new image took: ", time.time()-st)
         
     def loadImagesFromNumpy(self, array, itemname):
         """
@@ -2014,6 +2032,12 @@ class Viff(QtGui.QMainWindow):
         self.cross_button.setChecked(state)
         self.setCrosshairsVisible(state)
 
+    
+    def startCrosshairTimer(self, xyz):
+        self.img_coord = [xyz[i] if xyz[i] is not None else self.img_coord[i]
+            for i in range(3)]
+        self.crosshair_timer.start(1)
+
     def CrosshairMoved(self, xyz):
         """
         This connects to crosshair move signals.
@@ -2043,6 +2067,8 @@ class Viff(QtGui.QMainWindow):
         It involves updating the slices and ImageItemMods and manually moving
         the lines of the crosshair.
         """
+        self.wasset += 1
+        print("was set", self.wasset)
         # Reset img_coord if out of bounds
         self.moveCrosshairIntoImage()
         # Reslice the images
@@ -2598,9 +2624,9 @@ class Viff(QtGui.QMainWindow):
         window.sw_s.sigSelected.connect(self.sliceFocusS)
         window.sw_t.sigSelected.connect(self.sliceFocusT)
         # connect crosshair movements
-        window.sw_c.sigCPChanged.connect(self.CrosshairMoved)
-        window.sw_s.sigCPChanged.connect(self.CrosshairMoved)
-        window.sw_t.sigCPChanged.connect(self.CrosshairMoved)
+        window.sw_c.sigCPChanged.connect(self.startCrosshairTimer)
+        window.sw_s.sigCPChanged.connect(self.startCrosshairTimer)
+        window.sw_t.sigCPChanged.connect(self.startCrosshairTimer)
         # connect cursor movements
         window.sw_c.sigMouseOver.connect(self.MouseMoved)
         window.sw_s.sigMouseOver.connect(self.MouseMoved)
@@ -2991,6 +3017,7 @@ class Viff(QtGui.QMainWindow):
                 self.setFrameToSlider()
 
     def setFrame(self):
+        st = time.time()
         """
         Updates all functional image items to display the correct frame.
 
@@ -3026,10 +3053,11 @@ class Viff(QtGui.QMainWindow):
         self.updateCrossIntensityLabel()
         self.refreshMosaicView()
         log1("setFrame called (self.frame {})".format(self.frame))
+        print("setFrame took", time.time()-st)
         
-    def debounceSetAlpha(self):
-        # Reset the timer to trigger after a short delay
-        self.debounce_timer.start(50)
+    def startSetAlphaTimer(self):
+        self.alpha_sld_timer.start(5)
+
     def setAlphaFromSlider(self):
         """
         Sets the alpha value of the current image
@@ -3125,11 +3153,14 @@ class Viff(QtGui.QMainWindow):
         self.updateSlices()
         self.updateImageItems()
 
-        
+    def startPosSliderTimer(self):
+        self.slider_pos_timer.start(1)  
+
     def setPosThresholdFromSliders(self):
         """
         Resets all thresholds when the sliders are moved.
         """
+        self.called += 1
         index = self.imagelist.currentRow()
         if index >= 0 and self.threshold_write_block != True:
             self.images[index].setPosThresholdsFromSlider(self.slider_pos.lowerValue, self.slider_pos.upperValue)
@@ -3140,6 +3171,10 @@ class Viff(QtGui.QMainWindow):
         # Make changes visible.
         self.updateSlices()
         self.updateImageItems()
+        print(self.called)
+
+    def startNegSliderTimer(self):
+        self.slider_neg_timer.start(1)  
         
     def setNegThresholdFromSliders(self):
         """
@@ -3209,6 +3244,7 @@ class Viff(QtGui.QMainWindow):
         """
         If thresholds were changed elsewhere, update them in the histogram.
         """
+       # st = time.time()    
         index = self.imagelist.currentRow()
         if index >= 0 and self.hist is not None:
             min_level = self.images[index].threshold_pos[0]
@@ -3218,6 +3254,7 @@ class Viff(QtGui.QMainWindow):
                 min_level = self.images[index].threshold_neg[0]
                 max_level = self.images[index].threshold_neg[1]
                 self.hist.setNegRegion(min_level,max_level)
+       # print("setThresholdsToHistogram took: ", time.time()-st)
 
     def setThresholdsToSliders(self):
         """
@@ -3239,6 +3276,7 @@ class Viff(QtGui.QMainWindow):
         """
         index = self.imagelist.currentRow()
         if index >= 0:
+            st = time.time()    
             self.setPosThresholdsToBoxes()
             self.setNegThresholdsToBoxes()
 
