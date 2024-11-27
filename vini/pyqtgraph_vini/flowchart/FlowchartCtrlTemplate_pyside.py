@@ -7,7 +7,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PySide import QtCore, QtGui
+from PySide import QtCore, QtGui, QtWidgets
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -55,12 +55,12 @@ class Ui_Form(object):
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
-        Form.setWindowTitle(QtGui.QApplication.translate("Form", "Form", None, QtGui.QApplication.UnicodeUTF8))
-        self.loadBtn.setText(QtGui.QApplication.translate("Form", "Load..", None, QtGui.QApplication.UnicodeUTF8))
-        self.saveBtn.setText(QtGui.QApplication.translate("Form", "Save", None, QtGui.QApplication.UnicodeUTF8))
-        self.saveAsBtn.setText(QtGui.QApplication.translate("Form", "As..", None, QtGui.QApplication.UnicodeUTF8))
-        self.reloadBtn.setText(QtGui.QApplication.translate("Form", "Reload Libs", None, QtGui.QApplication.UnicodeUTF8))
-        self.showChartBtn.setText(QtGui.QApplication.translate("Form", "Flowchart", None, QtGui.QApplication.UnicodeUTF8))
+        Form.setWindowTitle(QtWidgets.QApplication.translate("Form", "Form", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.loadBtn.setText(QtWidgets.QApplication.translate("Form", "Load..", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.saveBtn.setText(QtWidgets.QApplication.translate("Form", "Save", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.saveAsBtn.setText(QtWidgets.QApplication.translate("Form", "As..", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.reloadBtn.setText(QtWidgets.QApplication.translate("Form", "Reload Libs", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.showChartBtn.setText(QtWidgets.QApplication.translate("Form", "Flowchart", None, QtWidgets.QApplication.UnicodeUTF8))
 
 from ..widgets.TreeWidget import TreeWidget
 from ..widgets.FeedbackButton import FeedbackButton

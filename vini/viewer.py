@@ -28,7 +28,7 @@ by these sections:
 verbose_level = 5
 from .QxtSpanSlider import QxtSpanSlider
 
-from .pyqtgraph_vini.Qt import QtCore, QtGui
+from .pyqtgraph_vini.Qt import QtCore, QtGui, QtWidgets
 from .pyqtgraph_vini.exporters import ImageExporter
 
 import numpy as np
@@ -85,12 +85,12 @@ except AttributeError:
     def _fromUtf8(s):
         return s
 try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
+    _encoding = QtWidgets.QApplication.UnicodeUTF8
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+        return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
+        return QtWidgets.QApplication.translate(context, text, disambig)
 
 def log1(msg):
     if verbose_level <= 1:
@@ -788,7 +788,7 @@ class Viff(QtGui.QMainWindow):
         # this turn on the visibility of the window
         self.show()
         # set to center of screen
-        # self.move(QtGui.QApplication.desktop().screen().rect().center()- self.rect().center())
+        # self.move(QtWidgets.QApplication.desktop().screen().rect().center()- self.rect().center())
 
 
     def setMenu(self):
@@ -3963,7 +3963,7 @@ def main():
         func_filenames = []
 
     # Initialize QT app GUI and setup the layout.
-    app = QtGui.QApplication([])
+    app = QtWidgets.QApplication([])
     viewer = Viff()
 
     # change order of the images being loaded to be more intuitive
@@ -4053,7 +4053,7 @@ def main():
     sys.exit(app.exec())
 
 # def start_viewer():
-#     app = QtGui.QApplication([])
+#     app = QtWidgets.QApplication([])
 #     viewer = Viff()
 #     viewer.show()
 #     app.exec()
@@ -4064,7 +4064,7 @@ def show(*argv):
     vini.show(a,b,c)
     where a,b,c are numpy arrays.
     """
-    app = QtGui.QApplication([])
+    app = QtWidgets.QApplication([])
     viewer = Viff()
     
     #attempt to get array name...

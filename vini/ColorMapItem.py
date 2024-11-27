@@ -2,7 +2,7 @@
 
 import weakref
 import numpy as np
-from .pyqtgraph_vini.Qt import QtCore, QtGui
+from .pyqtgraph_vini.Qt import QtCore, QtGui, QtWidgets
 from .pyqtgraph_vini.python2_3 import sortList
 from .pyqtgraph_vini import functions as fn
 from .pyqtgraph_vini import GraphicsObject
@@ -819,11 +819,11 @@ class ColorMapItem(TickSliderItem):
         self.sigGradientChangeFinished.emit(self)
 
 
-class Tick(QtGui.QGraphicsWidget):  ## NOTE: Making this a subclass of GraphicsObject instead results in
+class Tick(QtWidgets.QGraphicsWidget):  ## NOTE: Making this a subclass of GraphicsObject instead results in
                                     ## activating this bug: https://bugreports.qt-project.org/browse/PYSIDE-86
     ## private class
 
-    # When making Tick a subclass of QtGui.QGraphicsObject as origin,
+    # When making Tick a subclass of QtWidgets.QGraphicsObject as origin,
     # ..GraphicsScene.items(self, *args) will get Tick object as a
     # class of QtGui.QMultimediaWidgets.QGraphicsVideoItem in python2.7-PyQt6(5.4.0)
 
@@ -831,7 +831,7 @@ class Tick(QtGui.QGraphicsWidget):  ## NOTE: Making this a subclass of GraphicsO
     sigMoved = QtCore.Signal(object)
 
     def __init__(self, view, pos, color, movable=True, scale=10, pen='w'):
-        # super(QtGui.QGraphicsWidget, self).__init__()
+        # super(QtWidgets.QGraphicsWidget, self).__init__()
         self.movable = movable
         self.moving = False
         self.view = weakref.ref(view)
@@ -845,7 +845,7 @@ class Tick(QtGui.QGraphicsWidget):  ## NOTE: Making this a subclass of GraphicsO
         self.pg.lineTo(QtCore.QPointF(scale/3**0.5, scale))
         self.pg.closeSubpath()
 
-        QtGui.QGraphicsObject.__init__(self)
+        QtWidgets.QGraphicsObject.__init__(self)
         self.setPos(pos[0], pos[1])
         if self.movable:
             self.setZValue(1)

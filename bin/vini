@@ -3,7 +3,7 @@
 
 import argparse
 from vini.viewer import Viff
-from vini.pyqtgraph_vini.Qt import QtGui
+from vini.pyqtgraph_vini.Qt import QtWidgets
 from vini.Verboseprint import verboseprint
 import os, sys
 
@@ -48,7 +48,7 @@ if func_filenames is None:
     
 
 # Initialize QT app GUI and setup the layout.
-app = QtGui.QApplication([])
+app = QtWidgets.QApplication([])
 viewer = Viff()
 
 # change order of the images being loaded to be more intuitive

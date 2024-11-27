@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from .Qt import QtCore, QtGui
+from .Qt import QtCore, QtGui, QtWidgets
 from .Point import Point
 import numpy as np
 
@@ -172,13 +172,13 @@ if __name__ == '__main__':
     from . import widgets
     import GraphicsView
     from .functions import *
-    app = QtGui.QApplication([])
+    app = QtWidgets.QApplication([])
     win = QtGui.QMainWindow()
     win.show()
     cw = GraphicsView.GraphicsView()
     #cw.enableMouse()  
     win.setCentralWidget(cw)
-    s = QtGui.QGraphicsScene()
+    s = QtWidgets.QGraphicsScene()
     cw.setScene(s)
     win.resize(600,600)
     cw.enableMouse()

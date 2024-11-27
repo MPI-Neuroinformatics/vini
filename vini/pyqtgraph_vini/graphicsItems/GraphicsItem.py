@@ -428,7 +428,7 @@ class GraphicsItem(object):
             #if ch2.scene() is not scene:
                 #print "item", ch2, "has different scene:", ch2.scene(), scene
                 #scene.addItem(ch2)
-                #QtGui.QApplication.processEvents()
+                #QtWidgets.QApplication.processEvents()
                 #print "   --> ", ch2.scene()
             #self.setChildScene(ch2)
 

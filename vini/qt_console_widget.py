@@ -1,7 +1,7 @@
 
 from qtconsole.rich_jupyter_widget import RichJupyterWidget
 from qtconsole.inprocess import QtInProcessKernelManager
-from .pyqtgraph_vini.Qt import QtCore, QtGui
+from .pyqtgraph_vini.Qt import QtCore, QtGui, QtWidgets
 
 
 class JupyterWidget(RichJupyterWidget):
@@ -56,7 +56,7 @@ class MainWindow(QtGui.QMainWindow):
 
 if __name__ == '__main__':
     import sys
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     main = MainWindow()
     main.show()
     sys.exit(app.exec())

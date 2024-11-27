@@ -108,7 +108,7 @@ class TreeWidget(QtGui.QTreeWidget):
             self.recoverMove(item.child(i))
         
         item.setExpanded(False)  ## Items do not re-expand correctly unless they are collapsed first.
-        QtGui.QApplication.instance().processEvents()
+        QtWidgets.QApplication.instance().processEvents()
         item.setExpanded(item.__expanded)
         
     def collapseTree(self, item):

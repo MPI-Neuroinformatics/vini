@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ..Qt import QtCore, QtGui, USE_PYSIDE, USE_PYQT6
+from ..Qt import QtCore, QtGui, QtWidgets,USE_PYSIDE, USE_PYQT6
 from .Node import *
 from ..pgcollections import OrderedDict
 from ..widgets.TreeWidget import *
@@ -418,7 +418,7 @@ class Flowchart(Node):
             self._widget = FlowchartCtrlWidget(self)
             self.scene = self._widget.scene()
             self.viewBox = self._widget.viewBox()
-            #self._scene = QtGui.QGraphicsScene()
+            #self._scene = QtWidgets.QGraphicsScene()
             #self._widget.setScene(self._scene)
             #self.scene.addItem(self.chartGraphicsItem())
             
@@ -804,7 +804,7 @@ class FlowchartWidget(dockarea.DockArea):
         
         self._scene = self.view.scene()
         self._viewBox = self.view.viewBox()
-        #self._scene = QtGui.QGraphicsScene()
+        #self._scene = QtWidgets.QGraphicsScene()
         #self._scene = FlowchartGraphicsView.FlowchartGraphicsScene()
         #self.view.setScene(self._scene)
         

@@ -10,11 +10,11 @@ __version__ = '0.10.0'
 
 ## 'Qt' is a local module; it is intended mainly to cover up the differences
 ## between PyQt4 and PySide.
-from .Qt import QtGui
+from .Qt import QtGui, QtWidgets
 
 ## not really safe--If we accidentally create another QApplication, the process hangs (and it is very difficult to trace the cause)
-#if QtGui.QApplication.instance() is None:
-    #app = QtGui.QApplication([])
+#if QtWidgets.QApplication.instance() is None:
+    #app = QtWidgets.QApplication([])
 
 import numpy  ## pyqtgraph requires numpy
               ## (import here to avoid massive error dump later on if numpy is not available)
@@ -39,10 +39,10 @@ if 'linux' in sys.platform:  ## linux has numerous bugs in opengl implementation
     useOpenGL = False
 elif 'darwin' in sys.platform: ## openGL can have a major impact on mac, but also has serious bugs
     useOpenGL = False
-    if QtGui.QApplication.instance() is not None:
+    if QtWidgets.QApplication.instance() is not None:
         print('Warning: QApplication was created before pyqtgraph was imported; there may be problems (to avoid bugs, call QApplication.setGraphicsSystem("raster") before the QApplication is created).')
-    if QtGui.QApplication.setGraphicsSystem:
-        QtGui.QApplication.setGraphicsSystem('raster')  ## work around a variety of bugs in the native graphics system 
+    if QtWidgets.QApplication.setGraphicsSystem:
+        QtWidgets.QApplication.setGraphicsSystem('raster')  ## work around a variety of bugs in the native graphics system 
 else:
     useOpenGL = False  ## on windows there's a more even performance / bugginess tradeoff. 
                 
@@ -303,13 +303,13 @@ def cleanup():
     ## ALL QGraphicsItems must have a scene before they are deleted.
     ## This is potentially very expensive, but preferred over crashing.
     ## Note: this appears to be fixed in PySide as of 2012.12, but it should be left in for a while longer..
-    app = QtGui.QApplication.instance()
-    if app is None or not isinstance(app, QtGui.QApplication):
+    app = QtWidgets.QApplication.instance()
+    if app is None or not isinstance(app, QtWidgets.QApplication):
         # app was never constructed is already deleted or is an
         # QCoreApplication/QGuiApplication and not a full QApplication
         return
     import gc
-    s = QtGui.QGraphicsScene()
+    s = QtWidgets.QGraphicsScene()
     for o in gc.get_objects():
         try:
             if isinstance(o, QtGui.QGraphicsItem) and isQObjectAlive(o) and o.scene() is None:
@@ -334,7 +334,7 @@ def _connectCleanup():
     global _cleanupConnected
     if _cleanupConnected:
         return
-    QtGui.QApplication.instance().aboutToQuit.connect(cleanup)
+    QtWidgets.QApplication.instance().aboutToQuit.connect(cleanup)
     _cleanupConnected = True
 
 
@@ -450,9 +450,9 @@ def dbg(*args, **kwds):
     
 def mkQApp():
     global QAPP
-    inst = QtGui.QApplication.instance()
+    inst = QtWidgets.QApplication.instance()
     if inst is None:
-        QAPP = QtGui.QApplication([])
+        QAPP = QtWidgets.QApplication([])
     else:
         QAPP = inst
     return QAPP

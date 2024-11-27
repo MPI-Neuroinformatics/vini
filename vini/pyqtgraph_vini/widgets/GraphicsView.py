@@ -121,7 +121,7 @@ class GraphicsView(QtGui.QGraphicsView):
         ## by default we set up a central widget with a grid layout.
         ## this can be replaced if needed.
         self.centralWidget = None
-        self.setCentralItem(QtGui.QGraphicsWidget())
+        self.setCentralItem(QtWidgets.QGraphicsWidget())
         self.centralLayout = QtGui.QGraphicsGridLayout()
         self.centralWidget.setLayout(self.centralLayout)
         

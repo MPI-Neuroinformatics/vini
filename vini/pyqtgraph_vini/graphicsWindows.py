@@ -5,7 +5,7 @@ Copyright 2010  Luke Campagnola
 Distributed under MIT/X11 license. See license.txt for more infomation.
 """
 
-from .Qt import QtCore, QtGui
+from .Qt import QtCore, QtGui, QtWidgets
 from .widgets.PlotWidget import *
 from .imageview import *
 from .widgets.GraphicsLayoutWidget import GraphicsLayoutWidget
@@ -13,9 +13,9 @@ from .widgets.GraphicsView import GraphicsView
 QAPP = None
 
 def mkQApp():
-    if QtGui.QApplication.instance() is None:
+    if QtWidgets.QApplication.instance() is None:
         global QAPP
-        QAPP = QtGui.QApplication([])
+        QAPP = QtWidgets.QApplication([])
 
 
 class GraphicsWindow(GraphicsLayoutWidget):

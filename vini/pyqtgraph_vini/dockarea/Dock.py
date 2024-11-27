@@ -1,4 +1,4 @@
-from ..Qt import QtCore, QtGui
+from ..Qt import QtCore, QtGui, QtWidgets
 
 from .DockDrop import *
 from ..widgets.VerticalLabel import VerticalLabel
@@ -277,7 +277,7 @@ class DockLabel(VerticalLabel):
         if showCloseButton:
             self.closeButton = QtGui.QToolButton(self)
             self.closeButton.clicked.connect(self.sigCloseClicked)
-            self.closeButton.setIcon(QtGui.QApplication.style().standardIcon(QtGui.QStyle.SP_TitleBarCloseButton))
+            self.closeButton.setIcon(QtWidgets.QApplication.style().standardIcon(QtGui.QStyle.SP_TitleBarCloseButton))
 
     def updateStyle(self):
         r = '3px'
@@ -335,7 +335,7 @@ class DockLabel(VerticalLabel):
             ev.accept()
         
     def mouseMoveEvent(self, ev):
-        if not self.startedDrag and (ev.pos() - self.pressPos).manhattanLength() > QtGui.QApplication.startDragDistance():
+        if not self.startedDrag and (ev.pos() - self.pressPos).manhattanLength() > QtWidgets.QApplication.startDragDistance():
             self.dock.startDrag()
         ev.accept()
             

@@ -12,7 +12,7 @@ The ROI class is meant to serve as the base for more specific types; see several
 of how to build an ROI at the bottom of the file.
 """
 
-from ..Qt import QtCore, QtGui
+from ..Qt import QtCore, QtGui, QtWidgets
 import numpy as np
 #from numpy.linalg import norm
 from ..Point import *
@@ -1584,7 +1584,7 @@ class LineROI(ROI):
         
 
         
-class MultiRectROI(QtGui.QGraphicsObject):
+class MultiRectROI(QtWidgets.QGraphicsObject):
     """
     Chain of rectangular ROIs connected by handles. 
     
@@ -1604,7 +1604,7 @@ class MultiRectROI(QtGui.QGraphicsObject):
     sigRegionChanged = QtCore.Signal(object)
     
     def __init__(self, points, width, pen=None, **args):
-        QtGui.QGraphicsObject.__init__(self)
+        QtWidgets.QGraphicsObject.__init__(self)
         self.pen = pen
         self.roiArgs = args
         self.lines = []

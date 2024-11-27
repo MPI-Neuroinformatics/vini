@@ -1,24 +1,24 @@
-from ..Qt import QtGui, QtCore, USE_PYQT4, USE_PYSIDE
+from ..Qt import QtGui, QtCore, QtWidgets, USE_PYQT4, USE_PYSIDE
 if USE_PYQT4:
     import sip
 from .GraphicsItem import GraphicsItem
 
 __all__ = ['GraphicsObject']
-class GraphicsObject(GraphicsItem, QtGui.QGraphicsObject):
+class GraphicsObject(GraphicsItem, QtWidgets.QGraphicsObject):
     """
-    **Bases:** :class:`GraphicsItem <pyqtgraph.graphicsItems.GraphicsItem>`, :class:`QtGui.QGraphicsObject`
+    **Bases:** :class:`GraphicsItem <pyqtgraph.graphicsItems.GraphicsItem>`, :class:`QtWidgets.QGraphicsObject`
 
     Extension of QGraphicsObject with some useful methods (provided by :class:`GraphicsItem <pyqtgraph.graphicsItems.GraphicsItem>`)
     """
-    _qtBaseClass = QtGui.QGraphicsObject
+    _qtBaseClass = QtWidgets.QGraphicsObject
     def __init__(self, *args):
         self.__inform_view_on_changes = True
-        QtGui.QGraphicsObject.__init__(self, *args)
+        QtWidgets.QGraphicsObject.__init__(self, *args)
         self.setFlag(self.GraphicsItemFlag.ItemSendsGeometryChanges)
         GraphicsItem.__init__(self)
         
     def itemChange(self, change, value):
-        ret = QtGui.QGraphicsObject.itemChange(self, change, value)
+        ret = QtWidgets.QGraphicsObject.itemChange(self, change, value)
         if change in [self.GraphicsItemChange.ItemParentHasChanged, self.GraphicsItemChange.ItemSceneHasChanged]:
             self.parentChanged()
         try:

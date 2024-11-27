@@ -1,4 +1,4 @@
-from .pyqtgraph_vini.Qt import QtCore, QtGui
+from .pyqtgraph_vini.Qt import QtCore, QtGui, QtWidgets
 import sys
 import numpy as np
 import weakref
@@ -226,7 +226,7 @@ class SliceWidget(GraphicsLayoutWidget):
 def main():
 
     # Tests
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
 
     low_pos = np.array([0.0, 1e-12, 1])
     low_color = np.array(

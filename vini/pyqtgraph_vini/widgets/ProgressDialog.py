@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ..Qt import QtGui, QtCore
+from ..Qt import QtGui, QtCore, QtWidgets
 
 __all__ = ['ProgressDialog']
 class ProgressDialog(QtGui.QProgressDialog):
@@ -55,14 +55,14 @@ class ProgressDialog(QtGui.QProgressDialog):
         if self.disabled:
             return self
         if self.busyCursor:
-            QtGui.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.WaitCursor))
+            QtWidgets.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.WaitCursor))
         return self
 
     def __exit__(self, exType, exValue, exTrace):
         if self.disabled:
             return
         if self.busyCursor:
-            QtGui.QApplication.restoreOverrideCursor()
+            QtWidgets.QApplication.restoreOverrideCursor()
         self.setValue(self.maximum())
         
     def __iadd__(self, val):

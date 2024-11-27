@@ -48,12 +48,6 @@ if QT_LIB is None:
 if QT_LIB is None:
     raise Exception("PyQtGraph requires one of PyQt5, PyQt6 or PySide; none of these packages could be imported.")
 
-def _copy_attrs(src, dst):
-    for o in dir(src):
-        if not hasattr(dst, o):
-            setattr(dst, o, getattr(src, o))
-
-#from . import QtCore, QtGui, QtWidgets, compat
 
 class FailedImport(object):
     """Used to defer ImportErrors until we are sure the module is needed.
@@ -207,12 +201,12 @@ elif QT_LIB == PYQT5:
     QtWidgets.QHeaderView.setResizeMode = setResizeMode
 
     
-    QtGui.QApplication = QtWidgets.QApplication
+    '''QtGui.QApplication = QtWidgets.QApplication
     QtGui.QGraphicsScene = QtWidgets.QGraphicsScene
     QtGui.QGraphicsObject = QtWidgets.QGraphicsObject
-    QtGui.QGraphicsWidget = QtWidgets.QGraphicsWidget
+    QtGui.QGraphicsWidget = QtWidgets.QGraphicsWidget'''
 
-    QtGui.QApplication.setGraphicsSystem = None
+    QtWidgets.QApplication.setGraphicsSystem = None
     
     # Import all QtWidgets objects into QtGui
     for o in dir(QtWidgets):
@@ -307,13 +301,7 @@ elif QT_LIB == PYQT6:
         self.setSectionResizeMode(*args)
     QtWidgets.QHeaderView.setResizeMode = setResizeMode
 
-    
-    QtGui.QApplication = QtWidgets.QApplication
-    QtGui.QGraphicsScene = QtWidgets.QGraphicsScene
-    QtGui.QGraphicsObject = QtWidgets.QGraphicsObject
-    QtGui.QGraphicsWidget = QtWidgets.QGraphicsWidget
-
-    QtGui.QApplication.setGraphicsSystem = None
+    QtWidgets.QApplication.setGraphicsSystem = None
     
     # Import all QtWidgets objects into QtGui
     for o in dir(QtWidgets):
@@ -363,10 +351,6 @@ if QT_LIB in [PYQT5, PYQT6]:
 
     QtCore.Signal = QtCore.pyqtSignal
     QtCore.Slot = QtCore.pyqtSlot
-
-    #compat.wrapinstance = sip.wrapinstance
-   # compat.unwrapinstance = sip.unwrapinstance
-    #compat.voidptr = sip.voidptr
 
     
 ## Make sure we have Qt >= 4.7

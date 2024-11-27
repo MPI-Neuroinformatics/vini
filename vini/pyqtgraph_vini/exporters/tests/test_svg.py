@@ -32,7 +32,7 @@ def test_plotscene():
 def test_simple():
     tempfilename = tempfile.NamedTemporaryFile(suffix='.svg').name
     print("using %s as a temporary file" % tempfilename)
-    scene = QtGui.QGraphicsScene()
+    scene = QtWidgets.QGraphicsScene()
     #rect = QtGui.QGraphicsRectItem(0, 0, 100, 100)
     #scene.addItem(rect)
     #rect.setPos(20,20)
