@@ -50,6 +50,11 @@ class MosaicDialog(QtGui.QDialog):
         self.form.addRow("Choose slice plane:", self.slice_plane)
 
         # range slider
+
+        self.slider_timer = QtCore.QTimer(self)
+        self.slider_timer.setSingleShot(True) 
+        self.slider_timer.timeout.connect(self.setRangeFromSlider)
+
         self.slider_color = QtGui.QColor()
         self.slider_color.setRgb(255, 110, 0)
         self.slider_block = False
@@ -58,7 +63,7 @@ class MosaicDialog(QtGui.QDialog):
         self.range_sld.setSpan(0, 255)
         self.range_sld.setGradientLeftColor(self.slider_color)
         self.range_sld.setGradientRightColor(self.slider_color)
-        self.range_sld.spanChanged.connect(self.setRangeFromSlider)
+        self.range_sld.spanChanged.connect(self.startSliderTimer)
         self.form.addRow("Range:", self.range_sld)
 
         self.start_le = QtGui.QLineEdit("0")
@@ -132,6 +137,9 @@ class MosaicDialog(QtGui.QDialog):
 
     def slice(self):
         self.sigFinished.emit()
+
+    def startSliderTimer(self):
+        self.slider_timer.start(1) 
 
     def setRangeFromSlider(self):
         """

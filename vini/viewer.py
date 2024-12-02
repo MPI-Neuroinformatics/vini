@@ -121,9 +121,6 @@ class Viff(QtGui.QMainWindow):
         """Initialize vini object"""
         super(Viff, self).__init__(parent)
 
-        self.called = 0
-        self.wasset = 0
-
         # 'img_coord' contains the coordinates of the crosshair/slices within
         # the resampled image data.
         self.img_coord = [0, 0, 0]
@@ -954,8 +951,6 @@ class Viff(QtGui.QMainWindow):
         viewer. (It is assumed there are no further extra windows.)
         For subsequent images use loadNewImage.
         """
-        print("loadImagesFromFiles")
-        st = time.time()
         # Don't do anything for an empty list.
         if len(filename_list) == 0:
             return
@@ -1068,7 +1063,6 @@ class Viff(QtGui.QMainWindow):
 
         # This will automatically scale and pan the images in the slices.
         self.autoRange()
-        print("loadImagesFromFiles took: ", time.time()-st)
 
     def loadNewImageObject(self, fileobj, filename='NiftiObj'):
         """
@@ -1149,9 +1143,7 @@ class Viff(QtGui.QMainWindow):
     def loadNewImage(self, filename):
         """
         Loads a new file.
-        """
-        print("loading new image")
-        st = time.time()    
+        """   
         # Gets the image instance from 
         img = loadImageFromFile(unicode(filename), self.preferences, 0)
         # save path as prefered
@@ -1223,7 +1215,6 @@ class Viff(QtGui.QMainWindow):
         self.imagelist.setCurrentRow(0)
         self.updateSelected()
         self.autoRange()
-        print("loading new image took: ", time.time()-st)
         
     def loadImagesFromNumpy(self, array, itemname):
         """
@@ -1359,7 +1350,7 @@ class Viff(QtGui.QMainWindow):
         self.l.addLayout(button_row_thresh_pos, 9, self.listoffset+2, 1, 1)    
         
 
-        # print("grad neg is: {}".format(grad_neg))
+        # ("grad neg is: {}".format(grad_neg))
         button_row_thresh_neg = QtGui.QHBoxLayout()
         button_row_thresh_neg.addWidget(self.max_neg, 1)
         button_row_thresh_neg.addWidget(neg_gradient, 1)
@@ -2067,8 +2058,6 @@ class Viff(QtGui.QMainWindow):
         It involves updating the slices and ImageItemMods and manually moving
         the lines of the crosshair.
         """
-        self.wasset += 1
-        print("was set", self.wasset)
         # Reset img_coord if out of bounds
         self.moveCrosshairIntoImage()
         # Reslice the images
@@ -2396,7 +2385,6 @@ class Viff(QtGui.QMainWindow):
             item = self.imagelist.currentItem()
         if item is not None:
             index = self.imagelist.row(item)
-            
             self.addPosNegWidget(self.images[index].pos_gradient, self.images[index].neg_gradient)
             
             # only the checkbox is checked or unchecked
@@ -2407,7 +2395,6 @@ class Viff(QtGui.QMainWindow):
                     self.deactivateImage()
             else:
                 self.updateSelected()
-            
             #change the window highlighting if in linked mode (only for zmaps)
             if self.is_linked:
                 for j in range(len(self.window_ids)):
@@ -2430,8 +2417,7 @@ class Viff(QtGui.QMainWindow):
                 if index == 0:
                     title_main += " [SELECTED]"
                 self.setWindowTitle(title_main)
-                    
-                    
+
                 
 #% updateSelected: updating boxes sliders labels
     def updateSelected(self):
@@ -2890,7 +2876,6 @@ class Viff(QtGui.QMainWindow):
         """
         Goes to the next frame.
         """
-        start_time = time.time()
         self.frame = self.frame+1
         if self.frame >= self.time_dim:
             self.frame = self.time_dim - 1
@@ -2901,9 +2886,6 @@ class Viff(QtGui.QMainWindow):
             self.setFrameToBox()
             self.setFrameToSlider()
             self.setSliceStateOff()
-        print("nextFrame took: ", time.time()-start_time)
-        
-            
             
             
 
@@ -3017,7 +2999,6 @@ class Viff(QtGui.QMainWindow):
                 self.setFrameToSlider()
 
     def setFrame(self):
-        st = time.time()
         """
         Updates all functional image items to display the correct frame.
 
@@ -3053,7 +3034,6 @@ class Viff(QtGui.QMainWindow):
         self.updateCrossIntensityLabel()
         self.refreshMosaicView()
         log1("setFrame called (self.frame {})".format(self.frame))
-        print("setFrame took", time.time()-st)
         
     def startSetAlphaTimer(self):
         self.alpha_sld_timer.start(5)
@@ -3154,13 +3134,13 @@ class Viff(QtGui.QMainWindow):
         self.updateImageItems()
 
     def startPosSliderTimer(self):
-        self.slider_pos_timer.start(1)  
+        if self.threshold_write_block != True:
+            self.slider_pos_timer.start(1) 
 
     def setPosThresholdFromSliders(self):
         """
         Resets all thresholds when the sliders are moved.
         """
-        self.called += 1
         index = self.imagelist.currentRow()
         if index >= 0 and self.threshold_write_block != True:
             self.images[index].setPosThresholdsFromSlider(self.slider_pos.lowerValue, self.slider_pos.upperValue)
@@ -3171,7 +3151,6 @@ class Viff(QtGui.QMainWindow):
         # Make changes visible.
         self.updateSlices()
         self.updateImageItems()
-        print(self.called)
 
     def startNegSliderTimer(self):
         self.slider_neg_timer.start(1)  
@@ -3243,8 +3222,7 @@ class Viff(QtGui.QMainWindow):
     def setThresholdsToHistogram(self):
         """
         If thresholds were changed elsewhere, update them in the histogram.
-        """
-       # st = time.time()    
+        """  
         index = self.imagelist.currentRow()
         if index >= 0 and self.hist is not None:
             min_level = self.images[index].threshold_pos[0]
@@ -3254,7 +3232,6 @@ class Viff(QtGui.QMainWindow):
                 min_level = self.images[index].threshold_neg[0]
                 max_level = self.images[index].threshold_neg[1]
                 self.hist.setNegRegion(min_level,max_level)
-       # print("setThresholdsToHistogram took: ", time.time()-st)
 
     def setThresholdsToSliders(self):
         """
@@ -3275,8 +3252,7 @@ class Viff(QtGui.QMainWindow):
         If thresholds were changed elsewhere, update them in the line edits.
         """
         index = self.imagelist.currentRow()
-        if index >= 0:
-            st = time.time()    
+        if index >= 0: 
             self.setPosThresholdsToBoxes()
             self.setNegThresholdsToBoxes()
 

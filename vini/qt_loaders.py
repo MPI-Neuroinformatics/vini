@@ -104,6 +104,8 @@ def loaded_api():
         return QT_API_PYSIDE
     elif 'PyQt6.QtCore' in sys.modules:
         return QT_API_PYQT6
+    elif 'PyQt5.QtCore' in sys.modules:
+        return QT_API_PYQT5
     return None
 
 
@@ -139,7 +141,7 @@ def has_binding(api):
         imp.find_spec('QtCore', mod.__path__)
         imp.find_spec('QtGui', mod.__path__)
         imp.find_spec('QtSvg', mod.__path__)
-        if api == QT_API_PYQT6:
+        if api == QT_API_PYQT6 or api == QT_API_PYQT5:
             # QT5 requires QtWidgets too
             imp.find_module('QtWidgets', mod.__path__)
 
@@ -224,7 +226,6 @@ def import_pyqt6():
 
     ImportErrors rasied within this function are non-recoverable
     """
-    import sip
 
     from PyQt6 import QtCore, QtSvg, QtWidgets, QtGui
 
@@ -246,7 +247,6 @@ def import_pyqt5():
 
     ImportErrors rasied within this function are non-recoverable
     """
-    import sip
 
     from PyQt5 import QtCore, QtSvg, QtWidgets, QtGui
 
@@ -330,11 +330,13 @@ def load_qt(api_options):
 
     Currently-imported Qt library:   %r
     PyQt4 installed:                 %s
+    PyQt5 installed:                 %s
     PyQt6 installed:                 %s
     PySide >= 1.0.3 installed:       %s
     Tried to load:                   %r
     """ % (loaded_api(),
            has_binding(QT_API_PYQT),
+           has_binding(QT_API_PYQT5),
            has_binding(QT_API_PYQT6),
            has_binding(QT_API_PYSIDE),
            api_options))

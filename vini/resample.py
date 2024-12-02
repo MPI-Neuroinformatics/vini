@@ -15,7 +15,6 @@ from scipy import ndimage, linalg
 from packaging.version import Version
 
 def resample_image(data, affine, shape, interpolation):
-    print("resample")
 
     A = affine[0:3,0:3]
     b = affine[0:3,3]
@@ -34,9 +33,7 @@ def resample_image(data, affine, shape, interpolation):
     
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", UserWarning)
-        s = time.time()
         ndimage.affine_transform(data, A, b, output_shape=shape, output=result, order=interpolation)
-        print("SCIPY TIME: ", time.time()-s)
 
     return result
 

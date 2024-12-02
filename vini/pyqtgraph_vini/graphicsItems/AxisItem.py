@@ -1,3 +1,4 @@
+import warnings
 from ..Qt import QtGui, QtCore
 from ..python2_3 import asUnicode
 import numpy as np
@@ -762,8 +763,14 @@ class AxisItem(GraphicsWidget):
         
     def logTickStrings(self, values, scale, spacing):
         arr = np.array(values).astype(float) * np.array(scale)
-        arr = np.clip(arr, -10, 10) #avoid overflow
-        return ["%0.1g"%x for x in 10 ** arr]
+        
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            result = ["%0.1g" % x for x in 10 ** arr]
+            if w: 
+               print("logarithmic x-axis currently not available")
+
+        return result
 
         
     def generateDrawSpecs(self, p):
