@@ -3,11 +3,14 @@
 # Form implementation generated from reading ui file './pyqtgraph/GraphicsScene/exportDialogTemplate.ui'
 #
 # Created: Wed Mar 26 15:09:29 2014
-#      by: PyQt5 UI code generator 5.0.1
+#      by: PyQt6 UI code generator 5.0.1
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+try:
+    from PyQt6 import QtCore, QtGui, QtWidgets
+except ImportError:
+    from PyQt5 import QtCore, QtGui, QtWidgets  
 
 class Ui_Form(object):
     def setupUi(self, Form):

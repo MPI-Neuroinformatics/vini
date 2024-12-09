@@ -78,7 +78,7 @@ class Image(object):
 
         # Use as an alpha for the whole image.
         self.alpha = 1.0
-        self.mode = QtGui.QPainter.CompositionMode_SourceOver
+        self.mode = QtGui.QPainter.CompositionMode.CompositionMode_SourceOver
 
         # Clippings for histograms
         # Not needed anymore?
@@ -172,7 +172,7 @@ class Image(object):
         return out
 
     def getOriginalDimensions(self):
-        return self.image.get_data().shape
+        return np.asanyarray(self.image.dataobj).shape
 
     def getDimensions(self):
         return self.image_res.shape
@@ -318,7 +318,7 @@ class Image(object):
         """
         self.affine_res_inv = np.dot(np.linalg.inv(over_affine), t_affine)
         self.image_res = resample_image(
-            self.image.get_data(), affine=self.affine_res_inv,
+            np.asanyarray(self.image.dataobj), affine=self.affine_res_inv,
             shape=shape, interpolation=self.interp_type)
         self.res_shape = shape
         self.state_affine_over = True
@@ -329,7 +329,7 @@ class Image(object):
         """
         self.affine_res_inv = np.dot(np.linalg.inv(self.image.affine), affine)
         self.image_res = resample_image(
-            self.image.get_data(), affine=self.affine_res_inv,
+            np.asanyarray(self.image.dataobj), affine=self.affine_res_inv,
             shape=shape, interpolation=self.interp_type)
         self.res_shape = shape
         self.state_affine_over = False
@@ -339,7 +339,7 @@ class Image(object):
         Resamples with already given affine.
         """
         self.image_res = resample_image(
-            self.image.get_data(), affine=self.affine_res_inv,
+            np.asanyarray(self.image.dataobj), affine=self.affine_res_inv,
             shape=self.res_shape, interpolation=self.interp_type)
 
     def getAffine(self):
@@ -363,7 +363,7 @@ class Image(object):
 
     def setUnresampled(self):
         # TODO: setze self.affine_res_inv = np.eye(4)?
-        self.image_res = self.image.get_data()
+        self.image_res = np.asanyarray(self.image.dataobj)
 
     def setHistogram(self):
         c_hist = self.getHistogram()
@@ -486,7 +486,7 @@ class Image(object):
         """
         Define colormap for discrete intensity values.
         """
-        value_set = np.unique(self.image.get_data())
+        value_set = np.unique(np.asanyarray(self.image.dataobj))
 
         value_set = np.subtract(value_set, value_set[0])
         value_set = np.multiply(value_set, 1./value_set[-1])
@@ -495,7 +495,7 @@ class Image(object):
         np.random.shuffle(itervals)
         for i in itervals:
             cc = QtGui.QColor()
-            cc.setHsv(int(i*255.0/value_set.size), 200, 255, alpha=255.0)
+            cc.setHsv(int(i*255.0/value_set.size), 200, 255, alpha=255)
             colors.append(
                 [cc.red(), cc.green(), cc.blue(), int(255*self.alpha)])
             
@@ -614,7 +614,7 @@ class Image(object):
         """
         Open image dialog.
         """
-        self.dialog.exec_()
+        self.dialog.exec()
 
     def writeProps(self):
         """

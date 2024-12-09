@@ -6,8 +6,8 @@ if QT_LIB == 'PyQt4':
     from .axisCtrlTemplate_pyqt import Ui_Form as AxisCtrlTemplate
 elif QT_LIB == 'PySide':
     from .axisCtrlTemplate_pyside import Ui_Form as AxisCtrlTemplate
-elif QT_LIB == 'PyQt5':
-    from .axisCtrlTemplate_pyqt5 import Ui_Form as AxisCtrlTemplate
+elif QT_LIB == 'PyQt6' or QT_LIB == 'PyQt5':   
+    from .axisCtrlTemplate_pyqt6_pyqt5 import Ui_Form as AxisCtrlTemplate
     
 import weakref 
 
@@ -118,7 +118,7 @@ class ViewBoxMenu(QtGui.QMenu):
             if state['autoRange'][i] is not False:
                 self.ctrl[i].autoRadio.setChecked(True)
                 if state['autoRange'][i] is not True:
-                    self.ctrl[i].autoPercentSpin.setValue(state['autoRange'][i]*100)
+                    self.ctrl[i].autoPercentSpin.setValue(round(state['autoRange'][i]*100))
             else:
                 self.ctrl[i].manualRadio.setChecked(True)
             self.ctrl[i].mouseCheck.setChecked(state['mouseEnabled'][i])

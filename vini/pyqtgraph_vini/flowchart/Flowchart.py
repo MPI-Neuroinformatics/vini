@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ..Qt import QtCore, QtGui, USE_PYSIDE, USE_PYQT5
+from ..Qt import QtCore, QtGui, QtWidgets,USE_PYSIDE, USE_PYQT6, USE_PYQT5
 from .Node import *
 from ..pgcollections import OrderedDict
 from ..widgets.TreeWidget import *
@@ -9,9 +9,9 @@ from .. import FileDialog, DataTreeWidget
 if USE_PYSIDE:
     from . import FlowchartTemplate_pyside as FlowchartTemplate
     from . import FlowchartCtrlTemplate_pyside as FlowchartCtrlTemplate
-elif USE_PYQT5:
-    from . import FlowchartTemplate_pyqt5 as FlowchartTemplate
-    from . import FlowchartCtrlTemplate_pyqt5 as FlowchartCtrlTemplate
+elif USE_PYQT6 or USE_PYQT5:
+    from . import FlowchartTemplate_pyqt6_pyqt5 as FlowchartTemplate
+    from . import FlowchartCtrlTemplate_pyqt6_pyqt5 as FlowchartCtrlTemplate
 else:
     from . import FlowchartTemplate_pyqt as FlowchartTemplate
     from . import FlowchartCtrlTemplate_pyqt as FlowchartCtrlTemplate
@@ -36,7 +36,6 @@ class Flowchart(Node):
     sigFileSaved = QtCore.Signal(object)
     
     
-    #sigOutputChanged = QtCore.Signal() ## inherited from Node
     sigChartLoaded = QtCore.Signal()
     sigStateChanged = QtCore.Signal()  # called when output is expected to have changed
     sigChartChanged = QtCore.Signal(object, object, object) # called when nodes are added, removed, or renamed.
@@ -55,8 +54,6 @@ class Flowchart(Node):
         self.inputWasSet = False  ## flag allows detection of changes in the absence of input change.
         self._nodes = {}
         self.nextZVal = 10
-        #self.connects = []
-        #self._chartGraphicsItem = FlowchartGraphicsItem(self)
         self._widget = None
         self._scene = None
         self.processing = False ## flag that prevents recursive node updates
@@ -89,9 +86,6 @@ class Flowchart(Node):
         """Set the input values of the flowchart. This will automatically propagate
         the new values throughout the flowchart, (possibly) causing the output to change.
         """
-        #print "setInput", args
-        #Node.setInput(self, **args)
-        #print "  ....."
         self.inputWasSet = True
         self.inputNode.setOutput(**args)
         
@@ -100,7 +94,6 @@ class Flowchart(Node):
         vals = self.outputNode.inputValues()
         self.widget().outputChanged(vals)
         self.setOutput(**vals)
-        #self.sigOutputChanged.emit(self)
         
     def output(self):
         """Return a dict of the values on the Flowchart's output terminals.
@@ -124,7 +117,6 @@ class Flowchart(Node):
                 
         else:
             opts['io'] = 'in'
-            #opts['multi'] = False
             self.outputNode.sigTerminalAdded.disconnect(self.internalTerminalAdded)
             try:
                 term2 = self.outputNode.addTerminal(name, **opts)
@@ -133,7 +125,6 @@ class Flowchart(Node):
         return term
 
     def removeTerminal(self, name):
-        #print "remove:", name
         term = self[name]
         inTerm = self.internalTerminal(term)
         Node.removeTerminal(self, name)
@@ -157,10 +148,7 @@ class Flowchart(Node):
         
     def terminalRenamed(self, term, oldName):
         newName = term.name()
-        #print "flowchart rename", newName, oldName
-        #print self.terminals
         Node.terminalRenamed(self, self[oldName], oldName)
-        #print self.terminals
         for n in [self.inputNode, self.outputNode]:
             if oldName in n.terminals:
                 n[oldName].rename(newName)
@@ -248,12 +236,9 @@ class Flowchart(Node):
         ## order should look like [('p', node1), ('p', node2), ('d', terminal1), ...] 
         ## Each tuple specifies either (p)rocess this node or (d)elete the result from this terminal
         order = self.processOrder()
-        #print "ORDER:", order
         
         ## Record inputs given to process()
         for n, t in self.inputNode.outputs().items():
-            # if n not in args:
-            #     raise Exception("Parameter %s required to process this chart." % n)
             if n in args:
                 data[t] = args[n]
         
@@ -263,7 +248,6 @@ class Flowchart(Node):
         for c, arg in order:
             
             if c == 'p':     ## Process a single node
-                #print "===> process:", arg
                 node = arg
                 if node is self.inputNode:
                     continue  ## input node has already been processed.
@@ -296,14 +280,11 @@ class Flowchart(Node):
                         print("Error processing node %s. Args are: %s" % (str(node), str(args)))
                         raise
                     for out in outs:
-                        #print "    Output:", out, out.name()
-                        #print out.name()
                         try:
                             data[out] = result[out.name()]
                         except KeyError:
                             pass
             elif c == 'd':   ## delete a terminal result (no longer needed; may be holding a lot of memory)
-                #print "===> delete", arg
                 if arg in data:
                     del data[arg]
 
@@ -323,11 +304,8 @@ class Flowchart(Node):
             for t in node.outputs().values():
                 tdeps[t] = t.dependentNodes()
             
-        #print "DEPS:", deps
         ## determine correct node-processing order
-        #deps[self] = []
         order = fn.toposort(deps)
-        #print "ORDER1:", order
         
         ## construct list of operations
         ops = [('p', n) for n in order]
@@ -349,7 +327,6 @@ class Flowchart(Node):
                 if lastNode is None or ind > lastInd:
                     lastNode = n
                     lastInd = ind
-            #tdeps[t] = lastNode
             if lastInd is not None:
                 dels.append((lastInd+1, t))
         dels.sort(key=lambda a: a[0], reverse=True)
@@ -380,21 +357,15 @@ class Flowchart(Node):
             ## keep track of terminals that have been updated
             terms = set(startNode.outputs().values())
             
-            #print "======= Updating", startNode
-            # print("Order:", order)
             for node in order[1:]:
-                # print("Processing node", node)
                 update = False
                 for term in list(node.inputs().values()):
-                    # print("  checking terminal", term)
                     deps = list(term.connections().keys())
                     for d in deps:
                         if d in terms:
-                            # print("    ..input", d, "changed")
                             update |= True
                             term.inputChanged(d, process=False)
                 if update:
-                    # print("  processing..")
                     node.update()
                     terms |= set(node.outputs().values())
                     
@@ -410,7 +381,6 @@ class Flowchart(Node):
     def chartGraphicsItem(self):
         """Return the graphicsItem which displays the internals of this flowchart.
         (graphicsItem() still returns the external-view item)"""
-        #return self._chartGraphicsItem
         return self.viewBox
         
     def widget(self):
@@ -418,13 +388,6 @@ class Flowchart(Node):
             self._widget = FlowchartCtrlWidget(self)
             self.scene = self._widget.scene()
             self.viewBox = self._widget.viewBox()
-            #self._scene = QtGui.QGraphicsScene()
-            #self._widget.setScene(self._scene)
-            #self.scene.addItem(self.chartGraphicsItem())
-            
-            #ci = self.chartGraphicsItem()
-            #self.viewBox.addItem(ci)
-            #self.viewBox.autoRange()
         return self._widget
 
     def listConnections(self):
@@ -440,7 +403,6 @@ class Flowchart(Node):
         state = Node.saveState(self)
         state['nodes'] = []
         state['connects'] = []
-        #state['terminals'] = self.saveTerminals()
         
         for name, node in self._nodes.items():
             cls = type(node)
@@ -469,7 +431,6 @@ class Flowchart(Node):
             nodes.sort(key=lambda a: a['pos'][0])
             for n in nodes:
                 if n['name'] in self._nodes:
-                    #self._nodes[n['name']].graphicsItem().moveBy(*n['pos'])
                     self._nodes[n['name']].restoreState(n['state'])
                     continue
                 try:
@@ -477,12 +438,10 @@ class Flowchart(Node):
                     node.restoreState(n['state'])
                 except:
                     printExc("Error creating node %s: (continuing anyway)" % n['name'])
-                #node.graphicsItem().moveBy(*n['pos'])
                 
             self.inputNode.restoreState(state.get('inputNode', {}))
             self.outputNode.restoreState(state.get('outputNode', {}))
                 
-            #self.restoreTerminals(state['terminals'])
             for n1, t1, n2, t2 in state['connects']:
                 try:
                     self.connectTerminals(self._nodes[n1][t1], self._nodes[n2][t2])
@@ -498,7 +457,6 @@ class Flowchart(Node):
         self.sigChartLoaded.emit()
         self.outputChanged()
         self.sigStateChanged.emit()
-        #self.sigOutputChanged.emit()
             
     def loadFile(self, fileName=None, startDir=None):
         if fileName is None:
@@ -507,18 +465,14 @@ class Flowchart(Node):
             if startDir is None:
                 startDir = '.'
             self.fileDialog = FileDialog(None, "Load Flowchart..", startDir, "Flowchart (*.fc)")
-            #self.fileDialog.setFileMode(QtGui.QFileDialog.AnyFile)
-            #self.fileDialog.setAcceptMode(QtGui.QFileDialog.AcceptSave) 
             self.fileDialog.show()
             self.fileDialog.fileSelected.connect(self.loadFile)
             return
             ## NOTE: was previously using a real widget for the file dialog's parent, but this caused weird mouse event bugs..
-            #fileName = QtGui.QFileDialog.getOpenFileName(None, "Load Flowchart..", startDir, "Flowchart (*.fc)")
         fileName = unicode(fileName)
         state = configfile.readConfigFile(fileName)
         self.restoreState(state, clear=True)
         self.viewBox.autoRange()
-        #self.emit(QtCore.SIGNAL('fileLoaded'), fileName)
         self.sigFileLoaded.emit(fileName)
         
     def saveFile(self, fileName=None, startDir=None, suggestedFileName='flowchart.fc'):
@@ -528,13 +482,10 @@ class Flowchart(Node):
             if startDir is None:
                 startDir = '.'
             self.fileDialog = FileDialog(None, "Save Flowchart..", startDir, "Flowchart (*.fc)")
-            #self.fileDialog.setFileMode(QtGui.QFileDialog.AnyFile)
-            self.fileDialog.setAcceptMode(QtGui.QFileDialog.AcceptSave) 
-            #self.fileDialog.setDirectory(startDir)
+            self.fileDialog.setAcceptMode(QtWidgets.QFileDialog.AcceptMode.AcceptSave) 
             self.fileDialog.show()
             self.fileDialog.fileSelected.connect(self.saveFile)
             return
-            #fileName = QtGui.QFileDialog.getSaveFileName(None, "Save Flowchart..", startDir, "Flowchart (*.fc)")
         fileName = unicode(fileName)
         configfile.writeConfigFile(self.saveState(), fileName)
         self.sigFileSaved.emit(fileName)
@@ -544,7 +495,6 @@ class Flowchart(Node):
             if n is self.inputNode or n is self.outputNode:
                 continue
             n.close()  ## calls self.nodeClosed(n) by signal
-        #self.clearTerminals()
         self.widget().clear()
         
     def clearTerminals(self):
@@ -552,18 +502,14 @@ class Flowchart(Node):
         self.inputNode.clearTerminals()
         self.outputNode.clearTerminals()
 
-#class FlowchartGraphicsItem(QtGui.QGraphicsItem):
 class FlowchartGraphicsItem(GraphicsObject):
     
     def __init__(self, chart):
-        #print "FlowchartGraphicsItem.__init__"
-        #QtGui.QGraphicsItem.__init__(self)
         GraphicsObject.__init__(self)
         self.chart = chart ## chart is an instance of Flowchart()
         self.updateTerminals()
         
     def updateTerminals(self):
-        #print "FlowchartGraphicsItem.updateTerminals"
         self.terminals = {}
         bounds = self.boundingRect()
         inp = self.chart.inputs()
@@ -586,13 +532,10 @@ class FlowchartGraphicsItem(GraphicsObject):
             y += dy
         
     def boundingRect(self):
-        #print "FlowchartGraphicsItem.boundingRect"
         return QtCore.QRectF()
         
     def paint(self, p, *args):
-        #print "FlowchartGraphicsItem.paint"
         pass
-        #p.drawRect(self.boundingRect())
     
 
 class FlowchartCtrlWidget(QtGui.QWidget):
@@ -600,27 +543,24 @@ class FlowchartCtrlWidget(QtGui.QWidget):
     
     def __init__(self, chart):
         self.items = {}
-        #self.loadDir = loadDir  ## where to look initially for chart files
         self.currentFileName = None
         QtGui.QWidget.__init__(self)
         self.chart = chart
         self.ui = FlowchartCtrlTemplate.Ui_Form()
         self.ui.setupUi(self)
         self.ui.ctrlList.setColumnCount(2)
-        #self.ui.ctrlList.setColumnWidth(0, 200)
         self.ui.ctrlList.setColumnWidth(1, 20)
         self.ui.ctrlList.setVerticalScrollMode(self.ui.ctrlList.ScrollPerPixel)
         self.ui.ctrlList.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         
         self.chartWidget = FlowchartWidget(chart, self)
-        #self.chartWidget.viewBox().autoRange()
         self.cwWin = QtGui.QMainWindow()
         self.cwWin.setWindowTitle('Flowchart')
         self.cwWin.setCentralWidget(self.chartWidget)
         self.cwWin.resize(1000,800)
         
         h = self.ui.ctrlList.header()
-        if not USE_PYQT5:
+        if not USE_PYQT6 and not USE_PYQT5:
             h.setResizeMode(0, h.Stretch)
         else:
             h.setSectionResizeMode(0, h.Stretch)
@@ -634,11 +574,6 @@ class FlowchartCtrlWidget(QtGui.QWidget):
         self.ui.reloadBtn.clicked.connect(self.reloadClicked)
         self.chart.sigFileSaved.connect(self.fileSaved)
         
-    
-        
-    #def resizeEvent(self, ev):
-        #QtGui.QWidget.resizeEvent(self, ev)
-        #self.ui.ctrlList.setColumnWidth(0, self.ui.ctrlList.viewport().width()-20)
         
     def chartToggled(self, b):
         if b:
@@ -657,7 +592,6 @@ class FlowchartCtrlWidget(QtGui.QWidget):
             
     def loadClicked(self):
         newFile = self.chart.loadFile()
-        #self.setCurrentFile(newFile)
         
     def fileSaved(self, fileName):
         self.setCurrentFile(unicode(fileName))
@@ -669,7 +603,6 @@ class FlowchartCtrlWidget(QtGui.QWidget):
         else:
             try:
                 self.chart.saveFile(self.currentFileName)
-                #self.ui.saveBtn.success("Saved.")
             except:
                 self.ui.saveBtn.failure("Error")
                 raise
@@ -680,13 +613,9 @@ class FlowchartCtrlWidget(QtGui.QWidget):
                 newFile = self.chart.saveFile()
             else:
                 newFile = self.chart.saveFile(suggestedFileName=self.currentFileName)
-            #self.ui.saveAsBtn.success("Saved.")
-            #print "Back to saveAsClicked."
         except:
             self.ui.saveBtn.failure("Error")
             raise
-            
-        #self.setCurrentFile(newFile)
             
     def setCurrentFile(self, fileName):
         self.currentFileName = unicode(fileName)
@@ -710,8 +639,6 @@ class FlowchartCtrlWidget(QtGui.QWidget):
 
     def addNode(self, node):
         ctrl = node.ctrlWidget()
-        #if ctrl is None:
-            #return
         item = QtGui.QTreeWidgetItem([node.name(), '', ''])
         self.ui.ctrlList.addTopLevelItem(item)
         byp = QtGui.QPushButton('X')
@@ -734,7 +661,6 @@ class FlowchartCtrlWidget(QtGui.QWidget):
     def removeNode(self, node):
         if node in self.items:
             item = self.items[node]
-            #self.disconnect(item.bypassBtn, QtCore.SIGNAL('clicked()'), self.bypassClicked)
             try:
                 item.bypassBtn.clicked.disconnect(self.bypassClicked)
             except (TypeError, RuntimeError):
@@ -750,7 +676,6 @@ class FlowchartCtrlWidget(QtGui.QWidget):
 
     def outputChanged(self, data):
         pass
-        #self.ui.outputTree.setData(data, hideRoot=True)
 
     def clear(self):
         self.chartWidget.clear()
@@ -762,16 +687,10 @@ class FlowchartCtrlWidget(QtGui.QWidget):
 class FlowchartWidget(dockarea.DockArea):
     """Includes the actual graphical flowchart and debugging interface"""
     def __init__(self, chart, ctrl):
-        #QtGui.QWidget.__init__(self)
         dockarea.DockArea.__init__(self)
         self.chart = chart
         self.ctrl = ctrl
         self.hoverItem = None
-        #self.setMinimumWidth(250)
-        #self.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Expanding))
-        
-        #self.ui = FlowchartTemplate.Ui_Form()
-        #self.ui.setupUi(self)
         
         ## build user interface (it was easier to do it here than via developer)
         self.view = FlowchartGraphicsView.FlowchartGraphicsView(self)
@@ -794,8 +713,6 @@ class FlowchartWidget(dockarea.DockArea):
         self.selNameLabel = QtGui.QLabel()
         self.selDescLabel.setWordWrap(True)
         self.selectedTree = DataTreeWidget()
-        #self.selectedTree.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
-        #self.selInfoLayout.addWidget(self.selNameLabel)
         self.selInfoLayout.addWidget(self.selDescLabel)
         self.selInfoLayout.addWidget(self.selectedTree)
         self.selDock = dockarea.Dock('Selected Node', size=(1000,200))
@@ -804,22 +721,12 @@ class FlowchartWidget(dockarea.DockArea):
         
         self._scene = self.view.scene()
         self._viewBox = self.view.viewBox()
-        #self._scene = QtGui.QGraphicsScene()
-        #self._scene = FlowchartGraphicsView.FlowchartGraphicsScene()
-        #self.view.setScene(self._scene)
         
-        self.buildMenu()
-        #self.ui.addNodeBtn.mouseReleaseEvent = self.addNodeBtnReleased
-            
+        self.buildMenu()      
         self._scene.selectionChanged.connect(self.selectionChanged)
         self._scene.sigMouseHover.connect(self.hoverOver)
-        #self.view.sigClicked.connect(self.showViewMenu)
-        #self._scene.sigSceneContextMenu.connect(self.showViewMenu)
-        #self._viewBox.sigActionPositionChanged.connect(self.menuPosChanged)
-        
         
     def reloadLibrary(self):
-        #QtCore.QObject.disconnect(self.nodeMenu, QtCore.SIGNAL('triggered(QAction*)'), self.nodeMenuTriggered)
         self.nodeMenu.triggered.disconnect(self.nodeMenuTriggered)
         self.nodeMenu = None
         self.subMenus = []
@@ -848,13 +755,6 @@ class FlowchartWidget(dockarea.DockArea):
         self.menuPos = pos
     
     def showViewMenu(self, ev):
-        #QtGui.QPushButton.mouseReleaseEvent(self.ui.addNodeBtn, ev)
-        #if ev.button() == QtCore.Qt.RightButton:
-            #self.menuPos = self.view.mapToScene(ev.pos())
-            #self.nodeMenu.popup(ev.globalPos())
-        #print "Flowchart.showViewMenu called"
-
-        #self.menuPos = ev.scenePos()
         self.buildMenu(ev.scenePos())
         self.nodeMenu.popup(ev.screenPos())
         
@@ -876,9 +776,7 @@ class FlowchartWidget(dockarea.DockArea):
 
 
     def selectionChanged(self):
-        #print "FlowchartWidget.selectionChanged called."
         items = self._scene.selectedItems()
-        #print "     scene.selectedItems: ", items
         if len(items) == 0:
             data = None
         else:
@@ -899,7 +797,6 @@ class FlowchartWidget(dockarea.DockArea):
         self.selectedTree.setData(data, hideRoot=True)
 
     def hoverOver(self, items):
-        #print "FlowchartWidget.hoverOver called."
         term = None
         for item in items:
             if item is self.hoverItem:
@@ -919,12 +816,10 @@ class FlowchartWidget(dockarea.DockArea):
                 if len(val) > 400:
                     val = val[:400] + "..."
             self.hoverText.setPlainText("%s.%s = %s" % (term.node().name(), term.name(), val))
-            #self.hoverLabel.setCursorPosition(0)
 
     
 
     def clear(self):
-        #self.outputTree.setData(None)
         self.selectedTree.setData(None)
         self.hoverText.setPlainText('')
         self.selNameLabel.setText('')

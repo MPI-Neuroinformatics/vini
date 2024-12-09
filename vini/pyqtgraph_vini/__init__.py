@@ -10,11 +10,7 @@ __version__ = '0.10.0'
 
 ## 'Qt' is a local module; it is intended mainly to cover up the differences
 ## between PyQt4 and PySide.
-from .Qt import QtGui
-
-## not really safe--If we accidentally create another QApplication, the process hangs (and it is very difficult to trace the cause)
-#if QtGui.QApplication.instance() is None:
-    #app = QtGui.QApplication([])
+from .Qt import QtGui, QtWidgets
 
 import numpy  ## pyqtgraph requires numpy
               ## (import here to avoid massive error dump later on if numpy is not available)
@@ -39,10 +35,10 @@ if 'linux' in sys.platform:  ## linux has numerous bugs in opengl implementation
     useOpenGL = False
 elif 'darwin' in sys.platform: ## openGL can have a major impact on mac, but also has serious bugs
     useOpenGL = False
-    if QtGui.QApplication.instance() is not None:
+    if QtWidgets.QApplication.instance() is not None:
         print('Warning: QApplication was created before pyqtgraph was imported; there may be problems (to avoid bugs, call QApplication.setGraphicsSystem("raster") before the QApplication is created).')
-    if QtGui.QApplication.setGraphicsSystem:
-        QtGui.QApplication.setGraphicsSystem('raster')  ## work around a variety of bugs in the native graphics system 
+    if QtWidgets.QApplication.setGraphicsSystem:
+        QtWidgets.QApplication.setGraphicsSystem('raster')  ## work around a variety of bugs in the native graphics system 
 else:
     useOpenGL = False  ## on windows there's a more even performance / bugginess tradeoff. 
                 
@@ -146,60 +142,6 @@ if __version__ is None and not hasattr(sys, 'frozen') and sys.version_info[0] ==
     renamePyc(path)
 
 
-## Import almost everything to make it available from a single namespace
-## don't import the more complex systems--canvas, parametertree, flowchart, dockarea
-## these must be imported separately.
-#from . import frozenSupport
-#def importModules(path, globals, locals, excludes=()):
-    #"""Import all modules residing within *path*, return a dict of name: module pairs.
-    
-    #Note that *path* MUST be relative to the module doing the import.    
-    #"""
-    #d = os.path.join(os.path.split(globals['__file__'])[0], path)
-    #files = set()
-    #for f in frozenSupport.listdir(d):
-        #if frozenSupport.isdir(os.path.join(d, f)) and f not in ['__pycache__', 'tests']:
-            #files.add(f)
-        #elif f[-3:] == '.py' and f != '__init__.py':
-            #files.add(f[:-3])
-        #elif f[-4:] == '.pyc' and f != '__init__.pyc':
-            #files.add(f[:-4])
-        
-    #mods = {}
-    #path = path.replace(os.sep, '.')
-    #for modName in files:
-        #if modName in excludes:
-            #continue
-        #try:
-            #if len(path) > 0:
-                #modName = path + '.' + modName
-            #print( "from .%s import * " % modName)
-            #mod = __import__(modName, globals, locals, ['*'], 1)
-            #mods[modName] = mod
-        #except:
-            #import traceback
-            #traceback.print_stack()
-            #sys.excepthook(*sys.exc_info())
-            #print("[Error importing module: %s]" % modName)
-            
-    #return mods
-
-#def importAll(path, globals, locals, excludes=()):
-    #"""Given a list of modules, import all names from each module into the global namespace."""
-    #mods = importModules(path, globals, locals, excludes)
-    #for mod in mods.values():
-        #if hasattr(mod, '__all__'):
-            #names = mod.__all__
-        #else:
-            #names = [n for n in dir(mod) if n[0] != '_']
-        #for k in names:
-            #if hasattr(mod, k):
-                #globals[k] = getattr(mod, k)
-
-# Dynamic imports are disabled. This causes too many problems.
-#importAll('graphicsItems', globals(), locals())
-#importAll('widgets', globals(), locals(),
-          #excludes=['MatplotlibWidget', 'RawImageWidget', 'RemoteGraphicsView'])
 
 from .graphicsItems.VTickGroup import * 
 from .graphicsItems.GraphicsWidget import * 
@@ -303,13 +245,13 @@ def cleanup():
     ## ALL QGraphicsItems must have a scene before they are deleted.
     ## This is potentially very expensive, but preferred over crashing.
     ## Note: this appears to be fixed in PySide as of 2012.12, but it should be left in for a while longer..
-    app = QtGui.QApplication.instance()
-    if app is None or not isinstance(app, QtGui.QApplication):
+    app = QtWidgets.QApplication.instance()
+    if app is None or not isinstance(app, QtWidgets.QApplication):
         # app was never constructed is already deleted or is an
         # QCoreApplication/QGuiApplication and not a full QApplication
         return
     import gc
-    s = QtGui.QGraphicsScene()
+    s = QtWidgets.QGraphicsScene()
     for o in gc.get_objects():
         try:
             if isinstance(o, QtGui.QGraphicsItem) and isQObjectAlive(o) and o.scene() is None:
@@ -334,7 +276,7 @@ def _connectCleanup():
     global _cleanupConnected
     if _cleanupConnected:
         return
-    QtGui.QApplication.instance().aboutToQuit.connect(cleanup)
+    QtWidgets.QApplication.instance().aboutToQuit.connect(cleanup)
     _cleanupConnected = True
 
 
@@ -390,14 +332,6 @@ def plot(*args, **kargs):
     All other arguments are used to plot data. (see :func:`PlotItem.plot() <pyqtgraph.PlotItem.plot>`)
     """
     mkQApp()
-    #if 'title' in kargs:
-        #w = PlotWindow(title=kargs['title'])
-        #del kargs['title']
-    #else:
-        #w = PlotWindow()
-    #if len(args)+len(kargs) > 0:
-        #w.plot(*args, **kargs)
-        
     pwArgList = ['title', 'labels', 'name', 'left', 'right', 'top', 'bottom', 'background']
     pwArgs = {}
     dataArgs = {}
@@ -450,9 +384,9 @@ def dbg(*args, **kwds):
     
 def mkQApp():
     global QAPP
-    inst = QtGui.QApplication.instance()
+    inst = QtWidgets.QApplication.instance()
     if inst is None:
-        QAPP = QtGui.QApplication([])
+        QAPP = QtWidgets.QApplication([])
     else:
         QAPP = inst
     return QAPP

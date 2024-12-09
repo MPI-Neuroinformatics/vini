@@ -38,7 +38,7 @@ class AveragePlot(GraphicsWindow):
 
         exit_action = QtGui.QAction(
             QtGui.QIcon.fromTheme("window-close"), '&Exit', self)
-        exit_action.setShortcut(QtGui.QKeySequence.Quit)
+        exit_action.setShortcut(QtGui.QKeySequence.StandardKey.Quit)
         exit_action.triggered.connect(self.closePlot)
         self.addAction(exit_action)
 

@@ -3,11 +3,14 @@
 # Form implementation generated from reading ui file './pyqtgraph/console/template.ui'
 #
 # Created: Wed Mar 26 15:09:29 2014
-#      by: PyQt5 UI code generator 5.0.1
+#      by: PyQt6 UI code generator 5.0.1
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+try:
+    from PyQt6 import QtCore, QtGui, QtWidgets
+except ImportError:
+    from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -84,7 +87,7 @@ class Ui_Form(object):
         self.clearExceptionBtn.setEnabled(False)
         self.clearExceptionBtn.setObjectName("clearExceptionBtn")
         self.gridLayout_2.addWidget(self.clearExceptionBtn, 0, 4, 1, 1)
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.gridLayout_2.addItem(spacerItem, 0, 3, 1, 1)
         self.gridLayout.addWidget(self.splitter, 0, 0, 1, 1)
 

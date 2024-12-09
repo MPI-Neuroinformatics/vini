@@ -265,7 +265,7 @@ def mkBrush(*args, **kwds):
     elif len(args) == 1:
         arg = args[0]
         if arg is None:
-            return QtGui.QBrush(QtCore.Qt.NoBrush)
+            return QtGui.QBrush(QtCore.Qt.BrushStyle.NoBrush)
         elif isinstance(arg, QtGui.QBrush):
             return QtGui.QBrush(arg)
         else:
@@ -303,7 +303,7 @@ def mkPen(*args, **kargs):
         if isinstance(arg, QtGui.QPen):
             return QtGui.QPen(arg)  ## return a copy of this pen
         elif arg is None:
-            style = QtCore.Qt.NoPen
+            style = QtCore.Qt.PenStyle.NoPen
         else:
             color = arg
     if len(args) > 1:
@@ -963,7 +963,10 @@ def makeRGBA(*args, **kwds):
 
 def myrescaleData(data, scale, maxi, mini):
     d2 = data-mini
-    d2 = np.multiply(d2, (scale-2)/(maxi-mini)) + 1
+    if (maxi == mini):
+        d2 = np.multiply(d2, 0) + 1
+    else:
+        d2 = np.multiply(d2, (scale-2)/(maxi-mini)) + 1
     d2[np.where(data <= mini)] = 0
     d2[np.where(data >= maxi)] = scale
     data = d2.astype(np.dtype(int))
@@ -1320,9 +1323,9 @@ def makeQImage(imgData, alpha=None, copy=True, transpose=True):
             raise Exception('Array has only 3 channels; cannot make QImage without copying.')
 
     if alpha:
-        imgFormat = QtGui.QImage.Format_ARGB32
+        imgFormat = QtGui.QImage.Format.Format_ARGB32
     else:
-        imgFormat = QtGui.QImage.Format_RGB32
+        imgFormat = QtGui.QImage.Format.Format_RGB32
 
     if transpose:
         imgData = imgData.transpose((1, 0, 2))  ## QImage expects the row/column order to be opposite
@@ -1615,7 +1618,7 @@ def arrayToQPath(x, y, connect='all'):
 
     path.strn = byteview.data[12:lastInd+4] # make sure data doesn't run away
     try:
-        buf = QtCore.QByteArray.fromRawData(path.strn)
+        buf = QtCore.QByteArray(bytes(path, 'utf-8'))
     except TypeError:
         buf = QtCore.QByteArray(bytes(path.strn))
     #profiler('create buffer')
@@ -2396,7 +2399,13 @@ def isosurface(data, level):
 
     return vertexes, faces
 
-
+def _pinv_fallback(tr):
+    arr = np.array([tr.m11(), tr.m12(), tr.m13(),
+                    tr.m21(), tr.m22(), tr.m23(),
+                    tr.m31(), tr.m32(), tr.m33()])
+    arr.shape = (3, 3)
+    pinv = np.linalg.pinv(arr)
+    return QtGui.QTransform(*pinv.ravel().tolist())
 
 def invertQTransform(tr):
     """Return a QTransform that is the inverse of *tr*.
@@ -2406,7 +2415,7 @@ def invertQTransform(tr):
     bugs in that method. (specifically, Qt has floating-point precision issues
     when determining whether a matrix is invertible)
     """
-    try:
+    '''try:
         import numpy.linalg
         arr = np.array([[tr.m11(), tr.m12(), tr.m13()], [tr.m21(), tr.m22(), tr.m23()], [tr.m31(), tr.m32(), tr.m33()]])
         inv = numpy.linalg.inv(arr)
@@ -2415,7 +2424,16 @@ def invertQTransform(tr):
         inv = tr.inverted()
         if inv[1] is False:
             raise Exception("Transform is not invertible.")
-        return inv[0]
+        return inv[0]'''
+
+    try:
+        det = tr.determinant()
+        detr = 1.0 / det    # let singular matrices raise ZeroDivisionError
+        inv = tr.adjoint()
+        inv *= detr
+        return inv
+    except ZeroDivisionError:
+        return _pinv_fallback(tr)
 
 
 def pseudoScatter(data, spacing=None, shuffle=True, bidir=False):

@@ -1,3 +1,4 @@
+import warnings
 from ..Qt import QtGui, QtCore
 from ..python2_3 import asUnicode
 import numpy as np
@@ -761,7 +762,16 @@ class AxisItem(GraphicsWidget):
         return strings
         
     def logTickStrings(self, values, scale, spacing):
-        return ["%0.1g"%x for x in 10 ** np.array(values).astype(float)]
+        arr = np.array(values).astype(float) * np.array(scale)
+        
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            result = ["%0.1g" % x for x in 10 ** arr]
+            if w: 
+               print("logarithmic x-axis currently not available")
+
+        return result
+
         
     def generateDrawSpecs(self, p):
         """
@@ -882,7 +892,7 @@ class AxisItem(GraphicsWidget):
                     p2[axis] += tickLength*tickDir
                 tickPen = self.pen()
                 color = tickPen.color()
-                color.setAlpha(lineAlpha)
+                color.setAlpha(int(lineAlpha))
                 tickPen.setColor(color)
                 tickSpecs.append((tickPen, Point(p1), Point(p2)))
         profiler('compute ticks')
@@ -941,7 +951,7 @@ class AxisItem(GraphicsWidget):
                 if s is None:
                     rects.append(None)
                 else:
-                    br = p.boundingRect(QtCore.QRectF(0, 0, 100, 100), QtCore.Qt.AlignCenter, asUnicode(s))
+                    br = p.boundingRect(QtCore.QRectF(0, 0, 100, 100),QtCore.Qt.AlignmentFlag.AlignCenter, asUnicode(s))
                     ## boundingRect is usually just a bit too large
                     ## (but this probably depends on per-font metrics?)
                     br.setHeight(br.height() * 0.8)
@@ -983,23 +993,23 @@ class AxisItem(GraphicsWidget):
                     continue
                 vstr = asUnicode(vstr)
                 x = tickPositions[i][j]
-                #textRect = p.boundingRect(QtCore.QRectF(0, 0, 100, 100), QtCore.Qt.AlignCenter, vstr)
+                #textRect = p.boundingRect(QtCore.QRectF(0, 0, 100, 100),QtCore.Qt.AlignmentFlag.AlignCenter, vstr)
                 textRect = rects[j]
                 height = textRect.height()
                 width = textRect.width()
                 #self.textHeight = height
                 offset = max(0,self.style['tickLength']) + textOffset
                 if self.orientation == 'left':
-                    textFlags = QtCore.Qt.TextDontClip|QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter
+                    textFlags = QtCore.Qt.TextFlag.TextDontClip|QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignVCenter
                     rect = QtCore.QRectF(tickStop-offset-width, x-(height/2), width, height)
                 elif self.orientation == 'right':
-                    textFlags = QtCore.Qt.TextDontClip|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter
+                    textFlags = QtCore.Qt.TextFlag.TextDontClip|QtCore.Qt.AlignmentFlag.AlignLeft|QtCore.Qt.AlignmentFlag.AlignVCenter
                     rect = QtCore.QRectF(tickStop+offset, x-(height/2), width, height)
                 elif self.orientation == 'top':
-                    textFlags = QtCore.Qt.TextDontClip|QtCore.Qt.AlignCenter|QtCore.Qt.AlignBottom
+                    textFlags = QtCore.Qt.TextFlag.TextDontClip|QtCore.Qt.AlignmentFlag.AlignCenter|QtCore.Qt.AlignmentFlag.AlignBottom
                     rect = QtCore.QRectF(x-width/2., tickStop-offset-height, width, height)
                 elif self.orientation == 'bottom':
-                    textFlags = QtCore.Qt.TextDontClip|QtCore.Qt.AlignCenter|QtCore.Qt.AlignTop
+                    textFlags = QtCore.Qt.TextFlag.TextDontClip|QtCore.Qt.AlignmentFlag.AlignCenter|QtCore.Qt.AlignmentFlag.AlignTop
                     rect = QtCore.QRectF(x-width/2., tickStop+offset, width, height)
 
                 #p.setPen(self.pen())
@@ -1015,8 +1025,8 @@ class AxisItem(GraphicsWidget):
     def drawPicture(self, p, axisSpec, tickSpecs, textSpecs):
         profiler = debug.Profiler()
 
-        p.setRenderHint(p.Antialiasing, False)
-        p.setRenderHint(p.TextAntialiasing, True)
+        p.setRenderHint(p.RenderHint.Antialiasing, False)
+        p.setRenderHint(p.RenderHint.TextAntialiasing, True)
         
         ## draw long line along axis
         pen, p1, p2 = axisSpec

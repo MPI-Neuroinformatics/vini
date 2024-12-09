@@ -3,11 +3,11 @@
 # Form implementation generated from reading ui file './pyqtgraph/imageview/ImageViewTemplate.ui'
 #
 # Created: Wed Mar 26 15:09:28 2014
-#      by: PyQt5 UI code generator 5.0.1
+#      by: PyQt6 UI code generator 5.0.1
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -33,7 +33,7 @@ class Ui_Form(object):
         self.histogram.setObjectName("histogram")
         self.gridLayout.addWidget(self.histogram, 0, 1, 1, 2)
         self.roiBtn = QtWidgets.QPushButton(self.layoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.roiBtn.sizePolicy().hasHeightForWidth())
@@ -42,7 +42,7 @@ class Ui_Form(object):
         self.roiBtn.setObjectName("roiBtn")
         self.gridLayout.addWidget(self.roiBtn, 1, 1, 1, 1)
         self.normBtn = QtWidgets.QPushButton(self.layoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.normBtn.sizePolicy().hasHeightForWidth())

@@ -24,11 +24,11 @@ class SliceWindow(QtGui.QWidget):
         super(SliceWindow, self).__init__()
 
         self.resize(960,320)
-        screen = QtGui.QDesktopWidget().screenGeometry()
+        screen = QtGui.QGuiApplication.primaryScreen().geometry()
         size = self.geometry()
         self.id = window_number
         # Place it in the center of the screen.
-        self.move((screen.width()-size.width())/2, (screen.height()-size.height())/2)
+        self.move(int((screen.width()-size.width())/2), int((screen.height()-size.height())/2))
 
         self.l = QtGui.QGridLayout()
         self.setLayout(self.l)
@@ -49,23 +49,10 @@ class SliceWindow(QtGui.QWidget):
         self.l.addWidget(self.sw_t, 0, 24, 12, 12)
 
         self.close_view = QtGui.QAction('close view', self)
-        self.close_view.setShortcut(QtGui.QKeySequence.Quit)
+        self.close_view.setShortcut(QtGui.QKeySequence.StandardKey.Quit)
         self.close_view.triggered.connect(self.close)
         self.addAction(self.close_view)
 
-        # self.reset_view = QtGui.QAction('reset view', self)
-        # self.reset_view.setShortcut(QtGui.QKeySequence('r'))
-        # self.addAction(self.reset_view)
-
-        # self.zoom_in = QtGui.QAction('ZoomIn', self)
-        # self.zoom_in.setShortcut(QtGui.QKeySequence.ZoomIn)
-        # # self.zoom_in.triggered.connect(self.sw.zoomIn)
-        # self.addAction(self.zoom_in)
-
-        # self.zoom_out = QtGui.QAction('ZoomOut', self)
-        # self.zoom_out.setShortcut(QtGui.QKeySequence.ZoomOut)
-        # # self.zoom_out.triggered.connect(self.sw.zoomOut)
-        # self.addAction(self.zoom_out)
 
         self.setWindowTitle("Window " + str(window_number))
 

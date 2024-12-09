@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from .pyqtgraph_vini.Qt import QtCore, QtGui
-#from .GraphicsView import GraphicsView
 from .pyqtgraph_vini import GraphicsView
-#from ..graphicsItems.GradientEditorItem import GradientEditorItem
 from .ColorMapItem import *
 import weakref
 import numpy as np
@@ -42,15 +40,9 @@ class ColorMapWidgetObj(GraphicsView):
         self.item.sigGradientChangeFinished.connect(self.sigGradientChangeFinished)
         self.setCentralItem(self.item)
         self.setOrientation(orientation)
-        self.setCacheMode(self.CacheNone)
-        self.setRenderHints(QtGui.QPainter.Antialiasing | QtGui.QPainter.TextAntialiasing)
-        self.setFrameStyle(QtGui.QFrame.NoFrame | QtGui.QFrame.Plain)
-        
-        #self.setBackgroundRole(QtGui.QPalette.NoRole)
-        #self.setBackgroundBrush(QtGui.QBrush(QtCore.Qt.NoBrush))
-        #self.setAutoFillBackground(False)
-        #self.setAttribute(QtCore.Qt.WA_PaintOnScreen, False)
-        #self.setAttribute(QtCore.Qt.WA_OpaquePaintEvent, True)
+        self.setCacheMode(self.CacheModeFlag.CacheNone)
+        self.setRenderHints(QtGui.QPainter.RenderHint.Antialiasing | QtGui.QPainter.RenderHint.TextAntialiasing)
+        self.setFrameStyle(QtGui.QFrame.Shape.NoFrame | QtGui.QFrame.Shadow.Plain)
 
 
     def setOrientation(self, ort):

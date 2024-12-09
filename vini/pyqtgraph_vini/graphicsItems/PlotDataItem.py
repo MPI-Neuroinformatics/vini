@@ -1,6 +1,6 @@
 import numpy as np
 from .. import metaarray as metaarray
-from ..Qt import QtCore
+from ..Qt import QtCore, QtWidgets
 from .GraphicsObject import GraphicsObject
 from .PlotCurveItem import PlotCurveItem
 from .ScatterPlotItem import ScatterPlotItem
@@ -125,7 +125,7 @@ class PlotDataItem(GraphicsObject):
             ==========   ================================================
         """
         GraphicsObject.__init__(self)
-        self.setFlag(self.ItemHasNoContents)
+        self.setFlag(QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemHasNoContents)
         self.xData = None
         self.yData = None
         self.xDisp = None
@@ -514,7 +514,8 @@ class PlotDataItem(GraphicsObject):
         if self.xDisp is None:
             x = self.xData
             y = self.yData
-            
+            x = np.clip(x, 1e-10, np.inf) 
+            y = np.clip(y, 1e-10, np.inf) 
             
             #ds = self.opts['downsample']
             #if isinstance(ds, int) and ds > 1:
@@ -680,7 +681,7 @@ class PlotDataItem(GraphicsObject):
             y = np.interp(x2, x, y)
             x = x2
         f = np.fft.fft(y) / len(y)
-        y = abs(f[1:len(f)/2])
+        y = abs(f[1:round(len(f)/2)])
         dt = x[-1] - x[0]
         x = np.linspace(0, 0.5*len(x)/dt, len(y))
         return x, y

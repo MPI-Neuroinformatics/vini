@@ -1,7 +1,7 @@
-from ..Qt import QtGui, QtCore, USE_PYSIDE
+from ..Qt import QtGui, QtCore, USE_PYQT4 , USE_PYSIDE
 import weakref
 from .GraphicsObject import GraphicsObject
-if not USE_PYSIDE:
+if USE_PYQT4:
     import sip
 
 __all__ = ['UIGraphicsItem']
@@ -29,7 +29,7 @@ class UIGraphicsItem(GraphicsObject):
         ============== =============================================================================
         """
         GraphicsObject.__init__(self, parent)
-        self.setFlag(self.ItemSendsScenePositionChanges)
+        self.setFlag(self.GraphicsItemFlag.ItemSendsScenePositionChanges)
             
         if bounds is None:
             self._bounds = QtCore.QRectF(0, 0, 1, 1)
@@ -49,10 +49,10 @@ class UIGraphicsItem(GraphicsObject):
             
         ## workaround for pyqt bug:
         ## http://www.riverbankcomputing.com/pipermail/pyqt/2012-August/031818.html
-        if not USE_PYSIDE and change == self.ItemParentChange and isinstance(ret, QtGui.QGraphicsItem):
+        if USE_PYQT4 and change == self.GraphicsItemChange.ItemParentChange and isinstance(ret, QtGui.QGraphicsItem):
             ret = sip.cast(ret, QtGui.QGraphicsItem)
         
-        if change == self.ItemScenePositionHasChanged:
+        if change == self.GraphicsItemChange.ItemScenePositionHasChanged:
             self.setNewBounds()
         return ret
     

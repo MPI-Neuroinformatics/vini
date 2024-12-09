@@ -1,4 +1,4 @@
-from ..Qt import QtGui, QtCore
+from ..Qt import QtGui, QtCore, QtWidgets
 
 
 __all__ = ['JoystickButton']
@@ -76,7 +76,7 @@ class JoystickButton(QtGui.QPushButton):
         
         
 if __name__ == '__main__':
-    app = QtGui.QApplication([])
+    app = QtWidgets.QApplication([])
     w = QtGui.QMainWindow()
     b = JoystickButton()
     w.setCentralWidget(b)
@@ -91,5 +91,5 @@ if __name__ == '__main__':
     ## Start Qt event loop unless running in interactive mode.
     import sys
     if sys.flags.interactive != 1:
-        app.exec_()
+        app.exec()
         

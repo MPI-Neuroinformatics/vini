@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from .Qt import QtCore
+from .Qt import QtCore, QtWidgets
 from .ptime import time
 from . import ThreadsafeTimer
 import weakref
@@ -101,7 +101,7 @@ class SignalProxy(QtCore.QObject):
     
 if __name__ == '__main__':
     from .Qt import QtGui
-    app = QtGui.QApplication([])
+    app = QtWidgets.QApplication([])
     win = QtGui.QMainWindow()
     spin = QtGui.QSpinBox()
     win.setCentralWidget(spin)

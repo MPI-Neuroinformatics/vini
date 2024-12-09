@@ -9,6 +9,10 @@ from .GraphicsObject import GraphicsObject
 from ..Point import Point
 from .. import getConfigOption
 
+try:
+    from collections.abc import Callable
+except ImportError:
+    from collections import Callable
 
 __all__ = ['ImageItem']
 
@@ -69,7 +73,7 @@ class ImageItem(GraphicsObject):
         
         ============================================  ============================================================
         **Most common arguments:**
-        QtGui.QPainter.CompositionMode_SourceOver     Default; image replaces the background if it
+        QtGui.QPainter.CompositionMode.CompositionMode_SourceOver     Default; image replaces the background if it
                                                       is opaque. Otherwise, it uses the alpha channel to blend
                                                       the image with the background.
         QtGui.QPainter.CompositionMode_Overlay        The image color is mixed with the background color to 
@@ -347,7 +351,7 @@ class ImageItem(GraphicsObject):
         profile = debug.Profiler()
         if self.image is None or self.image.size == 0:
             return
-        if isinstance(self.lut, collections.Callable):
+        if isinstance(self.lut, Callable):
             lut = self.lut(self.image)
         else:
             lut = self.lut
@@ -461,7 +465,7 @@ class ImageItem(GraphicsObject):
                 mn = stepData.min()
                 mx = stepData.max()
                 step = np.ceil((mx-mn) / 500.)
-                bins = np.arange(mn, mx+1.01*step, step, dtype=np.int)
+                bins = np.arange(mn, mx+1.01*step, step, dtype=int)
                 if len(bins) == 0:
                     bins = [mn, mx]
             else:
@@ -505,7 +509,7 @@ class ImageItem(GraphicsObject):
             self.update()
 
     def mouseDragEvent(self, ev):
-        if ev.button() != QtCore.Qt.LeftButton:
+        if ev.button() != QtCore.Qt.MouseButton.LeftButton:
             ev.ignore()
             return
         elif self.drawKernel is not None:
@@ -513,10 +517,10 @@ class ImageItem(GraphicsObject):
             self.drawAt(ev.pos(), ev)
 
     def mouseClickEvent(self, ev):
-        if ev.button() == QtCore.Qt.RightButton:
+        if ev.button() == QtCore.Qt.MouseButton.RightButton:
             if self.raiseContextMenu(ev):
                 ev.accept()
-        if self.drawKernel is not None and ev.button() == QtCore.Qt.LeftButton:
+        if self.drawKernel is not None and ev.button() == QtCore.Qt.MouseButton.LeftButton:
             self.drawAt(ev.pos(), ev)
 
     def raiseContextMenu(self, ev):
@@ -541,11 +545,11 @@ class ImageItem(GraphicsObject):
         return self.menu
         
     def hoverEvent(self, ev):
-        if not ev.isExit() and self.drawKernel is not None and ev.acceptDrags(QtCore.Qt.LeftButton):
-            ev.acceptClicks(QtCore.Qt.LeftButton) ## we don't use the click, but we also don't want anyone else to use it.
-            ev.acceptClicks(QtCore.Qt.RightButton)
+        if not ev.isExit() and self.drawKernel is not None and ev.acceptDrags(QtCore.Qt.MouseButton.LeftButton):
+            ev.acceptClicks(QtCore.Qt.MouseButton.LeftButton) ## we don't use the click, but we also don't want anyone else to use it.
+            ev.acceptClicks(QtCore.Qt.MouseButton.RightButton)
         elif not ev.isExit() and self.removable:
-            ev.acceptClicks(QtCore.Qt.RightButton)  ## accept context menu clicks
+            ev.acceptClicks(QtCore.Qt.MouseButton.RightButton)  ## accept context menu clicks
 
     def tabletEvent(self, ev):
         pass
@@ -578,7 +582,7 @@ class ImageItem(GraphicsObject):
         mask = self.drawMask
         src = dk
         
-        if isinstance(self.drawMode, collections.Callable):
+        if isinstance(self.drawMode, Callable):
             self.drawMode(dk, self.image, mask, ss, ts, ev)
         else:
             src = src[ss]

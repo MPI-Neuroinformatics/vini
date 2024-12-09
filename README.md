@@ -1,3 +1,8 @@
+## changes on beta branch: 
+- new requirement packaging
+- supports PyQt6
+- compatible with updated versions of previously supported packages 
+
 ![vini_main](https://github.com/lipsia-fmri/vini/blob/master/docs/vini.png)
 **vini** is a light-weight viewer for MR data. The strives to be fast and simple, yet powerful. Vini also features many practical keyboard shortcuts.
 

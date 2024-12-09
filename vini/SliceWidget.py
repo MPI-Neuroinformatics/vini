@@ -1,4 +1,4 @@
-from .pyqtgraph_vini.Qt import QtCore, QtGui
+from .pyqtgraph_vini.Qt import QtCore, QtGui, QtWidgets
 import sys
 import numpy as np
 import weakref
@@ -65,7 +65,7 @@ class SliceWidget(GraphicsLayoutWidget):
         self.sb.addItem(self.foreground)
         self.foreground.setZValue(1000)
         self.foreground.setCompositionMode(
-            QtGui.QPainter.CompositionMode_SourceOver)
+            QtGui.QPainter.CompositionMode.CompositionMode_SourceOver)
         self.foreground.setImage(np.zeros((100,100,4)))
 
     def keyPressEvent(self, event):
@@ -173,7 +173,7 @@ class SliceWidget(GraphicsLayoutWidget):
         """
         Change crosshair coordinates when left clicked.
         """
-        if ev.button() & QtCore.Qt.LeftButton:
+        if ev.button() & QtCore.Qt.MouseButton.LeftButton:
             coordinates = self.foreground.mapFromScene(ev.scenePos())
             self.crosshair_pos[0] = int(coordinates.x())
             self.crosshair_pos[1] = int(coordinates.y())
@@ -189,7 +189,7 @@ class SliceWidget(GraphicsLayoutWidget):
         """
         self.image_dimensions = dimensions
         self.foreground.setImage(
-            np.zeros((np.int(self.image_dimensions[0]),np.int(self.image_dimensions[1]),4)))
+            np.zeros((int(self.image_dimensions[0]), int(self.image_dimensions[1]),4)))
 
     def addImageItem(self, image_item):
         """
@@ -226,7 +226,7 @@ class SliceWidget(GraphicsLayoutWidget):
 def main():
 
     # Tests
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
 
     low_pos = np.array([0.0, 1e-12, 1])
     low_color = np.array(
@@ -251,10 +251,10 @@ def main():
     # Create ImageItems
     img1 = ImageItemMod.ImageItemMod()
     img1.setImage(image1)
-    img1.setCompositionMode(QtGui.QPainter.CompositionMode_SourceOver)
+    img1.setCompositionMode(QtGui.QPainter.CompositionMode.CompositionMode_SourceOver)
     img2 = ImageItemMod.ImageItemMod()
     img2.setImage(rgba)
-    img2.setCompositionMode(QtGui.QPainter.CompositionMode_SourceOver)
+    img2.setCompositionMode(QtGui.QPainter.CompositionMode.CompositionMode_SourceOver)
 
     img1.setZValue(-1)
     img2.setZValue(1)
@@ -270,7 +270,7 @@ def main():
 
     #widget.addImage(image)
     widget.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 
 if __name__ == '__main__':

@@ -6,8 +6,8 @@ if QT_LIB == 'PySide':
     from . import TransformGuiTemplate_pyside as TransformGuiTemplate
 elif QT_LIB == 'PyQt4':
     from . import TransformGuiTemplate_pyqt as TransformGuiTemplate
-elif QT_LIB == 'PyQt5':
-    from . import TransformGuiTemplate_pyqt5 as TransformGuiTemplate
+elif QT_LIB == 'PyQt6' or QT_LIB == "PyQt5":
+    from . import TransformGuiTemplate_pyqt6_pyqt5 as TransformGuiTemplate
 
 from .. import debug
 
@@ -66,7 +66,7 @@ class CanvasItem(QtCore.QObject):
         self.alphaLabel = QtGui.QLabel("Alpha")
         self.alphaSlider = QtGui.QSlider()
         self.alphaSlider.setMaximum(1023)
-        self.alphaSlider.setOrientation(QtCore.Qt.Horizontal)
+        self.alphaSlider.setOrientation(QtCore.Qt.Orientation.Horizontal)
         self.alphaSlider.setValue(1023)
         self.layout.addWidget(self.alphaLabel, 0, 0)
         self.layout.addWidget(self.alphaSlider, 0, 1)

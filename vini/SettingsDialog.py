@@ -98,7 +98,7 @@ class SettingsDialog(QtGui.QDialog):
         # cancel button
         self.cancel_button = QtGui.QPushButton('Cancel', self)
         self.cancel_button.clicked.connect(self.close)
-        self.cancel_button.setShortcut(QtGui.QKeySequence.Quit)
+        self.cancel_button.setShortcut(QtGui.QKeySequence.StandardKey.Quit)
 
         # save button
         self.save_button = QtGui.QPushButton('Save', self)

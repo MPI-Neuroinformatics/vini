@@ -7,13 +7,13 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PySide import QtCore, QtGui
+from PySide import QtCore, QtGui, QtWidgets
 
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(224, 117)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy.Preferred, QtGui.QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(Form.sizePolicy().hasHeightForWidth())
@@ -46,10 +46,10 @@ class Ui_Form(object):
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
-        Form.setWindowTitle(QtGui.QApplication.translate("Form", "Form", None, QtGui.QApplication.UnicodeUTF8))
-        self.translateLabel.setText(QtGui.QApplication.translate("Form", "Translate:", None, QtGui.QApplication.UnicodeUTF8))
-        self.rotateLabel.setText(QtGui.QApplication.translate("Form", "Rotate:", None, QtGui.QApplication.UnicodeUTF8))
-        self.scaleLabel.setText(QtGui.QApplication.translate("Form", "Scale:", None, QtGui.QApplication.UnicodeUTF8))
-        self.mirrorImageBtn.setText(QtGui.QApplication.translate("Form", "Mirror", None, QtGui.QApplication.UnicodeUTF8))
-        self.reflectImageBtn.setText(QtGui.QApplication.translate("Form", "Reflect", None, QtGui.QApplication.UnicodeUTF8))
+        Form.setWindowTitle(QtWidgets.QApplication.translate("Form", "Form", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.translateLabel.setText(QtWidgets.QApplication.translate("Form", "Translate:", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.rotateLabel.setText(QtWidgets.QApplication.translate("Form", "Rotate:", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.scaleLabel.setText(QtWidgets.QApplication.translate("Form", "Scale:", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.mirrorImageBtn.setText(QtWidgets.QApplication.translate("Form", "Mirror", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.reflectImageBtn.setText(QtWidgets.QApplication.translate("Form", "Reflect", None, QtWidgets.QApplication.UnicodeUTF8))
 

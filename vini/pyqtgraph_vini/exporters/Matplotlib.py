@@ -43,7 +43,7 @@ class MatplotlibExporter(Exporter):
         for ax in axl:
             if ax is None:
                 continue
-            for loc, spine in ax.spines.iteritems():
+            for loc, spine in ax.spines.items():
                 if loc in ['left', 'bottom']:
                     pass
                 elif loc in ['right', 'top']:
@@ -75,9 +75,11 @@ class MatplotlibExporter(Exporter):
             #ax.grid(True)
             for item in self.item.curves:
                 x, y = item.getData()
+                if x is None or y is None:
+                    raise Exception("operation currently not supported for time series data")
                 opts = item.opts
                 pen = fn.mkPen(opts['pen'])
-                if pen.style() == QtCore.Qt.NoPen:
+                if pen.style() == QtCore.Qt.PenStyle.NoPen:
                     linestyle = ''
                 else:
                     linestyle = '-'

@@ -7,7 +7,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PySide import QtCore, QtGui
+from PySide import QtCore, QtGui, QtWidgets
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -18,7 +18,7 @@ class Ui_Form(object):
         self.gridLayout.setSpacing(0)
         self.gridLayout.setObjectName("gridLayout")
         self.splitter = QtGui.QSplitter(Form)
-        self.splitter.setOrientation(QtCore.Qt.Horizontal)
+        self.splitter.setOrientation(QtCore.Qt.Orientation.Horizontal)
         self.splitter.setObjectName("splitter")
         self.view = GraphicsView(self.splitter)
         self.view.setObjectName("view")
@@ -46,7 +46,7 @@ class Ui_Form(object):
         self.horizontalLayout.addWidget(self.redirectCombo)
         self.gridLayout_2.addLayout(self.horizontalLayout, 5, 0, 1, 2)
         self.itemList = TreeWidget(self.layoutWidget)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy.Expanding, QtGui.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(100)
         sizePolicy.setHeightForWidth(self.itemList.sizePolicy().hasHeightForWidth())
@@ -74,13 +74,13 @@ class Ui_Form(object):
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
-        Form.setWindowTitle(QtGui.QApplication.translate("Form", "Form", None, QtGui.QApplication.UnicodeUTF8))
-        self.autoRangeBtn.setText(QtGui.QApplication.translate("Form", "Auto Range", None, QtGui.QApplication.UnicodeUTF8))
-        self.redirectCheck.setToolTip(QtGui.QApplication.translate("Form", "Check to display all local items in a remote canvas.", None, QtGui.QApplication.UnicodeUTF8))
-        self.redirectCheck.setText(QtGui.QApplication.translate("Form", "Redirect", None, QtGui.QApplication.UnicodeUTF8))
-        self.resetTransformsBtn.setText(QtGui.QApplication.translate("Form", "Reset Transforms", None, QtGui.QApplication.UnicodeUTF8))
-        self.mirrorSelectionBtn.setText(QtGui.QApplication.translate("Form", "Mirror Selection", None, QtGui.QApplication.UnicodeUTF8))
-        self.reflectSelectionBtn.setText(QtGui.QApplication.translate("Form", "MirrorXY", None, QtGui.QApplication.UnicodeUTF8))
+        Form.setWindowTitle(QtWidgets.QApplication.translate("Form", "Form", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.autoRangeBtn.setText(QtWidgets.QApplication.translate("Form", "Auto Range", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.redirectCheck.setToolTip(QtWidgets.QApplication.translate("Form", "Check to display all local items in a remote canvas.", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.redirectCheck.setText(QtWidgets.QApplication.translate("Form", "Redirect", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.resetTransformsBtn.setText(QtWidgets.QApplication.translate("Form", "Reset Transforms", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.mirrorSelectionBtn.setText(QtWidgets.QApplication.translate("Form", "Mirror Selection", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.reflectSelectionBtn.setText(QtWidgets.QApplication.translate("Form", "MirrorXY", None, QtWidgets.QApplication.UnicodeUTF8))
 
 from .CanvasManager import CanvasCombo
 from ..widgets.TreeWidget import TreeWidget

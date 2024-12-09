@@ -7,7 +7,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PySide import QtCore, QtGui
+from PySide import QtCore, QtGui, QtWidgets
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -50,7 +50,7 @@ class Ui_Form(object):
         self.menuBtn.setObjectName("menuBtn")
         self.gridLayout.addWidget(self.menuBtn, 1, 2, 1, 1)
         self.roiPlot = PlotWidget(self.splitter)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy.Preferred, QtGui.QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.roiPlot.sizePolicy().hasHeightForWidth())
@@ -132,22 +132,22 @@ class Ui_Form(object):
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
-        Form.setWindowTitle(QtGui.QApplication.translate("Form", "Form", None, QtGui.QApplication.UnicodeUTF8))
-        self.roiBtn.setText(QtGui.QApplication.translate("Form", "ROI", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuBtn.setText(QtGui.QApplication.translate("Form", "Menu", None, QtGui.QApplication.UnicodeUTF8))
-        self.normGroup.setTitle(QtGui.QApplication.translate("Form", "Normalization", None, QtGui.QApplication.UnicodeUTF8))
-        self.normSubtractRadio.setText(QtGui.QApplication.translate("Form", "Subtract", None, QtGui.QApplication.UnicodeUTF8))
-        self.normDivideRadio.setText(QtGui.QApplication.translate("Form", "Divide", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_5.setText(QtGui.QApplication.translate("Form", "Operation:", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_3.setText(QtGui.QApplication.translate("Form", "Mean:", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_4.setText(QtGui.QApplication.translate("Form", "Blur:", None, QtGui.QApplication.UnicodeUTF8))
-        self.normROICheck.setText(QtGui.QApplication.translate("Form", "ROI", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_8.setText(QtGui.QApplication.translate("Form", "X", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_9.setText(QtGui.QApplication.translate("Form", "Y", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_10.setText(QtGui.QApplication.translate("Form", "T", None, QtGui.QApplication.UnicodeUTF8))
-        self.normOffRadio.setText(QtGui.QApplication.translate("Form", "Off", None, QtGui.QApplication.UnicodeUTF8))
-        self.normTimeRangeCheck.setText(QtGui.QApplication.translate("Form", "Time range", None, QtGui.QApplication.UnicodeUTF8))
-        self.normFrameCheck.setText(QtGui.QApplication.translate("Form", "Frame", None, QtGui.QApplication.UnicodeUTF8))
+        Form.setWindowTitle(QtWidgets.QApplication.translate("Form", "Form", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.roiBtn.setText(QtWidgets.QApplication.translate("Form", "ROI", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.menuBtn.setText(QtWidgets.QApplication.translate("Form", "Menu", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.normGroup.setTitle(QtWidgets.QApplication.translate("Form", "Normalization", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.normSubtractRadio.setText(QtWidgets.QApplication.translate("Form", "Subtract", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.normDivideRadio.setText(QtWidgets.QApplication.translate("Form", "Divide", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.label_5.setText(QtWidgets.QApplication.translate("Form", "Operation:", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.label_3.setText(QtWidgets.QApplication.translate("Form", "Mean:", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.label_4.setText(QtWidgets.QApplication.translate("Form", "Blur:", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.normROICheck.setText(QtWidgets.QApplication.translate("Form", "ROI", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.label_8.setText(QtWidgets.QApplication.translate("Form", "X", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.label_9.setText(QtWidgets.QApplication.translate("Form", "Y", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.label_10.setText(QtWidgets.QApplication.translate("Form", "T", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.normOffRadio.setText(QtWidgets.QApplication.translate("Form", "Off", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.normTimeRangeCheck.setText(QtWidgets.QApplication.translate("Form", "Time range", None, QtWidgets.QApplication.UnicodeUTF8))
+        self.normFrameCheck.setText(QtWidgets.QApplication.translate("Form", "Frame", None, QtWidgets.QApplication.UnicodeUTF8))
 
 from ..widgets.HistogramLUTWidget import HistogramLUTWidget
 from ..widgets.GraphicsView import GraphicsView

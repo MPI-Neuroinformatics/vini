@@ -7,7 +7,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore, QtGui, QtWidgets
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -16,12 +16,12 @@ except AttributeError:
         return s
 
 try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
+    _encoding = QtWidgets.QApplication.UnicodeUTF8
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+        return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
+        return QtWidgets.QApplication.translate(context, text, disambig)
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -121,7 +121,7 @@ class Ui_Form(object):
         self.gridAlphaSlider = QtGui.QSlider(self.gridGroup)
         self.gridAlphaSlider.setMaximum(255)
         self.gridAlphaSlider.setProperty("value", 128)
-        self.gridAlphaSlider.setOrientation(QtCore.Qt.Horizontal)
+        self.gridAlphaSlider.setOrientation(QtCore.Qt.Orientation.Horizontal)
         self.gridAlphaSlider.setObjectName(_fromUtf8("gridAlphaSlider"))
         self.gridLayout_2.addWidget(self.gridAlphaSlider, 2, 1, 1, 1)
         self.label = QtGui.QLabel(self.gridGroup)
@@ -140,7 +140,7 @@ class Ui_Form(object):
         self.alphaSlider = QtGui.QSlider(self.alphaGroup)
         self.alphaSlider.setMaximum(1000)
         self.alphaSlider.setProperty("value", 1000)
-        self.alphaSlider.setOrientation(QtCore.Qt.Horizontal)
+        self.alphaSlider.setOrientation(QtCore.Qt.Orientation.Horizontal)
         self.alphaSlider.setObjectName(_fromUtf8("alphaSlider"))
         self.horizontalLayout.addWidget(self.alphaSlider)
 

@@ -267,7 +267,7 @@ class ForkedProcess(RemoteEventHandler):
             sys.excepthook = excepthook 
             
             ## Make it harder to access QApplication instance
-            for qtlib in ('PyQt4', 'PySide', 'PyQt5'):
+            for qtlib in ('PyQt4', 'PySide', 'PyQt6'):
                 if qtlib in sys.modules:
                     sys.modules[qtlib+'.QtGui'].QApplication = None
                     sys.modules.pop(qtlib+'.QtGui', None)
@@ -351,8 +351,8 @@ class RemoteQtEventHandler(RemoteEventHandler):
         try:
             RemoteEventHandler.processRequests(self)
         except ClosedError:
-            from ..Qt import QtGui, QtCore
-            QtGui.QApplication.instance().quit()
+            from ..Qt import QtWidgets, QtCore
+            QtWidgets.QApplication.instance().quit()
             self.timer.stop()
             #raise SystemExit
 
@@ -384,9 +384,9 @@ class QtProcess(Process):
     def __init__(self, **kwds):
         if 'target' not in kwds:
             kwds['target'] = startQtEventLoop
-        from ..Qt import QtGui  ## avoid module-level import to keep bootstrap snappy.
+        from ..Qt import QtWidgets  ## avoid module-level import to keep bootstrap snappy.
         self._processRequests = kwds.pop('processRequests', True)
-        if self._processRequests and QtGui.QApplication.instance() is None:
+        if self._processRequests and QtWidgets.QApplication.instance() is None:
             raise Exception("Must create QApplication before starting QtProcess, or use QtProcess(processRequests=False)")
         Process.__init__(self, **kwds)
         self.startEventTimer()
@@ -420,18 +420,18 @@ def startQtEventLoop(name, port, authkey, ppid, debug=False):
     conn = multiprocessing.connection.Client(('localhost', int(port)), authkey=authkey)
     if debug:
         cprint.cout(debug, '[%d] connected; starting remote proxy.\n' % os.getpid(), -1)
-    from ..Qt import QtGui, QtCore
-    app = QtGui.QApplication.instance()
+    from ..Qt import QtWidgets, QtCore
+    app = QtWidgets.QApplication.instance()
     #print app
     if app is None:
-        app = QtGui.QApplication([])
+        app = QtWidgets.QApplication([])
         app.setQuitOnLastWindowClosed(False)  ## generally we want the event loop to stay open 
                                               ## until it is explicitly closed by the parent process.
     
     global HANDLER
     HANDLER = RemoteQtEventHandler(conn, name, ppid, debug=debug)
     HANDLER.startEventTimer()
-    app.exec_()
+    app.exec()
 
 import threading
 class FileForwarder(threading.Thread):

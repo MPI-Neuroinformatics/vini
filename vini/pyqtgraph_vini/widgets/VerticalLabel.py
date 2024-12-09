@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ..Qt import QtGui, QtCore
+from ..Qt import QtGui, QtCore, QtWidgets
 
 __all__ = ['VerticalLabel']
 #class VerticalLabel(QtGui.QLabel):
@@ -81,7 +81,7 @@ class VerticalLabel(QtGui.QLabel):
 
 
 if __name__ == '__main__':
-    app = QtGui.QApplication([])
+    app = QtWidgets.QApplication([])
     win = QtGui.QMainWindow()
     w = QtGui.QWidget()
     l = QtGui.QGridLayout()

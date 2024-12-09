@@ -5,12 +5,14 @@ Resampling methods to resample the image data.
 from multiprocessing import Process
 from multiprocessing import sharedctypes
 import os
+import time
 import warnings
 import numpy as np
 from numpy import ctypeslib
 import scipy as sp
 from scipy import ndimage, linalg
-from distutils.version import LooseVersion, StrictVersion
+#from distutils.version import LooseVersion, StrictVersion
+from packaging.version import Version
 
 def resample_image(data, affine, shape, interpolation):
 
@@ -20,7 +22,7 @@ def resample_image(data, affine, shape, interpolation):
     # The following is necessary because of an inconsistency in scipy's
     # resampling method for versions < 0.18.0.
     if np.all(np.diag(np.diag(A)) == A):
-        if LooseVersion(sp.__version__) < LooseVersion("0.18.0"):
+        if Version(sp.__version__) < Version("0.18.0"):
             b = np.dot(np.linalg.inv(A),b)
         A = np.diag(A)
 

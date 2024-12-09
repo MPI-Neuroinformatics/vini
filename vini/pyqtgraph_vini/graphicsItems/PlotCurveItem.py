@@ -151,7 +151,7 @@ class PlotCurveItem(GraphicsObject):
         spen = self.opts['shadowPen']
         if not pen.isCosmetic():
             b = (b[0] - pen.widthF()*0.7072, b[1] + pen.widthF()*0.7072)
-        if spen is not None and not spen.isCosmetic() and spen.style() != QtCore.Qt.NoPen:
+        if spen is not None and not spen.isCosmetic() and spen.style() != QtCore.Qt.PenStyle.NoPen:
             b = (b[0] - spen.widthF()*0.7072, b[1] + spen.widthF()*0.7072)
             
         self._boundsCache[ax] = [(frac, orthoRange), b]
@@ -163,7 +163,7 @@ class PlotCurveItem(GraphicsObject):
         w = 0
         if pen.isCosmetic():
             w += pen.widthF()*0.7072
-        if spen is not None and spen.isCosmetic() and spen.style() != QtCore.Qt.NoPen:
+        if spen is not None and spen.isCosmetic() and spen.style() != QtCore.Qt.PenStyle.NoPen:
             w = max(w, spen.widthF()*0.7072)
         if self.clickable:
             w = max(w, self.opts['mouseWidth']//2 + 1)
@@ -436,7 +436,7 @@ class PlotCurveItem(GraphicsObject):
         else:
             aa = self.opts['antialias']
         
-        p.setRenderHint(p.Antialiasing, aa)
+        p.setRenderHint(p.RenderHint.Antialiasing, aa)
         
             
         if self.opts['brush'] is not None and self.opts['fillLevel'] is not None:
@@ -470,7 +470,7 @@ class PlotCurveItem(GraphicsObject):
             
             
             
-        if sp is not None and sp.style() != QtCore.Qt.NoPen:
+        if sp is not None and sp.style() != QtCore.Qt.PenStyle.NoPen:
             p.setPen(sp)
             p.drawPath(path)
         p.setPen(cp)
@@ -571,7 +571,7 @@ class PlotCurveItem(GraphicsObject):
         return self._mouseShape
         
     def mouseClickEvent(self, ev):
-        if not self.clickable or ev.button() != QtCore.Qt.LeftButton:
+        if not self.clickable or ev.button() != QtCore.Qt.MouseButton.LeftButton:
             return
         if self.mouseShape().contains(ev.pos()):
             ev.accept()

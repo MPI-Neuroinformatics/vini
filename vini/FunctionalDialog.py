@@ -58,11 +58,11 @@ class FunctionalDialog(QtGui.QDialog):
         self.frame_le.editingFinished.connect(self.savePreferences)
         self.form1.addRow("TR in sec:", self.frame_le)
         self.design_button = QtGui.QPushButton("Load")
-        self.design_button.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.design_button.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
         self.design_button.clicked.connect(self.openDesignFile)
         self.form1.addRow("Load design file", self.design_button)
         self.del_design_button = QtGui.QPushButton("Remove")
-        self.del_design_button.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.del_design_button.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
         self.del_design_button.clicked.connect(self.delDesignFile)
         self.form1.addRow("Remove design file", self.del_design_button)
 
@@ -79,12 +79,12 @@ class FunctionalDialog(QtGui.QDialog):
         self.form2.addRow("Plot +-c*stderr, c=", self.stddevs_le)
 
         self.compute_button = QtGui.QPushButton("Compute averages", self)
-        self.compute_button.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.compute_button.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
         self.compute_button.clicked.connect(self.computeTA)
         self.form2.addRow("Trial Averages:", self.compute_button)
 
         self.quit = QtGui.QAction('Quit', self)
-        self.quit.setShortcut(QtGui.QKeySequence.Quit)
+        self.quit.setShortcut(QtGui.QKeySequence.StandardKey.Quit)
         self.quit.triggered.connect(self.closeDialog)
         self.addAction(self.quit)
 

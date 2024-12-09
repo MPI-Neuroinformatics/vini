@@ -1,4 +1,4 @@
-from ..Qt import QtCore, QtGui, QtOpenGL, USE_PYQT5
+from ..Qt import QtCore, QtGui, QtOpenGL, USE_PYQT6
 from OpenGL.GL import *
 import OpenGL.GL.framebufferobjects as glfbo
 import numpy as np
@@ -300,10 +300,10 @@ class GLViewWidget(QtOpenGL.QGLWidget):
         diff = ev.pos() - self.mousePos
         self.mousePos = ev.pos()
         
-        if ev.buttons() == QtCore.Qt.LeftButton:
+        if ev.buttons() == QtCore.Qt.MouseButton.LeftButton:
             self.orbit(-diff.x(), diff.y())
             #print self.opts['azimuth'], self.opts['elevation']
-        elif ev.buttons() == QtCore.Qt.MidButton:
+        elif ev.buttons() == QtCore.Qt.MouseButton.MiddleButton:
             if (ev.modifiers() & QtCore.Qt.ControlModifier):
                 self.pan(diff.x(), 0, diff.y(), relative=True)
             else:
@@ -325,7 +325,7 @@ class GLViewWidget(QtOpenGL.QGLWidget):
         
     def wheelEvent(self, ev):
         delta = 0
-        if not USE_PYQT5:
+        if not USE_PYQT6:
             delta = ev.delta()
         else:
             delta = ev.angleDelta().x()
