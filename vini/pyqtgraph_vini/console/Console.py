@@ -1,14 +1,14 @@
 import sys, re, os, time, traceback, subprocess
 import pickle
 
-from ..Qt import QtCore, QtGui, USE_PYSIDE, USE_PYQT6
+from ..Qt import QtCore, QtGui, USE_PYSIDE, USE_PYQT6, USE_PYQT5
 from ..python2_3 import basestring
 from .. import exceptionHandling as exceptionHandling
 from .. import getConfigOption
 if USE_PYSIDE:
     from . import template_pyside as template
-elif USE_PYQT6:
-    from . import template_pyqt6 as template
+elif USE_PYQT6 or USE_PYQT5:
+    from . import template_pyqt6_pyqt5 as template
 else:
     from . import template_pyqt as template
 

@@ -17,19 +17,6 @@ class GraphicsWidget(GraphicsItem, QtWidgets.QGraphicsWidget):
         QtWidgets.QGraphicsWidget.__init__(self, *args, **kargs)
         GraphicsItem.__init__(self)
         
-        ## done by GraphicsItem init
-        #GraphicsScene.registerObject(self)  ## workaround for pyqt bug in graphicsscene.items()
-
-    # Removed due to https://bugreports.qt-project.org/browse/PYSIDE-86
-    #def itemChange(self, change, value):
-        ## BEWARE: Calling QGraphicsWidget.itemChange can lead to crashing!
-        ##ret = QtWidgets.QGraphicsWidget.itemChange(self, change, value)  ## segv occurs here
-        ## The default behavior is just to return the value argument, so we'll do that
-        ## without calling the original method.
-        #ret = value
-        #if change in [self.ItemParentHasChanged, self.ItemSceneHasChanged]:
-            #self._updateView()
-        #return ret
 
     def setFixedHeight(self, h):
         self.setMaximumHeight(h)
@@ -47,13 +34,11 @@ class GraphicsWidget(GraphicsItem, QtWidgets.QGraphicsWidget):
 
     def boundingRect(self):
         br = self.mapRectFromParent(self.geometry()).normalized()
-        #print "bounds:", br
         return br
         
     def shape(self):  ## No idea why this is necessary, but rotated items do not receive clicks otherwise.
         p = QtGui.QPainterPath()
         p.addRect(self.boundingRect())
-        #print "shape:", p.boundingRect()
         return p
 
 

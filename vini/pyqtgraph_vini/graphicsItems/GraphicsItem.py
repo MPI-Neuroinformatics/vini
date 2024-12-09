@@ -107,9 +107,6 @@ class GraphicsItem(object):
             viewportTransform = view.viewportTransform()
         dt = self._qtBaseClass.deviceTransform(self, viewportTransform)
         
-        #xmag = abs(dt.m11())+abs(dt.m12())
-        #ymag = abs(dt.m21())+abs(dt.m22())
-        #if xmag * ymag == 0: 
         if dt.determinant() == 0:  ## occurs when deviceTransform is invalid because widget has not been displayed
             return None
         else:
@@ -129,7 +126,6 @@ class GraphicsItem(object):
             return tr
         else:
             return self.sceneTransform()
-            #return self.deviceTransform(view.viewportTransform())
 
 
 
@@ -155,10 +151,6 @@ class GraphicsItem(object):
             return None
 
         bounds = bounds.normalized()
-        
-        ## nah.
-        #for p in self.getBoundingParents():
-            #bounds &= self.mapRectFromScene(p.sceneBoundingRect())
             
         return bounds
         
@@ -188,7 +180,6 @@ class GraphicsItem(object):
             return tuple(map(Point, self._pixelVectorCache[1]))  ## return a *copy*
         
         ## check global cache
-        #key = (dt.m11(), dt.m21(), dt.m31(), dt.m12(), dt.m22(), dt.m32(), dt.m31(), dt.m32())
         key = (dt.m11(), dt.m21(), dt.m12(), dt.m22())
         pv = self._pixelVectorGlobalCache.get(key, None)
         if direction is None and pv is not None:
@@ -230,8 +221,6 @@ class GraphicsItem(object):
         directionr = direction
         
         ## map direction vector onto device
-        #viewDir = Point(dt.map(directionr) - dt.map(Point(0,0)))
-        #mdirection = dt.map(directionr)
         dirLine = QtCore.QLineF(QtCore.QPointF(0,0), directionr)
         viewDir = dt.map(dirLine)
         if viewDir.length() == 0:
@@ -243,13 +232,11 @@ class GraphicsItem(object):
             normView = viewDir.unitVector()
             #normView = viewDir.norm()  ## direction of one pixel orthogonal to line
             normOrtho = normView.normalVector()
-            #normOrtho = orthoDir.norm()
         except:
             raise Exception("Invalid direction %s" %directionr)
             
         ## map back to item 
         dti = fn.invertQTransform(dt)
-        #pv = Point(dti.map(normView)-dti.map(Point(0,0))), Point(dti.map(normOrtho)-dti.map(Point(0,0)))
         pv = Point(dti.map(normView).p2()), Point(dti.map(normOrtho).p2())
         self._pixelVectorCache[1] = pv
         self._pixelVectorCache[0] = dt
@@ -293,7 +280,6 @@ class GraphicsItem(object):
             return 0
         vt = fn.invertQTransform(vt)
         return vt.map(QtCore.QLineF(0, 0, 0, 1)).length()
-        #return Point(vt.map(QtCore.QPointF(0, 1))-vt.map(QtCore.QPointF(0, 0))).length()
         
         
     def mapToDevice(self, obj):
@@ -410,27 +396,9 @@ class GraphicsItem(object):
         tr = self.itemTransform(relativeItem)
         if isinstance(tr, tuple):  ## difference between pyside and pyqt
             tr = tr[0]
-        #vec = tr.map(Point(1,0)) - tr.map(Point(0,0))
         vec = tr.map(QtCore.QLineF(0,0,1,0))
-        #return Point(vec).angle(Point(1,0))
         return vec.angleTo(QtCore.QLineF(vec.p1(), vec.p1()+QtCore.QPointF(1,0)))
         
-    #def itemChange(self, change, value):
-        #ret = self._qtBaseClass.itemChange(self, change, value)
-        #if change == self.ItemParentHasChanged or change == self.ItemSceneHasChanged:
-            #print "Item scene changed:", self
-            #self.setChildScene(self)  ## This is bizarre.
-        #return ret
-
-    #def setChildScene(self, ch):
-        #scene = self.scene()
-        #for ch2 in ch.childItems():
-            #if ch2.scene() is not scene:
-                #print "item", ch2, "has different scene:", ch2.scene(), scene
-                #scene.addItem(ch2)
-                #QtWidgets.QApplication.processEvents()
-                #print "   --> ", ch2.scene()
-            #self.setChildScene(ch2)
 
     def parentChanged(self):
         """Called when the item's parent has changed. 
@@ -456,16 +424,11 @@ class GraphicsItem(object):
         
         ## check for this item's current viewbox or view widget
         view = self.getViewBox()
-        #if view is None:
-            ##print "  no view"
-            #return
-
         oldView = None
         if self._connectedView is not None:
             oldView = self._connectedView()
             
         if view is oldView:
-            #print "  already have view", view
             return
 
         ## disconnect from previous view
@@ -484,7 +447,6 @@ class GraphicsItem(object):
 
         ## connect to new view
         if view is not None:
-            #print "connect:", self, view
             if hasattr(view, 'sigDeviceRangeChanged'):
                 # connect signals from GraphicsView
                 view.sigDeviceRangeChanged.connect(self.viewRangeChanged)
@@ -514,7 +476,6 @@ class GraphicsItem(object):
             if isinstance(child, GraphicsItem):
                 if child.getViewBox() is oldView:
                     child._updateView()
-                        #self._replaceView(oldView, child)
             else:
                 self._replaceView(oldView, child)
         
@@ -533,9 +494,6 @@ class GraphicsItem(object):
         """
         pass
     
-    #def prepareGeometryChange(self):
-        #self._qtBaseClass.prepareGeometryChange(self)
-        #self.informViewBoundsChanged()
         
     def informViewBoundsChanged(self):
         """
@@ -573,14 +531,8 @@ class GraphicsItem(object):
             opts = {}
         if export:
             self._exportOpts = opts
-            #if 'antialias' not in opts:
-                #self._exportOpts['antialias'] = True
         else:
             self._exportOpts = False
-    
-    #def update(self):
-        #self._qtBaseClass.update(self)
-        #print "Update:", self
 
     def getContextMenus(self, event):
         return [self.getMenu()] if hasattr(self, "getMenu") else []

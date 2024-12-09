@@ -27,10 +27,6 @@ class GraphicsLayout(GraphicsWidget):
         self.currentCol = 0
         self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding))
     
-    #def resizeEvent(self, ev):
-        #ret = GraphicsWidget.resizeEvent(self, ev)
-        #print self.pos(), self.mapToDevice(self.rect().topLeft())
-        #return ret
 
     def setBorder(self, *args, **kwds):
         """

@@ -92,7 +92,6 @@ class Node(QtCore.QObject):
         keyword arguments are passed to Terminal.__init__.
         
         This is a convenience function that just calls addTerminal(io='in', ...)"""
-        #print "Node.addInput called."
         return self.addTerminal(name, io='in', **args)
         
     def addOutput(self, name="Output", **args):
@@ -113,8 +112,6 @@ class Node(QtCore.QObject):
             name = term
             term = self.terminals[name]
         
-        #print "remove", name
-        #term.disconnectAll()
         term.close()
         del self.terminals[name]
         if name in self._inputs:
@@ -198,7 +195,6 @@ class Node(QtCore.QObject):
             return self.terminals[attr]
             
     def __getitem__(self, item):
-        #return getattr(self, item)
         """Return the terminal with the given name"""
         if item not in self.terminals:
             raise KeyError(item)
@@ -213,7 +209,6 @@ class Node(QtCore.QObject):
         """Rename this node. This will cause sigRenamed to be emitted."""
         oldName = self._name
         self._name = name
-        #self.emit(QtCore.SIGNAL('renamed'), self, oldName)
         self.sigRenamed.emit(self, oldName)
 
     def dependentNodes(self):
@@ -222,7 +217,6 @@ class Node(QtCore.QObject):
         for t in self.inputs().values():
             nodes |= set([i.node() for i in t.inputTerminals()])
         return nodes
-        #return set([t.inputTerminals().node() for t in self.listInputs().itervalues()])
         
     def __repr__(self):
         return "<Node %s @%x>" % (self.name(), id(self))
@@ -295,13 +289,11 @@ class Node(QtCore.QObject):
         is automatically called when the inputs to the node are changed.
         """
         vals = self.inputValues()
-        #print "  inputs:", vals
         try:
             if self.isBypassed():
                 out = self.processBypassed(vals)
             else:
                 out = self.process(**strDict(vals))
-            #print "  output:", out
             if out is not None:
                 if signal:
                     self.setOutput(**out)
@@ -311,13 +303,11 @@ class Node(QtCore.QObject):
                 t.setValueacceptable(True)
             self.clearException()
         except:
-            #printExc( "Exception while processing %s:" % self.name())
             for n,t in self.outputs().items():
                 t.setValue(None)
             self.setException(sys.exc_info())
             
             if signal:
-                #self.emit(QtCore.SIGNAL('outputChanged'), self)  ## triggers flowchart to propagate new data
                 self.sigOutputChanged.emit(self)  ## triggers flowchart to propagate new data
 
     def processBypassed(self, args):
@@ -335,18 +325,12 @@ class Node(QtCore.QObject):
 
     def setOutput(self, **vals):
         self.setOutputNoSignal(**vals)
-        #self.emit(QtCore.SIGNAL('outputChanged'), self)  ## triggers flowchart to propagate new data
         self.sigOutputChanged.emit(self)  ## triggers flowchart to propagate new data
 
     def setOutputNoSignal(self, **vals):
         for k, v in vals.items():
             term = self.outputs()[k]
             term.setValue(v)
-            #targets = term.connections()
-            #for t in targets:  ## propagate downstream
-                #if t is term:
-                    #continue
-                #t.inputChanged(term)
             term.setValueacceptable(True)
 
     def setException(self, exc):
@@ -428,7 +412,6 @@ class Node(QtCore.QObject):
         w = self.ctrlWidget()
         if w is not None:
             w.setParent(None)
-        #self.emit(QtCore.SIGNAL('closed'), self)
         self.sigClosed.emit(self)
             
     def disconnectAll(self):
@@ -436,17 +419,9 @@ class Node(QtCore.QObject):
             t.disconnectAll()
     
 
-#class NodeGraphicsItem(QtGui.QGraphicsItem):
 class NodeGraphicsItem(GraphicsObject):
     def __init__(self, node):
-        #QtGui.QGraphicsItem.__init__(self)
         GraphicsObject.__init__(self)
-        #QObjectWorkaround.__init__(self)
-        
-        #self.shadow = QtGui.QGraphicsDropShadowEffect()
-        #self.shadow.setOffset(5,5)
-        #self.shadow.setBlurRadius(10)
-        #self.setGraphicsEffect(self.shadow)
         
         self.pen = fn.mkPen(0,0,0)
         self.selectPen = fn.mkPen(200,200,200,width=2)
@@ -457,8 +432,6 @@ class NodeGraphicsItem(GraphicsObject):
         
         self.node = node
         flags = self.ItemIsMovable | self.ItemIsSelectable | self.GraphicsItemFlag.ItemIsFocusable |self.ItemSendsGeometryChanges
-        #flags =  self.GraphicsItemFlag.ItemIsFocusable |self.ItemSendsGeometryChanges
-
         self.setFlags(flags)
         self.bounds = QtCore.QRectF(0, 0, 100, 100)
         self.nameItem = QtGui.QGraphicsTextItem(self.node.name(), self)
@@ -466,7 +439,6 @@ class NodeGraphicsItem(GraphicsObject):
         self.nameItem.moveBy(self.bounds.width()/2. - self.nameItem.boundingRect().width()/2., 0)
         self.nameItem.setTextInteractionFlags(QtCore.Qt.TextEditorInteraction)
         self.updateTerminals()
-        #self.setZValue(10)
 
         self.nameItem.focusOutEvent = self.labelFocusOut
         self.nameItem.keyPressEvent = self.labelKeyPress
@@ -474,12 +446,6 @@ class NodeGraphicsItem(GraphicsObject):
         self.menu = None
         self.buildMenu()
         
-        #self.node.sigTerminalRenamed.connect(self.updateActionMenu)
-        
-    #def setZValue(self, z):
-        #for t, item in self.terminals.itervalues():
-            #item.setZValue(z+1)
-        #GraphicsObject.setZValue(self, z)
         
     def labelFocusOut(self, ev):
         QtGui.QGraphicsTextItem.focusOutEvent(self.nameItem, ev)
@@ -518,7 +484,6 @@ class NodeGraphicsItem(GraphicsObject):
         for i, t in inp.items():
             item = t.graphicsItem()
             item.setParentItem(self)
-            #item.setZValue(self.zValue()+1)
             br = self.bounds
             item.setAnchor(0, y)
             self.terminals[i] = (t, item)
@@ -536,7 +501,6 @@ class NodeGraphicsItem(GraphicsObject):
             self.terminals[i] = (t, item)
             y += dy
         
-        #self.buildMenu()
         
         
     def boundingRect(self):
@@ -563,29 +527,18 @@ class NodeGraphicsItem(GraphicsObject):
 
 
     def mouseClickEvent(self, ev):
-        #print "Node.mouseClickEvent called."
         if int(ev.button()) == int(QtCore.Qt.MouseButton.LeftButton):
             ev.accept()
-            #print "    ev.button: left"
             sel = self.isSelected()
-            #ret = QtGui.QGraphicsItem.mousePressEvent(self, ev)
             self.setSelected(True)
             if not sel and self.isSelected():
-                #self.setBrush(QtGui.QBrush(QtGui.QColor(200, 200, 255)))
-                #self.emit(QtCore.SIGNAL('selected'))
-                #self.scene().selectionChanged.emit() ## for some reason this doesn't seem to be happening automatically
                 self.update()
-            #return ret
         
         elif int(ev.button()) == int(QtCore.Qt.MouseButton.RightButton):
-            #print "    ev.button: right"
             ev.accept()
-            #pos = ev.screenPos()
             self.raiseContextMenu(ev)
-            #self.menu.popup(QtCore.QPoint(pos.x(), pos.y()))
             
     def mouseDragEvent(self, ev):
-        #print "Node.mouseDrag"
         if ev.button() == QtCore.Qt.MouseButton.LeftButton:
             ev.accept()
             self.setPos(self.pos()+self.mapToParent(ev.pos())-self.mapToParent(ev.lastPos()))

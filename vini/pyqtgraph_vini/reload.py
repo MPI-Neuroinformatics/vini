@@ -52,8 +52,6 @@ def reloadAll(prefix=None, debug=False):
         py = os.path.splitext(mod.__file__)[0] + '.py'
         pyc = py + 'c'
         if py not in changed and os.path.isfile(pyc) and os.path.isfile(py) and os.stat(pyc).st_mtime >= os.stat(py).st_mtime:
-            #if debug:
-                #print "Ignoring module %s; unchanged" % str(mod)
             continue
         changed.append(py)  ## keep track of which modules have changed to insure that duplicate-import modules get reloaded.
         
@@ -121,10 +119,7 @@ def reload(module, debug=False, lists=False, dicts=False):
 ## For functions:
 ##  1) update the code and defaults to new versions.
 ##  2) keep a reference to the previous version so ALL versions get updated for every reload
-def updateFunction(old, new, debug, depth=0, visited=None):
-    #if debug and depth > 0:
-        #print "    -> also updating previous version", old, " -> ", new
-        
+def updateFunction(old, new, debug, depth=0, visited=None):     
     old.__code__ = new.__code__
     old.__defaults__ = new.__defaults__
     
@@ -164,22 +159,12 @@ def updateClass(old, new, debug):
             elif inspect.isclass(ref) and issubclass(ref, old) and old in ref.__bases__:
                 ind = ref.__bases__.index(old)
                 
-                ## Does not work:
-                #ref.__bases__ = ref.__bases__[:ind] + (new,) + ref.__bases__[ind+1:]
-                ## reason: Even though we change the code on methods, they remain bound
-                ## to their old classes (changing im_class is not allowed). Instead,
-                ## we have to update the __bases__ such that this class will be allowed
-                ## as an argument to older methods.
-                
                 ## This seems to work. Is there any reason not to?
                 ## Note that every time we reload, the class hierarchy becomes more complex.
                 ## (and I presume this may slow things down?)
                 ref.__bases__ = ref.__bases__[:ind] + (new,old) + ref.__bases__[ind+1:]
                 if debug:
                     print("    Changed superclass for %s" % safeStr(ref))
-            #else:
-                #if debug:
-                    #print "    Ignoring reference", type(ref)
         except:
             print("Error updating reference (%s) for class change (%s -> %s)" % (safeStr(ref), safeStr(old), safeStr(new)))
             raise
@@ -199,7 +184,6 @@ def updateClass(old, new, debug):
                 
             if hasattr(oa, 'im_func') and hasattr(na, 'im_func') and oa.__func__ is not na.__func__:
                 depth = updateFunction(oa.__func__, na.__func__, debug)
-                #oa.im_class = new  ## bind old method to new class  ## not allowed
                 if debug:
                     extra = ""
                     if depth > 0:
@@ -242,7 +226,6 @@ if __name__ == '__main__':
         from PyQt4 import QtCore
         if not hasattr(QtCore, 'Signal'):
             QtCore.Signal = QtCore.pyqtSignal
-        #app = QtWidgets.QApplication([])
         class Btn(QtCore.QObject):
             sig = QtCore.Signal()
             def emit(self):
@@ -308,7 +291,7 @@ def fn():
     b1 = test1.B("b1")
     a1.fn()
     b1.fn()
-    #print "function IDs  a1 bound method: %d a1 func: %d  a1 class: %d  b1 func: %d  b1 class: %d" % (id(a1.fn), id(a1.fn.im_func), id(a1.fn.im_class), id(b1.fn.im_func), id(b1.fn.im_class))
+
 
 
     from test2 import fn, C
@@ -318,11 +301,9 @@ def fn():
         btn.sig.connect(fn)
         btn.sig.connect(a1.fn)
         btn.emit()
-        #btn.sig.emit()
         print("")
     
-    #print "a1.fn referrers:", sys.getrefcount(a1.fn.im_func), gc.get_referrers(a1.fn.im_func)
-    
+
     
     print("Test2 before reload:")
     
@@ -352,9 +333,6 @@ def fn():
     if doQtTest:
         print("Button test after:")
         btn.emit()
-        #btn.sig.emit()
-
-    #print "a1.fn referrers:", sys.getrefcount(a1.fn.im_func), gc.get_referrers(a1.fn.im_func)
 
     print("Test2 after reload:")
     fn()
@@ -365,7 +343,6 @@ def fn():
     a1.fn()
     b1.fn()
     c1.fn()
-    #print "function IDs  a1 bound method: %d a1 func: %d  a1 class: %d  b1 func: %d  b1 class: %d" % (id(a1.fn), id(a1.fn.im_func), id(a1.fn.im_class), id(b1.fn.im_func), id(b1.fn.im_class))
 
     print("\n==> Test 1 New instances:")
     a2 = test1.A("a2")
@@ -374,8 +351,6 @@ def fn():
     b2.fn()
     c2 = test2.C('c2')
     c2.fn()
-    #print "function IDs  a1 bound method: %d a1 func: %d  a1 class: %d  b1 func: %d  b1 class: %d" % (id(a1.fn), id(a1.fn.im_func), id(a1.fn.im_class), id(b1.fn.im_func), id(b1.fn.im_class))
-
 
 
 
@@ -390,9 +365,6 @@ def fn():
     if doQtTest:
         print("Button test after:")
         btn.emit()
-        #btn.sig.emit()
-
-    #print "a1.fn referrers:", sys.getrefcount(a1.fn.im_func), gc.get_referrers(a1.fn.im_func)
 
     print("Test2 after reload:")
     fn()
@@ -420,97 +392,3 @@ def fn():
 
 
 
-
-
-
-
-
-#
-#        Failure graveyard ahead:
-#
-
-
-"""Reload Importer:
-Hooks into import system to 
-1) keep a record of module dependencies as they are imported
-2) make sure modules are always reloaded in correct order
-3) update old classes and functions to use reloaded code"""
-
-#import imp, sys
-
-## python's import hook mechanism doesn't work since we need to be 
-## informed every time there is an import statement, not just for new imports
-#class ReloadImporter:
-    #def __init__(self):
-        #self.depth = 0
-        
-    #def find_module(self, name, path):
-        #print "  "*self.depth + "find: ", name, path
-        ##if name == 'PyQt4' and path is None:
-            ##print "PyQt4 -> PySide"
-            ##self.modData = imp.find_module('PySide')
-            ##return self
-        ##return None ## return none to allow the import to proceed normally; return self to intercept with load_module
-        #self.modData = imp.find_module(name, path)
-        #self.depth += 1
-        ##sys.path_importer_cache = {}
-        #return self
-        
-    #def load_module(self, name):
-        #mod =  imp.load_module(name, *self.modData)
-        #self.depth -= 1
-        #print "  "*self.depth + "load: ", name
-        #return mod
-
-#def pathHook(path):
-    #print "path hook:", path
-    #raise ImportError
-#sys.path_hooks.append(pathHook)
-
-#sys.meta_path.append(ReloadImporter())
-
-
-### replace __import__ with a wrapper that tracks module dependencies
-#modDeps = {}
-#reloadModule = None
-#origImport = __builtins__.__import__
-#def _import(name, globals=None, locals=None, fromlist=None, level=-1, stack=[]):
-    ### Note that stack behaves as a static variable.
-    ##print "  "*len(importStack) + "import %s" % args[0]
-    #stack.append(set())
-    #mod = origImport(name, globals, locals, fromlist, level)
-    #deps = stack.pop()
-    #if len(stack) > 0:
-        #stack[-1].add(mod)
-    #elif reloadModule is not None:     ## If this is the top level import AND we're inside a module reload
-        #modDeps[reloadModule].add(mod)
-            
-    #if mod in modDeps:
-        #modDeps[mod] |= deps
-    #else:
-        #modDeps[mod] = deps
-        
-    
-    #return mod
-    
-#__builtins__.__import__ = _import
-
-### replace 
-#origReload = __builtins__.reload
-#def _reload(mod):
-    #reloadModule = mod
-    #ret = origReload(mod)
-    #reloadModule = None
-    #return ret
-#__builtins__.reload = _reload
-
-
-#def reload(mod, visited=None):
-    #if visited is None:
-        #visited = set()
-    #if mod in visited:
-        #return
-    #visited.add(mod)
-    #for dep in modDeps.get(mod, []):
-        #reload(dep, visited)
-    #__builtins__.reload(mod)

@@ -12,10 +12,6 @@ __version__ = '0.10.0'
 ## between PyQt4 and PySide.
 from .Qt import QtGui, QtWidgets
 
-## not really safe--If we accidentally create another QApplication, the process hangs (and it is very difficult to trace the cause)
-#if QtWidgets.QApplication.instance() is None:
-    #app = QtWidgets.QApplication([])
-
 import numpy  ## pyqtgraph requires numpy
               ## (import here to avoid massive error dump later on if numpy is not available)
 
@@ -146,60 +142,6 @@ if __version__ is None and not hasattr(sys, 'frozen') and sys.version_info[0] ==
     renamePyc(path)
 
 
-## Import almost everything to make it available from a single namespace
-## don't import the more complex systems--canvas, parametertree, flowchart, dockarea
-## these must be imported separately.
-#from . import frozenSupport
-#def importModules(path, globals, locals, excludes=()):
-    #"""Import all modules residing within *path*, return a dict of name: module pairs.
-    
-    #Note that *path* MUST be relative to the module doing the import.    
-    #"""
-    #d = os.path.join(os.path.split(globals['__file__'])[0], path)
-    #files = set()
-    #for f in frozenSupport.listdir(d):
-        #if frozenSupport.isdir(os.path.join(d, f)) and f not in ['__pycache__', 'tests']:
-            #files.add(f)
-        #elif f[-3:] == '.py' and f != '__init__.py':
-            #files.add(f[:-3])
-        #elif f[-4:] == '.pyc' and f != '__init__.pyc':
-            #files.add(f[:-4])
-        
-    #mods = {}
-    #path = path.replace(os.sep, '.')
-    #for modName in files:
-        #if modName in excludes:
-            #continue
-        #try:
-            #if len(path) > 0:
-                #modName = path + '.' + modName
-            #print( "from .%s import * " % modName)
-            #mod = __import__(modName, globals, locals, ['*'], 1)
-            #mods[modName] = mod
-        #except:
-            #import traceback
-            #traceback.print_stack()
-            #sys.excepthook(*sys.exc_info())
-            #print("[Error importing module: %s]" % modName)
-            
-    #return mods
-
-#def importAll(path, globals, locals, excludes=()):
-    #"""Given a list of modules, import all names from each module into the global namespace."""
-    #mods = importModules(path, globals, locals, excludes)
-    #for mod in mods.values():
-        #if hasattr(mod, '__all__'):
-            #names = mod.__all__
-        #else:
-            #names = [n for n in dir(mod) if n[0] != '_']
-        #for k in names:
-            #if hasattr(mod, k):
-                #globals[k] = getattr(mod, k)
-
-# Dynamic imports are disabled. This causes too many problems.
-#importAll('graphicsItems', globals(), locals())
-#importAll('widgets', globals(), locals(),
-          #excludes=['MatplotlibWidget', 'RawImageWidget', 'RemoteGraphicsView'])
 
 from .graphicsItems.VTickGroup import * 
 from .graphicsItems.GraphicsWidget import * 
@@ -390,14 +332,6 @@ def plot(*args, **kargs):
     All other arguments are used to plot data. (see :func:`PlotItem.plot() <pyqtgraph.PlotItem.plot>`)
     """
     mkQApp()
-    #if 'title' in kargs:
-        #w = PlotWindow(title=kargs['title'])
-        #del kargs['title']
-    #else:
-        #w = PlotWindow()
-    #if len(args)+len(kargs) > 0:
-        #w.plot(*args, **kargs)
-        
     pwArgList = ['title', 'labels', 'name', 'left', 'right', 'top', 'bottom', 'background']
     pwArgs = {}
     dataArgs = {}

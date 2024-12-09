@@ -67,9 +67,6 @@ class HistogramLUTItem(GraphicsWidget):
         self.gradient.setFlag(self.gradient.ItemStacksBehindParent)
         self.vb.setFlag(self.gradient.ItemStacksBehindParent)
         
-        #self.grid = GridItem()
-        #self.vb.addItem(self.grid)
-        
         self.gradient.sigGradientChanged.connect(self.gradientChanged)
         self.region.sigRegionChanged.connect(self.regionChanging)
         self.region.sigRegionChangeFinished.connect(self.regionChanged)
@@ -83,7 +80,6 @@ class HistogramLUTItem(GraphicsWidget):
         
         if image is not None:
             self.setImageItem(image)
-        #self.setSizePolicy(QtGui.QSizePolicy.Policy.Preferred, QtGui.QSizePolicy.Policy.Expanding)
         
     def fillHistogram(self, fill=True, level=0.0, color=(100, 100, 200)):
         if fill:
@@ -91,10 +87,7 @@ class HistogramLUTItem(GraphicsWidget):
             self.plot.setFillBrush(color)
         else:
             self.plot.setFillLevel(None)
-        
-    #def sizeHint(self, *args):
-        #return QtCore.QSizeF(115, 200)
-        
+            
     def paint(self, p, *args):
         pen = self.region.lines[0].pen
         rgn = self.getLevels()
@@ -107,36 +100,17 @@ class HistogramLUTItem(GraphicsWidget):
             p.drawLine(p2, gradRect.topLeft())
             p.drawLine(gradRect.topLeft(), gradRect.topRight())
             p.drawLine(gradRect.bottomLeft(), gradRect.bottomRight())
-        #p.drawRect(self.boundingRect())
         
         
     def setHistogramRange(self, mn, mx, padding=0.1):
         """Set the Y range on the histogram plot. This disables auto-scaling."""
         self.vb.enableAutoRange(self.vb.YAxis, False)
         self.vb.setYRange(mn, mx, padding)
-        
-        #d = mx-mn
-        #mn -= d*padding
-        #mx += d*padding
-        #self.range = [mn,mx]
-        #self.updateRange()
-        #self.vb.setMouseEnabled(False, True)
-        #self.region.setBounds([mn,mx])
+
         
     def autoHistogramRange(self):
         """Enable auto-scaling on the histogram plot."""
         self.vb.enableAutoRange(self.vb.XYAxes)
-        #self.range = None
-        #self.updateRange()
-        #self.vb.setMouseEnabled(False, False)
-            
-    #def updateRange(self):
-        #self.vb.autoRange()
-        #if self.range is not None:
-            #self.vb.setYRange(*self.range)
-        #vr = self.vb.viewRect()
-        
-        #self.region.setBounds([vr.top(), vr.bottom()])
 
     def setImageItem(self, img):
         """Set an ImageItem to have its levels and LUT automatically controlled
@@ -145,10 +119,8 @@ class HistogramLUTItem(GraphicsWidget):
         self.imageItem = weakref.ref(img)
         img.sigImageChanged.connect(self.imageChanged)
         img.setLookupTable(self.getLookupTable)  ## send function pointer, not the result
-        #self.gradientChanged()
         self.regionChanged()
         self.imageChanged(autoLevel=True)
-        #self.vb.autoRange()
         
     def viewRangeChanged(self):
         self.update()
@@ -161,8 +133,6 @@ class HistogramLUTItem(GraphicsWidget):
                 self.imageItem().setLookupTable(self.getLookupTable)  ## send function pointer, not the result
             
         self.lut = None
-        #if self.imageItem is not None:
-            #self.imageItem.setLookupTable(self.gradient.getLookupTable(512))
         self.sigLookupTableChanged.emit(self)
 
     def getLookupTable(self, img=None, n=None, alpha=None):
@@ -182,7 +152,6 @@ class HistogramLUTItem(GraphicsWidget):
         if self.imageItem() is not None:
             self.imageItem().setLevels(self.region.getRegion())
         self.sigLevelChangeFinished.emit(self)
-        #self.update()
 
     def regionChanging(self):
         if self.imageItem() is not None:

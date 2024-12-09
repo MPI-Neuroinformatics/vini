@@ -6,8 +6,8 @@ if QT_LIB == 'PySide':
     from . import TransformGuiTemplate_pyside as TransformGuiTemplate
 elif QT_LIB == 'PyQt4':
     from . import TransformGuiTemplate_pyqt as TransformGuiTemplate
-elif QT_LIB == 'PyQt6':
-    from . import TransformGuiTemplate_pyqt6 as TransformGuiTemplate
+elif QT_LIB == 'PyQt6' or QT_LIB == "PyQt5":
+    from . import TransformGuiTemplate_pyqt6_pyqt5 as TransformGuiTemplate
 
 from .. import debug
 

@@ -434,9 +434,6 @@ class Viff(QtGui.QMainWindow):
         self.x_box = QtGui.QLineEdit()
         self.y_box = QtGui.QLineEdit()
         self.z_box = QtGui.QLineEdit()
-        # self.x_box.setMaxLength(4)
-        # self.y_box.setMaxLength(4)
-        # self.z_box.setMaxLength(4)
         
         #not nice... setting px explicitly
         width_q = width/4
@@ -568,11 +565,6 @@ class Viff(QtGui.QMainWindow):
         row_intensity.addWidget(self.intensity_image_name,1)
         
         self.l.addLayout(row_intensity, 6, self.listoffset+2, 1, 4)
-        # self.l.addWidget(self.intensity_value, 6, self.listoffset+2, 1, 4)
-        
-        
-        # spacer.setSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
-        # self.l.addWidget(spacer, 8, self.listoffset+2, 1, 1)
         
         
         
@@ -634,9 +626,7 @@ class Viff(QtGui.QMainWindow):
         not_resize = self.max_neg.sizePolicy()
         not_resize.setRetainSizeWhenHidden(True)
         self.max_neg.setSizePolicy(not_resize)
-        
-        # self.max_neg.retainSizeWhenHidden(True)
-        # self.min_neg.retainSizeWhenHidden(True)
+
         
         self.min_pos.setMaxLength(6)
         self.max_pos.setMaxLength(6)
@@ -666,17 +656,10 @@ class Viff(QtGui.QMainWindow):
         self.max_pos.setToolTip("change maximum positive threshold")
         
         
-        # tmp_gradient1 = ColorMapWidget()
-        # tmp_gradient1.item.loadPreset('grey')
-        # tmp_gradient2 = ColorMapWidget()
-        # tmp_gradient2.item.loadPreset('grey')
-        
         button_row_thresh_pos.addWidget(self.min_pos)
-        # button_row_thresh_pos.addWidget(tmp_gradient1)
         button_row_thresh_pos.addWidget(self.max_pos)
         
         button_row_thresh_neg.addWidget(self.max_neg)
-        # button_row_thresh_neg.addWidget(tmp_gradient2)
         button_row_thresh_neg.addWidget(self.min_neg)
 
         
@@ -796,8 +779,6 @@ class Viff(QtGui.QMainWindow):
 
         # this turn on the visibility of the window
         self.show()
-        # set to center of screen
-        # self.move(QtWidgets.QApplication.desktop().screen().rect().center()- self.rect().center())
 
 
     def setMenu(self):
@@ -874,13 +855,6 @@ class Viff(QtGui.QMainWindow):
         image_time.triggered.connect(self.openTimeSeries)
         self.image_menu.addAction(image_time)
 
-        # # for opening the functional image properties
-        # func_settings = QtGui.QAction('Functional image settings', self)
-        # func_settings.setShortcut(QtGui.QKeySequence('f'))
-        # func_settings.triggered.connect(self.openFuncSettings)
-        # self.image_menu.addAction(func_settings)
-
-
 
         ## Tools menu for helpful tools ##
         # export function
@@ -889,13 +863,6 @@ class Viff(QtGui.QMainWindow):
         openExport.setStatusTip('Open Exporter')
         openExport.triggered.connect(self.export)
         self.tools_menu.addAction(openExport)
-
-        # # for opening the ipython qtconsole for interactivity
-        # openQtConsole = QtGui.QAction('iPython Console', self)
-        # openQtConsole.setShortcut(QtGui.QKeySequence('l'))
-        # openQtConsole.setStatusTip('Open ipython qtconsole')
-        # openQtConsole.triggered.connect(self.openQtConsoleWindow)
-        # self.tools_menu.addAction(openQtConsole)
 
         # for opening the histogram threshold widget
         openHistogram = QtGui.QAction('Histogram', self)
@@ -910,13 +877,6 @@ class Viff(QtGui.QMainWindow):
         copyImageProps.setStatusTip('Copy image properties to other images')
         copyImageProps.triggered.connect(self.copyImagePropsFunc)
         self.tools_menu.addAction(copyImageProps)
-
-        # for opening the value window
-        # openVW = QtGui.QAction('Show all values', self)
-        # openVW.setStatusTip(
-        #     'Shows all crosshair and cursor values of all images')
-        # openVW.triggered.connect(self.showValueWindow)
-        # self.tools_menu.addAction(openVW)
 
         # for opening the mosaic view
         openMosaic = QtGui.QAction('Open mosaic dialog', self)
@@ -1019,10 +979,7 @@ class Viff(QtGui.QMainWindow):
             # Add ImageItemMods to the SliceWidgets.
             self.addToSliceWidgets(i)
             # Add colormaps to the layout.
-            # self.l.addWidget(self.images[i].pos_gradient, 10, self.listoffset+4, 1, 3)
             self.addPosNegWidget(self.images[i].pos_gradient, self.images[i].neg_gradient)
-            # self.addNegWidget(self.images[i].neg_gradient)
-            # self.l.addWidget(self.images[i].neg_gradient, 11, self.listoffset+4, 1, 3)
             # Connect the color map gradients to update the slices and images.
             self.images[i].pos_gradient.sigGradientChanged.connect(self.updateImages)
             self.images[i].neg_gradient.sigGradientChanged.connect(self.updateImages)
@@ -1070,8 +1027,6 @@ class Viff(QtGui.QMainWindow):
         """
         # Gets the image instance from 
         img = loadImageFromNifti(fileobj, self.preferences, 0)
-        # save path as prefered
-        #self.prefered_path = "/".join(filename.split('/')[:-1])
         img.dialog.sigImageChanged.connect(self.updateImages)
         img.dialog.sigImageChanged.connect(self.updateSelected)
 
@@ -1113,9 +1068,6 @@ class Viff(QtGui.QMainWindow):
 
         # Colormaps
         self.addPosNegWidget(self.images[0].pos_gradient, self.images[0].neg_gradient)
-        # self.addNegWidget(self.images[0].neg_gradient)
-        # self.l.addWidget(self.images[0].pos_gradient, 11, 40, 1, 3)
-        # self.l.addWidget(self.images[0].neg_gradient, 12, 40, 1, 3)
         # connect to update slices and imageitems
         self.images[0].pos_gradient.sigGradientChanged.connect(self.updateImages)
         self.images[0].neg_gradient.sigGradientChanged.connect(self.updateImages)
@@ -1189,9 +1141,6 @@ class Viff(QtGui.QMainWindow):
 
         # Colormaps
         self.addPosNegWidget(self.images[0].pos_gradient, self.images[0].neg_gradient)
-        # self.addNegWidget(self.images[0].neg_gradient)
-        # self.l.addWidget(self.images[0].pos_gradient, 10, 40, 1, 3)
-        # self.l.addWidget(self.images[0].neg_gradient, 11, 40, 1, 3)
         # connect to update slices and imageitems
         self.images[0].pos_gradient.sigGradientChanged.connect(self.updateImages)
         self.images[0].neg_gradient.sigGradientChanged.connect(self.updateImages)
@@ -1262,9 +1211,6 @@ class Viff(QtGui.QMainWindow):
 
         # Colormaps
         self.addPosNegWidget(self.images[0].pos_gradient, self.images[0].neg_gradient)
-        # self.addNegWidget(self.images[0].neg_gradient)
-        # self.l.addWidget(self.images[0].pos_gradient, 10, 40, 1, 3)
-        # self.l.addWidget(self.images[0].neg_gradient, 11, 40, 1, 3)
         # connect to update slices and imageitems
         self.images[0].pos_gradient.sigGradientChanged.connect(self.updateImages)
         self.images[0].neg_gradient.sigGradientChanged.connect(self.updateImages)
@@ -1344,74 +1290,17 @@ class Viff(QtGui.QMainWindow):
         button_row_thresh_pos = QtGui.QHBoxLayout()
         button_row_thresh_pos.addWidget(self.min_pos, 1)
         button_row_thresh_pos.addWidget(pos_gradient, 1)
-        # button_row_crosshair.addWidget(spacer,5)
         button_row_thresh_pos.addWidget(self.max_pos, 1)
-        # self.l.addWidget(self.slider_pos, 9, self.listoffset+2, 1, 1)
         self.l.addLayout(button_row_thresh_pos, 9, self.listoffset+2, 1, 1)    
         
 
-        # ("grad neg is: {}".format(grad_neg))
         button_row_thresh_neg = QtGui.QHBoxLayout()
         button_row_thresh_neg.addWidget(self.max_neg, 1)
         button_row_thresh_neg.addWidget(neg_gradient, 1)
         button_row_thresh_neg.addWidget(self.min_neg, 1)
         self.l.addLayout(button_row_thresh_neg, 10, self.listoffset+2, 1, 1)
-        # self.l.addWidget(self.slider_neg, 12, self.listoffset+2, 1, 1)
-        
-        # index = self.imagelist.currentRow()
-        # if index >= 0:
-        #     pos_gradient.show()
-        #     if self.images[index].type() is "two":
-        #         neg_gradient.show()
-                
         log2("addPosNegWidget called")
         
-        
-        
-        
-        # px = grad_pos.item.getLookupTable(512)
-        # self.slider_pos.setStyleSheet("""QSlider::groove:horizontal {
-        #         border: 01px solid;
-        #         height: 5px;
-        #         margin: 0px;
-        #         }
-        #     QSlider::handle:horizontal {
-        #         background-color: QColor(%i,%i,%i);
-        #         border: 1px solid;
-        #         height: 20px;
-        #         width: 20px;
-        #         margin: -20px 0px;
-        #         }
-        #     QSlider::handle:horizontal {
-        #         background-color: QColor(%i,%i,%i);
-        #         border: 1px solid;
-        #         height: 20px;
-        #         width: 20px;
-        #         margin: -20px 0px;
-        #         }
-        #     """ %(px[0][0], px[0][1], px[0][2], px[-1][0], px[-1][1], px[-1][2]))
-        
-        
-        # self.l.removeItem(self.l.itemAt(13))
-        # self.l.removeItem(self.l.itemAt(12))
-        # self.l.removeItem(self.l.itemAt(11))
-        # self.l.removeItem(self.l.itemAt(10))
-        
-        # self.min_pos.setFixedWidth(self.txt_box_size_xl)
-        # self.max_pos.setFixedWidth(self.txt_box_size_xl)
-        # self.max_neg.setFixedWidth(self.txt_box_size_xl)
-        # self.min_neg.setFixedWidth(self.txt_box_size_xl)
-        
-        # old_button_row_thresh_pos = self.l.itemAt(11).widget()
-        # old_button_row_thresh_neg = self.l.itemAt(12).widget()
-        
-        # if old_button_row_thresh_neg is not None:
-        #     old_button_row_thresh_neg.setParent(None)
-        #     print("removing...")
-            
-        # if old_button_row_thresh_pos is not None:
-        #     old_button_row_thresh_pos.setParent(None)
-        #     print("removing...")
     
         
 
@@ -1427,7 +1316,6 @@ class Viff(QtGui.QMainWindow):
         # Go through list and add them one by one.
         if fnames != []:
             for filename in fnames:
-                # self.loadNewImage(unicode(filename))
                 if len(filename) > 0:
                     if os.path.isfile(filename[0]):
                         log2("openNewFile: filename {}".format(filename[0]))
@@ -1475,7 +1363,6 @@ class Viff(QtGui.QMainWindow):
         item.setCheckState(QtCore.Qt.CheckState.Checked)
             
         self.imagelist.insertItem(0, item)
-        # self.imagelist.selectedItems(item, True)
 
     def removeFromList(self, ind):
         """
@@ -1530,7 +1417,6 @@ class Viff(QtGui.QMainWindow):
 
         # resample
         for img in self.images:
-            # print("dims: {} affine {}".format(self.img_dims, self.affine))
             img.resample(shape = self.img_dims, affine = self.affine)
 
         self.transform_ind = 0 # save what transformation was applied
@@ -1749,15 +1635,9 @@ class Viff(QtGui.QMainWindow):
             resample_button.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
             resample_button.clicked.connect(self.reresample)
 
-            # transform_box = QtGui.QComboBox(self)
-            # transform_box.addItem("Use affine transformation")
-            # transform_box.addItem("Use current image's CS")
-            # transform_box.addItem("Ignore affines and guess one")
-
             form = QtGui.QFormLayout()
             form.addRow("Oversampling ratio:", ratio_le)
             form.addRow("Apply resampling:", resample_button)
-            # form.addRow("Resampling transformation:", transform_box)
             self.os_setting.setLayout(form)
 
             quit = QtGui.QAction('Quit', self)
@@ -1867,7 +1747,6 @@ class Viff(QtGui.QMainWindow):
             x = int(float(self.x_box.text()))
             y = int(float(self.y_box.text()))
             z = int(float(self.z_box.text()))
-            # import pdb; pdb.set_trace()
             index = self.imagelist.currentRow()
             if self.voxel_coord:
                 if index >= 0:
@@ -1879,7 +1758,6 @@ class Viff(QtGui.QMainWindow):
                         coordinates for.")
             else:
                 m = self.applyTransform(x, y, z, self.affine, inverse=True)
-            # self.img_coord = copy.copy(np.asarray(m).astype(int))
             self.img_coord = np.asarray(np.round(m), dtype=np.int32)
             # Now that the new coordinates are computed, move the crosshair
             # to that position.
@@ -1907,7 +1785,6 @@ class Viff(QtGui.QMainWindow):
         Updates the intensity labels in the main window and the value window
         for the crosshair.
         """
-        # abc = "abcdefghijklmnopqrstuvwxyz"
         index = self.imagelist.currentRow()
         if index >= 0:
             # no check for coordinates because the crosshair position should
@@ -1930,8 +1807,6 @@ class Viff(QtGui.QMainWindow):
                     str_image_name += "\n"
                     str_intens_tooltip += "\n"
                 if i<6:
-                    # str_intens += "%s:  %g" %(abc[i],self.images[i].getIntensity())
-                    # str_intens += " %s:  %g" %("i%i" %(i+1),self.images[i].getIntensity())
                     str_intens += " %g" %intensity
                     if len(str_img) > 15:
                         str_img = str_img[0:15] + "..."
@@ -2490,19 +2365,6 @@ class Viff(QtGui.QMainWindow):
 
     def disableControls(self):
         return
-        # self.min_neg.setEnabled(False)
-        # self.max_neg.setEnabled(False)
-        # self.min_pos.setEnabled(False)
-        # self.max_pos.setEnabled(False)
-        # self.slider_pos.setEnabled(False)
-        # self.slider_pos.setGradientLeftColor(self.slider_color_off)
-        # self.slider_pos.setGradientRightColor(self.slider_color_off)
-        # self.slider_neg.setEnabled(False)
-        # self.slider_neg.setGradientLeftColor(self.slider_color_off)
-        # self.slider_neg.setGradientRightColor(self.slider_color_off)
-        # self.min_button.setEnabled(False)
-        # self.max_button.setEnabled(False)
-        # self.disableFuncView()
 
     def enableControls(self):
         index = self.imagelist.currentRow()
@@ -2533,36 +2395,6 @@ class Viff(QtGui.QMainWindow):
         self.slider_neg.setGradientRightColor(self.slider_color)
 
 
-    ## Section: Extra Windows ##
-    # def rightClickedList(self, QPos):
-    #     """
-    #     Displays the menu when an imagelist item is right clicked.
-    #     """
-    #     # Open new menu.
-    #     self.listMenu = QtGui.QMenu()
-    #     menu_items = []
-    #     index = self.imagelist.currentRow()
-    #     for i in range(len(self.extra_windows)):
-    #         # For every window you can either remove or add the image.
-    #         if self.image_window_list[index][i+1][0] is None:
-    #             menu_item = self.listMenu.addAction(
-    #                 "Add to window " + str(self.window_ids[i]))
-    #             menu_item.triggered[()].connect(
-    #                 lambda item=i: self.addToWindow(item))
-    #         else:
-    #             menu_item = self.listMenu.addAction(
-    #                 "Remove from window " + str(self.window_ids[i]))
-    #             menu_item.triggered[()].connect(
-    #                 lambda item=i: self.removeFromWindow(item))
-    #         # Add item to menu.
-    #         menu_items.append(menu_item)
-    #     menu_item = self.listMenu.addAction("Move to new window")
-    #     menu_item.triggered[()].connect(self.newWindow)
-
-    #     # position it correctly
-    #     parentPosition = self.imagelist.mapToGlobal(QtCore.QPoint(0, 0))
-    #     self.listMenu.move(parentPosition + QPos)
-    #     self.listMenu.show()
 
     def newWindow(self):
         """
@@ -2843,8 +2675,6 @@ class Viff(QtGui.QMainWindow):
         self.func_enabled = state
         self.frame_sld.setEnabled(state)
         self.frame_box.setEnabled(state)
-        # self.fb_button.setEnabled(state)
-        # self.ff_button.setEnabled(state)
         self.backward_button.setEnabled(state)
         self.forward_button.setEnabled(state)
         self.play_button.setEnabled(state)
@@ -3005,7 +2835,6 @@ class Viff(QtGui.QMainWindow):
         This includes resampling the images, updating the ImageItemMods, all
         labels, the histogram and frame line edit and frame slider.
         """
-        # print("setframe called!")
         # Index for histogram update.
         index = self.imagelist.currentRow()
         # Move the frame number within the possible range.
@@ -3440,7 +3269,6 @@ class Viff(QtGui.QMainWindow):
             
                 if len(self.images[index].image.shape) == 4:
                     filename += " (vol {})".format(self.frame)
-            # if 
                 
             if self.hist is None:
                 return
@@ -3456,8 +3284,6 @@ class Viff(QtGui.QMainWindow):
             if self.images[index].two_cm:
                 thresholds = self.images[index].threshold_neg
                 self.hist.LineRegionNeg(thresholds[0], thresholds[1])
-            # y_range = self.images[index].getYRangeApprox()
-            # self.hist.setRange(y_range[1]*1.2)
 
     def copyImagePropsFunc(self):
         """
@@ -3649,8 +3475,6 @@ class Viff(QtGui.QMainWindow):
         coords = np.arange(start, end+0.5*increment, increment)
         coords = np.round(coords,0).astype(int)
         coords = coords.tolist()
-        # self.mosaic_view = None
-        # self.mosaic_view = MosaicView.MosaicView(rows, cols)
         for img_ind in range(len(self.images)):
             # check if image is seen in main window
             if self.image_window_list[img_ind][0][0] is not None:
@@ -3670,8 +3494,6 @@ class Viff(QtGui.QMainWindow):
         """
         exports the current view and colorbar
         """
-        # self = viewer
-        # from pyqtgraph_vini.exporters import ImageExporter
         
         filename = QtGui.QFileDialog.getSaveFileName(self, 'Export Images')[0]
         if not filename:
@@ -3730,14 +3552,7 @@ class Viff(QtGui.QMainWindow):
             fp_figure_pos = os.path.join(dp_write, fn_base+"_cmap_neg.png")
             pyplot.savefig(fp_figure_pos, dpi=100)
         
-        
-        
-        
-
-        
-        
-        
-            
+      
         self.setCrosshairsVisible(True)
 
     
@@ -3760,9 +3575,6 @@ class Viff(QtGui.QMainWindow):
             self.sr_setting.close()
 
         search_le.returnPressed.connect(save)
-
-        # Dialog disappears on selection of new windows.
-        #search_le.editingFinished.connect(save)
 
         form = QtGui.QFormLayout()
         form.addRow("Search radius in Voxels", search_le)
@@ -3854,7 +3666,6 @@ class Viff(QtGui.QMainWindow):
                 elif key in list_strings:
                     pass
                 else:
-                    # print("loadPreferences: WARNING! UNKNOWN TYPE OF PREFERENCE: {}. Ignoring!".format(key))
                     continue
                     
                 
@@ -3954,8 +3765,6 @@ def main():
     parser.add_argument('-l', action='store_true', default=False,
                         dest='linked', help='Set linked views to true')
 
-
-    # parser.add_argument("files",nargs="*") 
     
     args = parser.parse_args()
     
@@ -4066,11 +3875,6 @@ def main():
 
     sys.exit(app.exec())
 
-# def start_viewer():
-#     app = QtWidgets.QApplication([])
-#     viewer = Viff()
-#     viewer.show()
-#     app.exec()
 
 def show(*argv):
     """ 
@@ -4096,7 +3900,6 @@ def show(*argv):
     for i,arg in enumerate(argv):
         viewer.loadImagesFromNumpy(arg, itemname[i])
     viewer.checkIf2DAndRemovePanes()
-    # viewer.show()
     
     app.exec()
     

@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from .pyqtgraph_vini.Qt import QtCore, QtGui
-#from .GraphicsView import GraphicsView
 from .pyqtgraph_vini import GraphicsView
-#from ..graphicsItems.GradientEditorItem import GradientEditorItem
 from .ColorMapItem import *
 import weakref
 import numpy as np
@@ -45,12 +43,6 @@ class ColorMapWidgetObj(GraphicsView):
         self.setCacheMode(self.CacheModeFlag.CacheNone)
         self.setRenderHints(QtGui.QPainter.RenderHint.Antialiasing | QtGui.QPainter.RenderHint.TextAntialiasing)
         self.setFrameStyle(QtGui.QFrame.Shape.NoFrame | QtGui.QFrame.Shadow.Plain)
-        
-        #self.setBackgroundRole(QtGui.QPalette.ColorRole.NoRole)
-        #self.setBackgroundBrush(QtGui.QBrush(QtCore.Qt.BrushStyle.NoBrush))
-        #self.setAutoFillBackground(False)
-        #self.setAttribute(QtCore.Qt.WA_PaintOnScreen, False)
-        #self.setAttribute(QtCore.Qt.WA_OpaquePaintEvent, True)
 
 
     def setOrientation(self, ort):

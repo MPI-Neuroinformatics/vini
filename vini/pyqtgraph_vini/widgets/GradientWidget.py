@@ -41,11 +41,6 @@ class GradientWidget(GraphicsView):
         self.setCacheMode(self.CacheNone)
         self.setRenderHints(QtGui.QPainter.RenderHint.Antialiasing | QtGui.QPainter.TextAntialiasing)
         self.setFrameStyle(QtGui.QFrame.NoFrame | QtGui.QFrame.Plain)
-        #self.setBackgroundRole(QtGui.QPalette.ColorRole.NoRole)
-        #self.setBackgroundBrush(QtGui.QBrush(QtCore.Qt.BrushStyle.NoBrush))
-        #self.setAutoFillBackground(False)
-        #self.setAttribute(QtCore.Qt.WA_PaintOnScreen, False)
-        #self.setAttribute(QtCore.Qt.WA_OpaquePaintEvent, True)
 
     def setOrientation(self, ort):
         """Set the orientation of the widget. May be one of 'bottom', 'top', 

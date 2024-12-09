@@ -24,7 +24,13 @@ they are applied on the left of the vector.  For example:
 import math
 import numpy as np
 
-MAX_FLOAT = np.float64
+float_types = [
+    getattr(np, dtype)
+    for dtype in ('float16', 'float32', 'float64', 'float96', 'float128')
+    if hasattr(np, dtype)
+]
+
+MAX_FLOAT = float_types[-1]
 FLOAT_EPS = np.finfo(float).eps
 
 
