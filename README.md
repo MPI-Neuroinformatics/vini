@@ -1,6 +1,6 @@
 ## changes on beta branch: 
 - new requirement packaging
-- supports PyQt6
+- supports PyQt6 but this requires libxcb
 - compatible with updated versions of previously supported packages 
 
 ![vini_main](https://github.com/lipsia-fmri/vini/blob/master/docs/vini.png)
