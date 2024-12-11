@@ -1,5 +1,5 @@
 ## changes on beta branch: 
-- new requirement packaging
+- new requirements: packaging, indexed-gzip
 - supports PyQt6 but this requires libxcb
 - compatible with updated versions of previously supported packages 
 
