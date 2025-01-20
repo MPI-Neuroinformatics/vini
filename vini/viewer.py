@@ -38,6 +38,7 @@ import time
 import copy
 import sys
 import os.path
+import threading
 # for saving preferences
 if sys.version_info[0] == 3:
     from configparser import ConfigParser as ConfigParser
@@ -530,8 +531,9 @@ class Viff(QtGui.QMainWindow):
         button_row_fmri.addWidget(spacer,5)
         self.l.addLayout(button_row_fmri, 4, self.listoffset+2, 1, 1)
 
-
-        
+        self.frame_sld_timer = QtCore.QTimer(self)
+        self.frame_sld_timer.setSingleShot(True)
+        self.frame_sld_timer.timeout.connect(self.setFrameFromSlider)
         # frame slider (time)
         button_row_fmrislider = QtGui.QHBoxLayout()
         self.frame_sld = JumpSlider(QtCore.Qt.Orientation.Horizontal)
@@ -540,7 +542,7 @@ class Viff(QtGui.QMainWindow):
         self.frame_sld.setValue(0)
         self.frame_sld.sliderPressed.connect(self.setSliceStateOn)
         self.frame_sld.sliderReleased.connect(self.setSliceStateOff)
-        self.frame_sld.valueChanged.connect(self.setFrameFromSlider)
+        self.frame_sld.valueChanged.connect(self.startSetFrameTimer)
         self.frame_sld.setToolTip("select volume")
         
         
@@ -1375,6 +1377,9 @@ class Viff(QtGui.QMainWindow):
         self.saveWindowSize()
         self.close()
 
+    def resample_img_to_affine(self, img, img_dims, affine):
+        img.resample(shape=img_dims, affine=affine)
+
     ## Section: Resampling Methods ##
     def resampleToAffine(self):
         """
@@ -1416,8 +1421,12 @@ class Viff(QtGui.QMainWindow):
         # +1 to avoid having a 0 in img_dims
 
         # resample
-        for img in self.images:
-            img.resample(shape = self.img_dims, affine = self.affine)
+        threads = [threading.Thread(target = self.resample_img_to_affine,args = (img, self.img_dims, self.affine)) for img in self.images]
+
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
 
         self.transform_ind = 0 # save what transformation was applied
         self.res_affine.setIcon(self.icon_checked)
@@ -2917,7 +2926,9 @@ class Viff(QtGui.QMainWindow):
         log1("resetAlpha called")
         
         
-        
+    def startSetFrameTimer(self):
+        if self.frame_write_block != True:
+            self.frame_sld_timer.start(1)   
 
 
     def setFrameFromSlider(self):
@@ -3881,6 +3892,19 @@ def show(*argv):
     use this function to visualize numpy arrays. can handle multiple arguments, e.g.
     vini.show(a,b,c)
     where a,b,c are numpy arrays.
+    Args:
+        *argv (numpy.ndarray): One or more NumPy arrays to be visualized.
+
+    Returns:
+        None
+
+    Example:
+    --------
+    import vini
+    import numpy as np
+    a = np.random.rand(40, 40, 40)
+    b = np.random.rand(30, 30, 30)
+    vini.show(a, b)
     """
     app = QtWidgets.QApplication([])
     viewer = Viff()
