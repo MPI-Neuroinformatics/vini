@@ -16,12 +16,12 @@ import sys
 import types
 from functools import partial
 
-from packaging.version import Version
+from distutils.version import LooseVersion
 
 def check_version(a, b):
     """compare versions"""
     try:
-        return Version(a) >= Version(b)
+        return LooseVersion(a) >= LooseVersion(b)
     except TypeError:
         # assume unparseable versions are latest dev
         return True
@@ -147,7 +147,8 @@ def has_binding(api):
 
         #we can also safely check PySide version
         if api == QT_API_PYSIDE:
-            return check_version(mod.__version__, '1.0.3')
+            import PySide
+            return PySide.__version_info__ >= (1, 0, 3)
         else:
             return True
     except ImportError:
