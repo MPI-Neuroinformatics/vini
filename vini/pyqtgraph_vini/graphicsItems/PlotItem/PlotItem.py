@@ -20,7 +20,7 @@ import sys
 import weakref
 import numpy as np
 import os
-from ...Qt import QtGui, QtCore, QT_LIB
+from ...Qt import QtGui, QtWidgets, QtCore, QT_LIB
 from ... import pixmaps
 from ... import functions as fn
 from ...widgets.FileDialog import FileDialog
@@ -39,8 +39,8 @@ if QT_LIB == 'PyQt4':
     from .plotConfigTemplate_pyqt import *
 elif QT_LIB == 'PySide':
     from .plotConfigTemplate_pyside import *
-elif QT_LIB == 'PyQt5':
-    from .plotConfigTemplate_pyqt5 import *
+elif QT_LIB == 'PyQt6' or QT_LIB == 'PyQt5':
+    from .plotConfigTemplate_pyqt6_pyqt5 import *
 
 __all__ = ['PlotItem']
 
@@ -94,9 +94,9 @@ class PlotItem(GraphicsWidget):
     ==================== =======================================================================
     """
     
-    sigRangeChanged = QtCore.Signal(object, object)    ## Emitted when the ViewBox range has changed
-    sigYRangeChanged = QtCore.Signal(object, object)   ## Emitted when the ViewBox Y range has changed
-    sigXRangeChanged = QtCore.Signal(object, object)   ## Emitted when the ViewBox X range has changed
+    sigRangeChanged = QtCore.pyqtSignal(object, object)    ## Emitted when the ViewBox range has changed
+    sigYRangeChanged = QtCore.pyqtSignal(object, object)   ## Emitted when the ViewBox Y range has changed
+    sigXRangeChanged = QtCore.pyqtSignal(object, object)   ## Emitted when the ViewBox X range has changed
     
     
     lastFileDir = None
@@ -127,7 +127,7 @@ class PlotItem(GraphicsWidget):
         
         GraphicsWidget.__init__(self, parent)
         
-        self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         
         ## Set up control buttons
         path = os.path.dirname(__file__)
@@ -140,7 +140,7 @@ class PlotItem(GraphicsWidget):
         self.buttonsHidden = False ## whether the user has requested buttons to be hidden
         self.mouseHovering = False
         
-        self.layout = QtGui.QGraphicsGridLayout()
+        self.layout = QtWidgets.QGraphicsGridLayout()
         self.layout.setContentsMargins(1,1,1,1)
         self.setLayout(self.layout)
         self.layout.setHorizontalSpacing(0)
@@ -178,7 +178,7 @@ class PlotItem(GraphicsWidget):
             self.axes[k] = {'item': axis, 'pos': pos}
             self.layout.addItem(axis, *pos)
             axis.setZValue(-1000)
-            axis.setFlag(axis.ItemNegativeZStacksBehindParent)
+            axis.setFlag(axis.GraphicsItemFlag.ItemNegativeZStacksBehindParent)
         
         self.titleLabel = LabelItem('', size='11pt', parent=self)
         self.layout.addItem(self.titleLabel, 0, 1)
@@ -209,7 +209,7 @@ class PlotItem(GraphicsWidget):
         
         ### Set up context menu
         
-        w = QtGui.QWidget()
+        w = QtWidgets.QWidget()
         self.ctrl = c = Ui_Form()
         c.setupUi(w)
         dv = QtGui.QDoubleValidator(self)
@@ -224,13 +224,13 @@ class PlotItem(GraphicsWidget):
         ]
         
         
-        self.ctrlMenu = QtGui.QMenu()
+        self.ctrlMenu = QtWidgets.QMenu()
         
         self.ctrlMenu.setTitle('Plot Options')
         self.subMenus = []
         for name, grp in menuItems:
-            sm = QtGui.QMenu(name)
-            act = QtGui.QWidgetAction(self)
+            sm = QtWidgets.QMenu(name)
+            act = QtWidgets.QWidgetAction(self)
             act.setDefaultWidget(grp)
             sm.addAction(act)
             self.subMenus.append(sm)
@@ -358,7 +358,7 @@ class PlotItem(GraphicsWidget):
         
     #def paint(self, *args):
         #prof = debug.Profiler()
-        #QtGui.QGraphicsWidget.paint(self, *args)
+        #QtWidgets.QGraphicsWidget.paint(self, *args)
         
     ## bad idea. 
     #def __getattr__(self, attr):  ## wrap ms
@@ -415,7 +415,7 @@ class PlotItem(GraphicsWidget):
         
     def avgParamListClicked(self, item):
         name = str(item.text())
-        self.paramList[name] = (item.checkState() == QtCore.Qt.Checked)
+        self.paramList[name] = (item.checkState() == QtCore.Qt.CheckState.Checked)
         self.recomputeAverages()
         
     def recomputeAverages(self):
@@ -439,7 +439,7 @@ class PlotItem(GraphicsWidget):
             ### First determine the key of the curve to which this new data should be averaged
             for i in range(self.ctrl.avgParamList.count()):
                 item = self.ctrl.avgParamList.item(i)
-                if item.checkState() == QtCore.Qt.Checked:
+                if item.checkState() == QtCore.Qt.CheckState.Checked:
                     remKeys.append(str(item.text()))
                 else:
                     addKeys.append(str(item.text()))
@@ -480,6 +480,8 @@ class PlotItem(GraphicsWidget):
             newData = plot.yData * (n-1) / float(n) + y * 1.0 / float(n)
             plot.setData(plot.xData, newData, stepMode=stepMode)
         else:
+            if x is None or y is None:
+                raise Exception("operation 'Average' currently not supported for time series data")
             plot.setData(x, y, stepMode=stepMode)
         
     def autoBtnClicked(self):
@@ -680,16 +682,16 @@ class PlotItem(GraphicsWidget):
                 ## If the parameter is not in the list, add it.
                 matches = self.ctrl.avgParamList.findItems(p, QtCore.Qt.MatchExactly)
                 if len(matches) == 0:
-                    i = QtGui.QListWidgetItem(p)
+                    i = QtWidgets.QListWidgetItem(p)
                     if p in self.paramList and self.paramList[p] is True:
-                        i.setCheckState(QtCore.Qt.Checked)
+                        i.setCheckState(QtCore.Qt.CheckState.Checked)
                     else:
-                        i.setCheckState(QtCore.Qt.Unchecked)
+                        i.setCheckState(QtCore.Qt.CheckState.Unchecked)
                     self.ctrl.avgParamList.addItem(i)
                 else:
                     i = matches[0]
                     
-                self.paramList[p] = (i.checkState() == QtCore.Qt.Checked)
+                self.paramList[p] = (i.checkState() == QtCore.Qt.CheckState.Checked)
 
 
     ## Qt's SVG-writing capabilities are pretty terrible. 
@@ -698,13 +700,13 @@ class PlotItem(GraphicsWidget):
             self.fileDialog = FileDialog()
             if PlotItem.lastFileDir is not None:
                 self.fileDialog.setDirectory(PlotItem.lastFileDir)
-            self.fileDialog.setFileMode(QtGui.QFileDialog.AnyFile)
-            self.fileDialog.setAcceptMode(QtGui.QFileDialog.AcceptSave) 
+            self.fileDialog.setFileMode(QtWidgets.QFileDialog.FileMode.AnyFile)
+            self.fileDialog.setAcceptMode(QtWidgets.QFileDialog.AcceptMode.AcceptSave) 
             self.fileDialog.show()
             self.fileDialog.fileSelected.connect(self.writeSvg)
             return
         #if fileName is None:
-            #fileName = QtGui.QFileDialog.getSaveFileName()
+            #fileName = QtWidgets.QFileDialog.getSaveFileName()
         if isinstance(fileName, tuple):
             raise Exception("Not implemented yet..")
         fileName = str(fileName)
@@ -781,7 +783,7 @@ class PlotItem(GraphicsWidget):
     
     def writeSvg(self, fileName=None):
         if fileName is None:
-            fileName = QtGui.QFileDialog.getSaveFileName()
+            fileName = QtWidgets.QFileDialog.getSaveFileName()
         fileName = str(fileName)
         PlotItem.lastFileDir = os.path.dirname(fileName)
         
@@ -794,19 +796,19 @@ class PlotItem(GraphicsWidget):
             self.fileDialog = FileDialog()
             if PlotItem.lastFileDir is not None:
                 self.fileDialog.setDirectory(PlotItem.lastFileDir)
-            self.fileDialog.setFileMode(QtGui.QFileDialog.AnyFile)
-            self.fileDialog.setAcceptMode(QtGui.QFileDialog.AcceptSave) 
+            self.fileDialog.setFileMode(QtWidgets.QFileDialog.FileMode.AnyFile)
+            self.fileDialog.setAcceptMode(QtWidgets.QFileDialog.AcceptMode.AcceptSave) 
             self.fileDialog.show()
             self.fileDialog.fileSelected.connect(self.writeImage)
             return
         #if fileName is None:
-            #fileName = QtGui.QFileDialog.getSaveFileName()
+            #fileName = QtWidgets.QFileDialog.getSaveFileName()
         if isinstance(fileName, tuple):
             raise Exception("Not implemented yet..")
         fileName = str(fileName)
         PlotItem.lastFileDir = os.path.dirname(fileName)
-        self.png = QtGui.QImage(int(self.size().width()), int(self.size().height()), QtGui.QImage.Format_ARGB32)
-        painter = QtGui.QPainter(self.png)
+        self.png = QtWidgets.QImage(int(self.size().width()), int(self.size().height()), QtWidgets.QImage.Format.Format_ARGB32)
+        painter = QtWidgets.QPainter(self.png)
         painter.setRenderHints(painter.Antialiasing | painter.TextAntialiasing)
         self.scene().render(painter, QtCore.QRectF(), self.mapRectToScene(self.boundingRect()))
         painter.end()
@@ -817,13 +819,13 @@ class PlotItem(GraphicsWidget):
             self.fileDialog = FileDialog()
             if PlotItem.lastFileDir is not None:
                 self.fileDialog.setDirectory(PlotItem.lastFileDir)
-            self.fileDialog.setFileMode(QtGui.QFileDialog.AnyFile)
-            self.fileDialog.setAcceptMode(QtGui.QFileDialog.AcceptSave) 
+            self.fileDialog.setFileMode(QtWidgets.QFileDialog.FileMode.AnyFile)
+            self.fileDialog.setAcceptMode(QtWidgets.QFileDialog.AcceptMode.AcceptSave) 
             self.fileDialog.show()
             self.fileDialog.fileSelected.connect(self.writeCsv)
             return
         #if fileName is None:
-            #fileName = QtGui.QFileDialog.getSaveFileName()
+            #fileName = QtWidgets.QFileDialog.getSaveFileName()
         fileName = str(fileName)
         PlotItem.lastFileDir = os.path.dirname(fileName)
         

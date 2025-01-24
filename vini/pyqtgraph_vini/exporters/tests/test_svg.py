@@ -32,37 +32,7 @@ def test_plotscene():
 def test_simple():
     tempfilename = tempfile.NamedTemporaryFile(suffix='.svg').name
     print("using %s as a temporary file" % tempfilename)
-    scene = QtGui.QGraphicsScene()
-    #rect = QtGui.QGraphicsRectItem(0, 0, 100, 100)
-    #scene.addItem(rect)
-    #rect.setPos(20,20)
-    #rect.translate(50, 50)
-    #rect.rotate(30)
-    #rect.scale(0.5, 0.5)
-    
-    #rect1 = QtGui.QGraphicsRectItem(0, 0, 100, 100)
-    #rect1.setParentItem(rect)
-    #rect1.setFlag(rect1.ItemIgnoresTransformations)
-    #rect1.setPos(20, 20)
-    #rect1.scale(2,2)
-    
-    #el1 = QtGui.QGraphicsEllipseItem(0, 0, 100, 100)
-    #el1.setParentItem(rect1)
-    ##grp = ItemGroup()
-    #grp.setParentItem(rect)
-    #grp.translate(200,0)
-    ##grp.rotate(30)
-    
-    #rect2 = QtGui.QGraphicsRectItem(0, 0, 100, 25)
-    #rect2.setFlag(rect2.ItemClipsChildrenToShape)
-    #rect2.setParentItem(grp)
-    #rect2.setPos(0,25)
-    #rect2.rotate(30)
-    #el = QtGui.QGraphicsEllipseItem(0, 0, 100, 50)
-    #el.translate(10,-5)
-    #el.scale(0.5,2)
-
-    #el.setParentItem(rect2)
+    scene = QtWidgets.QGraphicsScene()
 
     grp2 = ItemGroup()
     scene.addItem(grp2)

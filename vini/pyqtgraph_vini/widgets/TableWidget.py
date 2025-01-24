@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-from ..Qt import QtGui, QtCore
+from ..Qt import QtGui, QtCore, QtWidgets
 from ..python2_3 import asUnicode, basestring
 from .. import metaarray
 
@@ -53,9 +53,9 @@ class TableWidget(QtGui.QTableWidget):
         
         self.itemClass = TableWidgetItem
         
-        self.setVerticalScrollMode(self.ScrollPerPixel)
+        self.setVerticalScrollMode(self.ScrollMode.ScrollPerPixel)
         self.setSelectionMode(QtGui.QAbstractItemView.ContiguousSelection)
-        self.setSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        self.setSizePolicy(QtGui.QSizePolicy.Policy.Preferred, QtGui.QSizePolicy.Policy.Preferred)
         self.clear()
         
         kwds.setdefault('sortable', True)
@@ -329,11 +329,11 @@ class TableWidget(QtGui.QTableWidget):
 
     def copySel(self):
         """Copy selected data to clipboard."""
-        QtGui.QApplication.clipboard().setText(self.serialize(useSelection=True))
+        QtWidgets.QApplication.clipboard().setText(self.serialize(useSelection=True))
 
     def copyAll(self):
         """Copy all data to clipboard."""
-        QtGui.QApplication.clipboard().setText(self.serialize(useSelection=False))
+        QtWidgets.QApplication.clipboard().setText(self.serialize(useSelection=False))
 
     def saveSel(self):
         """Save selected data to file."""
@@ -371,7 +371,7 @@ class TableWidgetItem(QtGui.QTableWidgetItem):
         self._defaultFormat = '%0.3g'
         self.sortMode = 'value'
         self.index = index
-        flags = QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled
+        flags = QtCore.Qt.ItemFlag.ItemIsSelectable | QtCore.Qt.ItemFlag.ItemIsEnabled
         self.setFlags(flags)
         self.setValue(val)
         self.setFormat(format)
@@ -381,9 +381,9 @@ class TableWidgetItem(QtGui.QTableWidgetItem):
         Set whether this item is user-editable.
         """
         if editable:
-            self.setFlags(self.flags() | QtCore.Qt.ItemIsEditable)
+            self.setFlags(self.flags() | QtCore.Qt.ItemFlag.ItemIsEditable)
         else:
-            self.setFlags(self.flags() & ~QtCore.Qt.ItemIsEditable)
+            self.setFlags(self.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
             
     def setSortMode(self, mode):
         """
@@ -470,7 +470,7 @@ class TableWidgetItem(QtGui.QTableWidgetItem):
 
 
 if __name__ == '__main__':
-    app = QtGui.QApplication([])
+    app = QtWidgets.QApplication([])
     win = QtGui.QMainWindow()
     t = TableWidget()
     win.setCentralWidget(t)

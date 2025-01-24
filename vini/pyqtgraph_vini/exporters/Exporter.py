@@ -1,5 +1,5 @@
 from ..widgets.FileDialog import FileDialog
-from ..Qt import QtGui, QtCore, QtSvg
+from ..Qt import QtGui, QtCore, QtSvg, QtWidgets
 from ..python2_3 import asUnicode, basestring
 from ..GraphicsScene import GraphicsScene
 import os, re
@@ -45,8 +45,8 @@ class Exporter(object):
         if opts is None:
             opts = {}
         self.fileDialog = FileDialog()
-        self.fileDialog.setFileMode(QtGui.QFileDialog.AnyFile)
-        self.fileDialog.setAcceptMode(QtGui.QFileDialog.AcceptSave)
+        self.fileDialog.setFileMode(QtWidgets.QFileDialog.FileMode.AnyFile)
+        self.fileDialog.setAcceptMode(QtWidgets.QFileDialog.AcceptMode.AcceptSave)
         if filter is not None:
             if isinstance(filter, basestring):
                 self.fileDialog.setNameFilter(filter)
@@ -118,7 +118,7 @@ class Exporter(object):
             root = self.item
         preItems = []
         postItems = []
-        if isinstance(root, QtGui.QGraphicsScene):
+        if isinstance(root, QtWidgets.QGraphicsScene):
             childs = [i for i in root.items() if i.parentItem() is None]
             rootItem = []
         else:
@@ -128,7 +128,8 @@ class Exporter(object):
         while len(childs) > 0:
             ch = childs.pop(0)
             tree = self.getPaintItems(ch)
-            if int(ch.flags() & ch.ItemStacksBehindParent) > 0 or (ch.zValue() < 0 and int(ch.flags() & ch.ItemNegativeZStacksBehindParent) > 0):
+            if (ch.flags() & ch.GraphicsItemFlag.ItemStacksBehindParent) or \
+               (ch.zValue() < 0 and (ch.flags() & ch.GraphicsItemFlag.ItemNegativeZStacksBehindParent)):
                 preItems.extend(tree)
             else:
                 postItems.extend(tree)

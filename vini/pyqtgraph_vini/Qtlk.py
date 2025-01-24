@@ -15,9 +15,7 @@ from .python2_3 import asUnicode
 
 PYSIDE = 'PySide'
 PYQT4 = 'PyQt4'
-PYQT5 = 'PyQt5'
-PYQT6 = 'PyQt6'
-
+PyQt6 = 'PyQt6'
 
 QT_LIB = os.getenv('PYQTGRAPH_QT_LIB')
 
@@ -26,7 +24,7 @@ QT_LIB = os.getenv('PYQTGRAPH_QT_LIB')
 ## This is done by first checking to see whether one of the libraries
 ## is already imported. If not, then attempt to import PyQt4, then PySide.
 if QT_LIB is None:
-    libOrder = [PYQT6, PYSIDE, PYQT5]
+    libOrder = [PyQt6, PYSIDE, PYQT4]
 
     for lib in libOrder:
         if lib in sys.modules:
@@ -46,18 +44,7 @@ if QT_LIB is None:
 
 
 if QT_LIB is None:
-    raise Exception("PyQtGraph requires one of PyQt5, PyQt6 or PySide; none of these packages could be imported.")
-
-
-class FailedImport(object):
-    """Used to defer ImportErrors until we are sure the module is needed.
-    """
-    def __init__(self, err):
-        self.err = err
-        
-    def __getattr__(self, attr):
-        raise self.err
-
+    raise Exception("PyQtGraph requires one of PyQt4, PyQt6 or PySide; none of these packages could be imported.")
 
 if QT_LIB == PYSIDE:
     from PySide import QtGui, QtCore, QtOpenGL, QtSvg
@@ -145,96 +132,9 @@ if QT_LIB == PYSIDE:
         return form_class, base_class
 
 
-
-elif QT_LIB == PYQT5:
+elif QT_LIB == PyQt6:
     
-    # We're using PyQt5 which has a different structure so we're going to use a shim to
-    # recreate the Qt4 structure for Qt5
-    from PyQt5 import QtGui, QtCore, QtWidgets, uic
-    try:
-        from PyQt5 import QtSvg
-    except ImportError:
-        pass
-    try:
-        from PyQt5 import QtOpenGL
-    except ImportError:
-        pass
-    try:
-        from PyQt5 import QtTest
-        QtTest.QTest.qWaitForWindowShown = QtTest.QTest.qWaitForWindowExposed
-    except ImportError:
-        pass
-
-    # Re-implement deprecated APIs
-
-    __QGraphicsItem_scale = QtWidgets.QGraphicsItem.scale
-
-    def scale(self, *args):
-        if args:
-            sx, sy = args
-            tr = self.transform()
-            tr.scale(sx, sy)
-            self.setTransform(tr)
-        else:
-            return __QGraphicsItem_scale(self)
-
-    QtWidgets.QGraphicsItem.scale = scale
-
-    def rotate(self, angle):
-        tr = self.transform()
-        tr.rotate(angle)
-        self.setTransform(tr)
-    QtWidgets.QGraphicsItem.rotate = rotate
-
-    def translate(self, dx, dy):
-        tr = self.transform()
-        tr.translate(dx, dy)
-        self.setTransform(tr)
-    QtWidgets.QGraphicsItem.translate = translate
-
-    def setMargin(self, i):
-        self.setContentsMargins(i, i, i, i)
-    QtWidgets.QGridLayout.setMargin = setMargin
-
-    def setResizeMode(self, *args):
-        self.setSectionResizeMode(*args)
-    QtWidgets.QHeaderView.setResizeMode = setResizeMode
-
-    
-    '''QtGui.QApplication = QtWidgets.QApplication
-    QtGui.QGraphicsScene = QtWidgets.QGraphicsScene
-    QtGui.QGraphicsObject = QtWidgets.QGraphicsObject
-    QtGui.QGraphicsWidget = QtWidgets.QGraphicsWidget'''
-
-    QtWidgets.QApplication.setGraphicsSystem = None
-    
-    # Import all QtWidgets objects into QtGui
-    for o in dir(QtWidgets):
-        if o.startswith('Q'):
-            setattr(QtGui, o, getattr(QtWidgets,o) )
-
-    module_whitelist = [
-        "QAction",
-        "QActionGroup",
-        "QFileSystemModel",
-        "QShortcut",
-        "QUndoCommand",
-        "QUndoGroup",
-        "QUndoStack",
-    ]
-    for module in module_whitelist:
-        attr = getattr(QtWidgets, module)
-        setattr(QtGui, module, attr)
-    
-    VERSION_INFO = 'PyQt5 ' + QtCore.PYQT_VERSION_STR + ' Qt ' + QtCore.QT_VERSION_STR
-
-
-
-
-
-elif QT_LIB == PYQT6:
-    
-    ''' # We're using PyQt6 which has a different structure so we're going to use a shim to
+    # We're using PyQt6 which has a different structure so we're going to use a shim to
     # recreate the Qt4 structure for Qt5
     from PyQt6 import QtGui, QtCore, QtWidgets, uic
     try:
@@ -249,22 +149,7 @@ elif QT_LIB == PYQT6:
         from PyQt6 import QtTest
         QtTest.QTest.qWaitForWindowShown = QtTest.QTest.qWaitForWindowExposed
     except ImportError:
-        pass'''
-
-    from PyQt6 import QtGui, QtCore, QtWidgets, uic, sip
-
-    try:
-        from PyQt6 import QtSvg
-    except ImportError as err:
-        QtSvg = FailedImport(err)
-    try:
-        from PyQt6 import QtOpenGLWidgets
-    except ImportError as err:
-        QtOpenGLWidgets = FailedImport(err)
-    try:
-        from PyQt6 import QtTest
-    except ImportError as err:
-        QtTest = FailedImport(err)
+        pass
 
     # Re-implement deprecated APIs
 
@@ -301,25 +186,27 @@ elif QT_LIB == PYQT6:
         self.setSectionResizeMode(*args)
     QtWidgets.QHeaderView.setResizeMode = setResizeMode
 
-    QtWidgets.QApplication.setGraphicsSystem = None
+    
+    QtGui.QApplication = QtWidgets.QApplication
+    QtGui.QGraphicsScene = QtWidgets.QGraphicsScene
+    QtGui.QGraphicsObject = QtWidgets.QGraphicsObject
+    QtGui.QGraphicsWidget = QtWidgets.QGraphicsWidget
+
+    QtGui.QApplication.setGraphicsSystem = None
     
     # Import all QtWidgets objects into QtGui
     for o in dir(QtWidgets):
         if o.startswith('Q'):
             setattr(QtGui, o, getattr(QtWidgets,o) )
     
-    if not isinstance(QtOpenGLWidgets, FailedImport):
-        QtWidgets.QOpenGLWidget = QtOpenGLWidgets.QOpenGLWidget
-    
     VERSION_INFO = 'PyQt6 ' + QtCore.PYQT_VERSION_STR + ' Qt ' + QtCore.QT_VERSION_STR
-
 
 else:
     raise ValueError("Invalid Qt lib '%s'" % QT_LIB)
 
 # Common to PyQt4 and 6
 if QT_LIB.startswith('PyQt'):
-    if QT_LIB != PYQT6:
+    if QT_LIB != PyQt6:
         import sip
         def isQObjectAlive(obj):
             return not sip.isdeleted(obj)
@@ -332,33 +219,13 @@ if QT_LIB.startswith('PyQt'):
 
     QtCore.Signal = QtCore.pyqtSignal
     
-if QT_LIB in [PYQT5, PYQT6]:
-    QtVersion = QtCore.QT_VERSION_STR
-
-    # PyQt, starting in v5.5, calls qAbort when an exception is raised inside
-    # a slot. To maintain backward compatibility (and sanity for interactive
-    # users), we install a global exception hook to override this behavior.
-    if sys.excepthook == sys.__excepthook__:
-        sys_excepthook = sys.excepthook
-        def pyqt_qabort_override(*args, **kwds):
-            return sys_excepthook(*args, **kwds)
-        sys.excepthook = pyqt_qabort_override
-    
-    def isQObjectAlive(obj):
-        return not sip.isdeleted(obj)
-    
-    loadUiType = uic.loadUiType
-
-    QtCore.Signal = QtCore.pyqtSignal
-    QtCore.Slot = QtCore.pyqtSlot
 
     
 ## Make sure we have Qt >= 4.7
 versionReq = [4, 7]
 USE_PYSIDE = QT_LIB == PYSIDE
 USE_PYQT4 = QT_LIB == PYQT4
-USE_PYQT5 = QT_LIB == PYQT5
-USE_PYQT6 = QT_LIB == PYQT6
+USE_PYQT6 = QT_LIB == PyQt6
 QtVersion = PySide.QtCore.__version__ if QT_LIB == PYSIDE else QtCore.QT_VERSION_STR
 m = re.match(r'(\d+)\.(\d+).*', QtVersion)
 if m is not None and list(map(int, m.groups())) < versionReq:

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ..Qt import QtCore, QtGui
+from ..Qt import QtCore, QtGui, QtWidgets
 
 __all__ = ['FeedbackButton']
 
@@ -70,7 +70,7 @@ class FeedbackButton(QtGui.QPushButton):
             self.setText(message, temporary=True)
             self.setToolTip(tip, temporary=True)
             if processEvents:
-                QtGui.QApplication.processEvents()
+                QtWidgets.QApplication.processEvents()
         else:
             self.sigCallProcess.emit(message, tip, processEvents)
            
@@ -144,7 +144,7 @@ class FeedbackButton(QtGui.QPushButton):
 
 if __name__ == '__main__':
     import time
-    app = QtGui.QApplication([])
+    app = QtWidgets.QApplication([])
     win = QtGui.QMainWindow()
     btn = FeedbackButton("Button")
     fail = True

@@ -32,7 +32,7 @@ class ColumnSelectNode(Node):
             for c in self.columns:
                 out[c] = In[c]
         else:
-            self.In.setValueAcceptable(False)
+            self.In.setValueacceptable(False)
             raise Exception("Input must be MetaArray or ndarray with named fields")
             
         return out
@@ -62,18 +62,18 @@ class ColumnSelectNode(Node):
         self.columnList.clear()
         for c in cols:
             item = QtGui.QListWidgetItem(c)
-            item.setFlags(QtCore.Qt.ItemIsEnabled|QtCore.Qt.ItemIsUserCheckable)
+            item.setFlags(QtCore.Qt.ItemFlag.ItemIsEnabled|QtCore.Qt.ItemFlag.ItemIsUserCheckable)
             if c in self.columns:
-                item.setCheckState(QtCore.Qt.Checked)
+                item.setCheckState(QtCore.Qt.CheckState.Checked)
             else:
-                item.setCheckState(QtCore.Qt.Unchecked)
+                item.setCheckState(QtCore.Qt.CheckState.Unchecked)
             self.columnList.addItem(item)
         self.columnList.blockSignals(False)
         
 
     def itemChanged(self, item):
         col = str(item.text())
-        if item.checkState() == QtCore.Qt.Checked:
+        if item.checkState() == QtCore.Qt.CheckState.Checked:
             if col not in self.columns:
                 self.columns.add(col)
                 self.addOutput(col)

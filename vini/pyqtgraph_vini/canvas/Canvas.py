@@ -13,8 +13,8 @@ if QT_LIB == 'PySide':
     from .CanvasTemplate_pyside import *
 elif QT_LIB == 'PyQt4':
     from .CanvasTemplate_pyqt import *
-elif QT_LIB == 'PyQt5':
-    from .CanvasTemplate_pyqt5 import *
+elif QT_LIB == 'PyQt6' or QT_LIB == 'PyQt5':
+    from .CanvasTemplate_pyqt6_pyqt5 import *
     
 import numpy as np
 from .. import debug
@@ -192,13 +192,13 @@ class Canvas(QtGui.QWidget):
             citem = item.canvasItem()
         except AttributeError:
             return
-        if item.checkState(0) == QtCore.Qt.Checked:
+        if item.checkState(0) == QtCore.Qt.CheckState.Checked:
             for i in range(item.childCount()):
-                item.child(i).setCheckState(0, QtCore.Qt.Checked)
+                item.child(i).setCheckState(0, QtCore.Qt.CheckState.Checked)
             citem.show()
         else:
             for i in range(item.childCount()):
-                item.child(i).setCheckState(0, QtCore.Qt.Unchecked)
+                item.child(i).setCheckState(0, QtCore.Qt.CheckState.Unchecked)
             citem.hide()
 
     def treeItemSelected(self):
@@ -403,14 +403,14 @@ class Canvas(QtGui.QWidget):
                 insertLocation = i+1
                 
         node = QtGui.QTreeWidgetItem([name])
-        flags = node.flags() | QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsDragEnabled
+        flags = node.flags() | QtCore.Qt.ItemFlag.ItemIsUserCheckable | QtCore.Qt.ItemIsDragEnabled
         if not isinstance(citem, GroupCanvasItem):
             flags = flags & ~QtCore.Qt.ItemIsDropEnabled
         node.setFlags(flags)
         if citem.opts['visible']:
-            node.setCheckState(0, QtCore.Qt.Checked)
+            node.setCheckState(0, QtCore.Qt.CheckState.Checked)
         else:
-            node.setCheckState(0, QtCore.Qt.Unchecked)
+            node.setCheckState(0, QtCore.Qt.CheckState.Unchecked)
         
         node.name = name
         #if citem.opts['parent'] != None:
@@ -450,8 +450,8 @@ class Canvas(QtGui.QWidget):
                     #break
             #if nextnode is None:  ## If name doesn't exist, create it
                 #nextnode = QtGui.QTreeWidgetItem([n])
-                #nextnode.setFlags((nextnode.flags() | QtCore.Qt.ItemIsUserCheckable) & ~QtCore.Qt.ItemIsDropEnabled)
-                #nextnode.setCheckState(0, QtCore.Qt.Checked)
+                #nextnode.setFlags((nextnode.flags() | QtCore.Qt.ItemFlag.ItemIsUserCheckable) & ~QtCore.Qt.ItemIsDropEnabled)
+                #nextnode.setCheckState(0, QtCore.Qt.CheckState.Checked)
                 ### Add node to correct position in list by Z-value
                 ###print "  ==>", insertLocation
                 #currentNode.insertChild(insertLocation, nextnode)
@@ -509,13 +509,13 @@ class Canvas(QtGui.QWidget):
         
     def itemVisibilityChanged(self, item):
         listItem = item.listItem
-        checked = listItem.checkState(0) == QtCore.Qt.Checked
+        checked = listItem.checkState(0) == QtCore.Qt.CheckState.Checked
         vis = item.isVisible()
         if vis != checked:
             if vis:
-                listItem.setCheckState(0, QtCore.Qt.Checked)
+                listItem.setCheckState(0, QtCore.Qt.CheckState.Checked)
             else:
-                listItem.setCheckState(0, QtCore.Qt.Unchecked)
+                listItem.setCheckState(0, QtCore.Qt.CheckState.Unchecked)
 
     def removeItem(self, item):
         if isinstance(item, QtGui.QTreeWidgetItem):

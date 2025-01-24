@@ -1,6 +1,6 @@
 import weakref
 import numpy as np
-from ..Qt import QtGui, QtCore
+from ..Qt import QtGui, QtCore, QtWidgets
 from ..python2_3 import sortList
 from .. import functions as fn
 from .GraphicsObject import GraphicsObject
@@ -72,21 +72,8 @@ class TickSliderItem(GraphicsWidget):
         }
         
         self.setOrientation(orientation)
-        #self.setFrameStyle(QtGui.QFrame.NoFrame | QtGui.QFrame.Plain)
-        #self.setBackgroundRole(QtGui.QPalette.NoRole)
-        #self.setMouseTracking(True)
-        
-    #def boundingRect(self):
-        #return self.mapRectFromParent(self.geometry()).normalized()
-        
-    #def shape(self):  ## No idea why this is necessary, but rotated items do not receive clicks otherwise.
-        #p = QtGui.QPainterPath()
-        #p.addRect(self.boundingRect())
-        #return p
         
     def paint(self, p, opt, widget):
-        #p.setPen(fn.mkPen('g', width=3))
-        #p.drawRect(self.boundingRect())
         return
         
     def keyPressEvent(self, ev):
@@ -174,7 +161,6 @@ class TickSliderItem(GraphicsWidget):
             self.scene().removeItem(tick)
     
     def tickMoved(self, tick, pos):
-        #print "tick changed"
         ## Correct position of tick if it has left bounds.
         newX = min(max(0, pos.x()), self.length)
         pos.setX(newX)
@@ -185,7 +171,7 @@ class TickSliderItem(GraphicsWidget):
         pass
     
     def tickClicked(self, tick, ev):
-        if ev.button() == QtCore.Qt.RightButton:
+        if ev.button() == QtCore.Qt.MouseButton.RightButton:
             self.removeTick(tick)
     
     def widgetLength(self):
@@ -198,11 +184,6 @@ class TickSliderItem(GraphicsWidget):
         wlen = max(40, self.widgetLength())
         self.setLength(wlen-self.tickSize-2)
         self.setOrientation(self.orientation)
-        #bounds = self.scene().itemsBoundingRect()
-        #bounds.setLeft(min(-self.tickSize*0.5, bounds.left()))
-        #bounds.setRight(max(self.length + self.tickSize, bounds.right()))
-        #self.setSceneRect(bounds)
-        #self.fitInView(bounds, QtCore.Qt.KeepAspectRatio)
         
     def setLength(self, newLen):
         #private
@@ -210,35 +191,9 @@ class TickSliderItem(GraphicsWidget):
             t.setPos(x * newLen + 1, t.pos().y())
         self.length = float(newLen)
         
-    #def mousePressEvent(self, ev):
-        #QtGui.QGraphicsView.mousePressEvent(self, ev)
-        #self.ignoreRelease = False
-        #for i in self.items(ev.pos()):
-            #if isinstance(i, Tick):
-                #self.ignoreRelease = True
-                #break
-        ##if len(self.items(ev.pos())) > 0:  ## Let items handle their own clicks
-            ##self.ignoreRelease = True
-        
-    #def mouseReleaseEvent(self, ev):
-        #QtGui.QGraphicsView.mouseReleaseEvent(self, ev)
-        #if self.ignoreRelease:
-            #return
-            
-        #pos = self.mapToScene(ev.pos())
-            
-        #if ev.button() == QtCore.Qt.LeftButton and self.allowAdd:
-            #if pos.x() < 0 or pos.x() > self.length:
-                #return
-            #if pos.y() < 0 or pos.y() > self.tickSize:
-                #return
-            #pos.setX(min(max(pos.x(), 0), self.length))
-            #self.addTick(pos.x()/self.length)
-        #elif ev.button() == QtCore.Qt.RightButton:
-            #self.showMenu(ev)
             
     def mouseClickEvent(self, ev):
-        if ev.button() == QtCore.Qt.LeftButton and self.allowAdd:
+        if ev.button() == QtCore.Qt.MouseButton.LeftButton and self.allowAdd:
             pos = ev.pos()
             if pos.x() < 0 or pos.x() > self.length:
                 return
@@ -246,29 +201,13 @@ class TickSliderItem(GraphicsWidget):
                 return
             pos.setX(min(max(pos.x(), 0), self.length))
             self.addTick(pos.x()/self.length)
-        elif ev.button() == QtCore.Qt.RightButton:
+        elif ev.button() == QtCore.Qt.MouseButton.RightButton:
             self.showMenu(ev)
 
-        #if  ev.button() == QtCore.Qt.RightButton:
-            #if self.moving:
-                #ev.accept()
-                #self.setPos(self.startPosition)
-                #self.moving = False
-                #self.sigMoving.emit(self)
-                #self.sigMoved.emit(self)
-            #else:
-                #pass
-                #self.view().tickClicked(self, ev)
-                ###remove
 
     def hoverEvent(self, ev):
-        if (not ev.isExit()) and ev.acceptClicks(QtCore.Qt.LeftButton):
-            ev.acceptClicks(QtCore.Qt.RightButton)
-            ## show ghost tick
-            #self.currentPen = fn.mkPen(255, 0,0)
-        #else:
-            #self.currentPen = self.pen
-        #self.update()
+        if (not ev.isExit()) and ev.acceptClicks(QtCore.Qt.MouseButton.LeftButton):
+            ev.acceptClicks(QtCore.Qt.MouseButton.RightButton)
         
     def showMenu(self, ev):
         pass
@@ -288,7 +227,6 @@ class TickSliderItem(GraphicsWidget):
         tick = self.getTick(tick)
         tick.color = color
         tick.update()
-        #tick.setBrush(QtGui.QBrush(QtGui.QColor(tick.color)))
 
     def setTickValue(self, tick, val):
         ## public
@@ -340,9 +278,6 @@ class TickSliderItem(GraphicsWidget):
         if type(tick) is int:
             tick = self.listTicks()[tick][0]
         return tick
-
-    #def mouseMoveEvent(self, ev):
-        #QtGui.QGraphicsView.mouseMoveEvent(self, ev)
 
     def listTicks(self):
         """Return a sorted list of all the Tick objects on the slider."""
@@ -398,8 +333,8 @@ class GradientEditorItem(TickSliderItem):
         TickSliderItem.__init__(self, *args, **kargs)
         
         self.colorDialog = QtGui.QColorDialog()
-        self.colorDialog.setOption(QtGui.QColorDialog.ShowAlphaChannel, True)
-        self.colorDialog.setOption(QtGui.QColorDialog.DontUseNativeDialog, True)
+        self.colorDialog.setOption(QtWidgets.QColorDialog.ColorDialogOption.ShowAlphaChannel, True)
+        self.colorDialog.setOption(QtWidgets.QColorDialog.ColorDialogOption.DontUseNativeDialog, True)
         
         self.colorDialog.currentColorChanged.connect(self.currentColorChanged)
         self.colorDialog.rejected.connect(self.currentColorRejected)
@@ -549,9 +484,9 @@ class GradientEditorItem(TickSliderItem):
         
     def tickClicked(self, tick, ev):
         #private
-        if ev.button() == QtCore.Qt.LeftButton:
+        if ev.button() == QtCore.Qt.MouseButton.LeftButton:
             self.raiseColorDialog(tick)
-        elif ev.button() == QtCore.Qt.RightButton:
+        elif ev.button() == QtCore.Qt.MouseButton.RightButton:
             self.raiseTickContextMenu(tick, ev)
             
     def raiseColorDialog(self, tick):
@@ -795,13 +730,13 @@ class GradientEditorItem(TickSliderItem):
         self.sigGradientChangeFinished.emit(self)
 
 
-class Tick(QtGui.QGraphicsWidget):  ## NOTE: Making this a subclass of GraphicsObject instead results in
+class Tick(QtWidgets.QGraphicsWidget):  ## NOTE: Making this a subclass of GraphicsObject instead results in
                                     ## activating this bug: https://bugreports.qt-project.org/browse/PYSIDE-86
     ## private class
 
-    # When making Tick a subclass of QtGui.QGraphicsObject as origin,
+    # When making Tick a subclass of QtWidgets.QGraphicsObject as origin,
     # ..GraphicsScene.items(self, *args) will get Tick object as a
-    # class of QtGui.QMultimediaWidgets.QGraphicsVideoItem in python2.7-PyQt5(5.4.0)
+    # class of QtGui.QMultimediaWidgets.QGraphicsVideoItem in python2.7-PyQt6(5.4.0)
 
     sigMoving = QtCore.Signal(object)
     sigMoved = QtCore.Signal(object)
@@ -820,7 +755,7 @@ class Tick(QtGui.QGraphicsWidget):  ## NOTE: Making this a subclass of GraphicsO
         self.lineTo(QtCore.QPointF(scale/3**0.5, scale))
         self.closeSubpath()
         
-        QtGui.QGraphicsWidget.__init__(self)
+        QtWidgets.QGraphicsWidget.__init__(self)
         self.setPos(pos[0], pos[1])
         if self.movable:
             self.setZValue(1)
@@ -834,7 +769,7 @@ class Tick(QtGui.QGraphicsWidget):  ## NOTE: Making this a subclass of GraphicsO
         return self.pg
 
     def paint(self, p, *args):
-        p.setRenderHints(QtGui.QPainter.Antialiasing)
+        p.setRenderHints(QtGui.QPainter.RenderHint.Antialiasing)
         p.fillPath(self.pg, fn.mkBrush(self.color))
         
         p.setPen(self.currentPen)
@@ -842,7 +777,7 @@ class Tick(QtGui.QGraphicsWidget):  ## NOTE: Making this a subclass of GraphicsO
 
 
     def mouseDragEvent(self, ev):
-        if self.movable and ev.button() == QtCore.Qt.LeftButton:
+        if self.movable and ev.button() == QtCore.Qt.MouseButton.LeftButton:
             if ev.isStart():
                 self.moving = True
                 self.cursorOffset = self.pos() - self.mapToParent(ev.buttonDownPos())
@@ -864,7 +799,7 @@ class Tick(QtGui.QGraphicsWidget):  ## NOTE: Making this a subclass of GraphicsO
                 self.view().tickMoveFinished(self)
 
     def mouseClickEvent(self, ev):
-        if  ev.button() == QtCore.Qt.RightButton and self.moving:
+        if  ev.button() == QtCore.Qt.MouseButton.RightButton and self.moving:
             ev.accept()
             self.setPos(self.startPosition)
             self.view().tickMoved(self, self.startPosition)
@@ -876,9 +811,9 @@ class Tick(QtGui.QGraphicsWidget):  ## NOTE: Making this a subclass of GraphicsO
             ##remove
 
     def hoverEvent(self, ev):
-        if (not ev.isExit()) and ev.acceptDrags(QtCore.Qt.LeftButton):
-            ev.acceptClicks(QtCore.Qt.LeftButton)
-            ev.acceptClicks(QtCore.Qt.RightButton)
+        if (not ev.isExit()) and ev.acceptDrags(QtCore.Qt.MouseButton.LeftButton):
+            ev.acceptClicks(QtCore.Qt.MouseButton.LeftButton)
+            ev.acceptClicks(QtCore.Qt.MouseButton.RightButton)
             self.currentPen = self.hoverPen
         else:
             self.currentPen = self.pen
@@ -905,23 +840,15 @@ class TickMenu(QtGui.QMenu):
         value = sliderItem.tickValue(tick)
         self.fracPosSpin = SpinBox()
         self.fracPosSpin.setOpts(value=value, bounds=(0.0, 1.0), step=0.01, decimals=2)
-        #self.dataPosSpin = SpinBox(value=dataVal)
-        #self.dataPosSpin.setOpts(decimals=3, siPrefix=True)
                 
         l.addWidget(QtGui.QLabel("Position:"), 0,0)
         l.addWidget(self.fracPosSpin, 0, 1)
-        #l.addWidget(QtGui.QLabel("Position (data units):"), 1, 0)
-        #l.addWidget(self.dataPosSpin, 1,1)
-        
-        #if self.sliderItem().dataParent is None:
-        #    self.dataPosSpin.setEnabled(False)
         
         a = QtGui.QWidgetAction(self)
         a.setDefaultWidget(w)
         positionMenu.addAction(a)        
         
         self.fracPosSpin.sigValueChanging.connect(self.fractionalValueChanged)
-        #self.dataPosSpin.valueChanged.connect(self.dataValueChanged)
         
         colorAct = self.addAction("Set Color", lambda: self.sliderItem().raiseColorDialog(self.tick()))
         if not self.tick().colorChangeAllowed:
@@ -929,14 +856,4 @@ class TickMenu(QtGui.QMenu):
 
     def fractionalValueChanged(self, x):
         self.sliderItem().setTickValue(self.tick(), self.fracPosSpin.value())
-        #if self.sliderItem().dataParent is not None:
-        #    self.dataPosSpin.blockSignals(True)
-        #    self.dataPosSpin.setValue(self.sliderItem().tickDataValue(self.tick()))
-        #    self.dataPosSpin.blockSignals(False)
-            
-    #def dataValueChanged(self, val):
-    #    self.sliderItem().setTickValue(self.tick(), val, dataUnits=True)
-    #    self.fracPosSpin.blockSignals(True)
-    #    self.fracPosSpin.setValue(self.sliderItem().tickValue(self.tick()))
-    #    self.fracPosSpin.blockSignals(False)
 

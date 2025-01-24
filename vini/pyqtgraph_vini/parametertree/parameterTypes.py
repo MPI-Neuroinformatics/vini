@@ -4,7 +4,6 @@ from .Parameter import Parameter, registerParameterType
 from .ParameterItem import ParameterItem
 from ..widgets.SpinBox import SpinBox
 from ..widgets.ColorButton import ColorButton
-#from ..widgets.GradientWidget import GradientWidget ## creates import loop
 from .. import pixmaps as pixmaps
 from .. import functions as fn
 import os
@@ -152,16 +151,14 @@ class WidgetParameterItem(ParameterItem):
         ## filter widget's events
         ## catch TAB to change focus
         ## catch focusOut to hide editor
-        if ev.type() == ev.KeyPress:
-            if ev.key() == QtCore.Qt.Key_Tab:
+        if ev.type() == ev.Type.KeyPress:
+            if ev.key() == QtCore.Qt.Key.Key_Tab:
                 self.focusNext(forward=True)
                 return True ## don't let anyone else see this event
-            elif ev.key() == QtCore.Qt.Key_Backtab:
+            elif ev.key() == QtCore.Qt.Key.Key_Backtab:
                 self.focusNext(forward=False)
                 return True ## don't let anyone else see this event
             
-        #elif ev.type() == ev.FocusOut:
-            #self.hideEditor()
         return False
         
     def setFocus(self):
@@ -230,7 +227,7 @@ class WidgetParameterItem(ParameterItem):
     def showEditor(self):
         self.widget.show()
         self.displayLabel.hide()
-        self.widget.setFocus(QtCore.Qt.OtherFocusReason)
+        self.widget.setFocus(QtCore.Qt.FocusReason.OtherFocusReason)
         if isinstance(self.widget, SpinBox):
             self.widget.selectNumber()  # select the numerical portion of the text for quick editing
 
@@ -270,7 +267,6 @@ class WidgetParameterItem(ParameterItem):
     def optsChanged(self, param, opts):
         """Called when any options are changed that are not
         name, value, default, or limits"""
-        #print "opts changed:", opts
         ParameterItem.optsChanged(self, param, opts)
         
         if 'readonly' in opts:
@@ -358,10 +354,9 @@ class GroupParameterItem(ParameterItem):
             w.setLayout(l)
             l.addWidget(self.addWidget)
             l.addStretch()
-            #l.addItem(QtGui.QSpacerItem(200, 10, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum))
             self.addWidgetBox = w
             self.addItem = QtGui.QTreeWidgetItem([])
-            self.addItem.setFlags(QtCore.Qt.ItemIsEnabled)
+            self.addItem.setFlags(QtCore.Qt.ItemFlag.ItemIsEnabled)
             ParameterItem.addChild(self, self.addItem)
             
     def updateDepth(self, depth):
@@ -381,7 +376,6 @@ class GroupParameterItem(ParameterItem):
                 self.setBackground(c, QtGui.QBrush(QtGui.QColor(220,220,220)))
                 font = self.font(c)
                 font.setBold(True)
-                #font.setPointSize(font.pointSize()+1)
                 self.setFont(c, font)
                 self.setSizeHint(0, QtCore.QSize(0, 20))
     
@@ -507,7 +501,7 @@ class ListParameterItem(WidgetParameterItem):
         self.forward, self.reverse = ListParameter.mapping(limits)
         try:
             self.widget.blockSignals(True)
-            val = self.targetValue  #asUnicode(self.widget.currentText())
+            val = self.targetValue
             
             self.widget.clear()
             for k in self.forward:
@@ -542,20 +536,6 @@ class ListParameter(Parameter):
         if len(self.reverse[0]) > 0 and self.value() not in self.reverse[0]:
             self.setValue(self.reverse[0][0])
             
-    #def addItem(self, name, value=None):
-        #if name in self.forward:
-            #raise Exception("Name '%s' is already in use for this parameter" % name)
-        #limits = self.opts['limits']
-        #if isinstance(limits, dict):
-            #limits = limits.copy()
-            #limits[name] = value
-            #self.setLimits(limits)
-        #else:
-            #if value is not None:
-                #raise Exception  ## raise exception or convert to dict?
-            #limits = limits[:]
-            #limits.append(name)
-        ## what if limits == None?
             
     @staticmethod
     def mapping(limits):
@@ -586,7 +566,6 @@ class ActionParameterItem(ParameterItem):
         self.layout = QtGui.QHBoxLayout()
         self.layoutWidget.setLayout(self.layout)
         self.button = QtGui.QPushButton(param.name())
-        #self.layout.addSpacing(100)
         self.layout.addWidget(self.button)
         self.layout.addStretch()
         self.button.clicked.connect(self.buttonClicked)

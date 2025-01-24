@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from weakref import *
-from ..Qt import QtGui, QtCore
-from ..python2_3 import xrange
+from ..Qt import QtGui, QtCore, QtWidgets
 
 
 __all__ = ['TreeWidget', 'TreeWidgetItem']
@@ -19,7 +18,7 @@ class TreeWidget(QtGui.QTreeWidget):
         #self.itemWidgets = WeakKeyDictionary()
         self.setAcceptDrops(True)
         self.setDragEnabled(True)
-        self.setEditTriggers(QtGui.QAbstractItemView.EditKeyPressed|QtGui.QAbstractItemView.SelectedClicked)
+        self.setEditTriggers(QtWidgets.QAbstractItemView.EditTrigger.EditKeyPressed|QtWidgets.QAbstractItemView.EditTrigger.SelectedClicked)
         self.placeholders = []
         self.childNestingLimit = None
 
@@ -109,7 +108,7 @@ class TreeWidget(QtGui.QTreeWidget):
             self.recoverMove(item.child(i))
         
         item.setExpanded(False)  ## Items do not re-expand correctly unless they are collapsed first.
-        QtGui.QApplication.instance().processEvents()
+        QtWidgets.QApplication.instance().processEvents()
         item.setExpanded(item.__expanded)
         
     def collapseTree(self, item):
@@ -223,7 +222,7 @@ class TreeWidgetItem(QtGui.QTreeWidgetItem):
         
         
     def setChecked(self, column, checked):
-        self.setCheckState(column, QtCore.Qt.Checked if checked else QtCore.Qt.Unchecked)
+        self.setCheckState(column, QtCore.Qt.CheckState.Checked if checked else QtCore.Qt.CheckState.Unchecked)
         
     def setWidget(self, column, widget):
         if column in self._widgets:

@@ -141,13 +141,13 @@ class MosaicSliceBox(ViewBox):
         dif = dif * -1
 
         ## Ignore axes if mouse is disabled
-        mouseEnabled = np.array(self.state['mouseEnabled'], dtype=np.float)
+        mouseEnabled = np.array(self.state['mouseEnabled'], dtype=float)
         mask = mouseEnabled.copy()
         if axis is not None:
             mask[1-axis] = 0.0
 
         ## Scale or translate based on mouse button
-        if ev.button() & (QtCore.Qt.RightButton | QtCore.Qt.MidButton):
+        if ev.button() & (QtCore.Qt.MouseButton.RightButton | QtCore.Qt.MouseButton.MiddleButton):
 
             if self.state['mouseMode'] == MosaicSliceBox.RectMode:
                 if ev.isFinish():  ## This is the final move in the drag; change the view scale now

@@ -141,13 +141,13 @@ class SliceBox(ViewBox):
         dif = dif * -1
 
         ## Ignore axes if mouse is disabled
-        mouseEnabled = np.array(self.state['mouseEnabled'], dtype=np.float)
+        mouseEnabled = np.array(self.state['mouseEnabled'], dtype=float)
         mask = mouseEnabled.copy()
         if axis is not None:
             mask[1-axis] = 0.0
 
         ## Scale or translate based on mouse button
-        if ev.button() & (QtCore.Qt.RightButton | QtCore.Qt.MidButton):
+        if ev.button() & (QtCore.Qt.MouseButton.RightButton | QtCore.Qt.MouseButton.MiddleButton):
 
             if self.state['mouseMode'] == SliceBox.RectMode:
                 if ev.isFinish():  ## This is the final move in the drag; change the view scale now
@@ -174,7 +174,7 @@ class SliceBox(ViewBox):
                     self.translateBy(x=x, y=y)
                 self.sigRangeChangedManually.emit(self.state['mouseEnabled'])
         """
-        if ev.button() & QtCore.Qt.RightButton:
+        if ev.button() & QtCore.Qt.MouseButton.RightButton:
             #print "vb.rightDrag"
             if self.state['aspectLocked'] is not False:
                 mask[0] = 0
@@ -190,7 +190,7 @@ class SliceBox(ViewBox):
             x = s[0] if mouseEnabled[0] == 1 else None
             y = s[1] if mouseEnabled[1] == 1 else None
 
-            center = Point(tr.map(ev.buttonDownPos(QtCore.Qt.RightButton)))
+            center = Point(tr.map(ev.buttonDownPos(QtCore.Qt.MouseButton.RightButton)))
             self._resetTarget()
             self.scaleBy(x=x, y=y, center=center)
             self.sigRangeChangedManually.emit(self.state['mouseEnabled'])
@@ -231,7 +231,7 @@ class SliceBox(ViewBox):
     #         event.ignore()
 
     def wheelEvent(self, ev, axis=None):
-        mask = np.array(self.state['mouseEnabled'], dtype=np.float)
+        mask = np.array(self.state['mouseEnabled'], dtype=float)
         if axis is not None and axis >= 0 and axis < len(mask):
             mv = mask[axis]
             mask[:] = 0

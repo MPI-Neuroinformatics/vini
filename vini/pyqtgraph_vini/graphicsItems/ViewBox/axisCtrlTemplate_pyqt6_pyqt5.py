@@ -3,11 +3,15 @@
 # Form implementation generated from reading ui file './pyqtgraph/graphicsItems/ViewBox/axisCtrlTemplate.ui'
 #
 # Created: Wed Mar 26 15:09:28 2014
-#      by: PyQt5 UI code generator 5.0.1
+#      by: PyQt6 UI code generator 5.0.1
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+try:
+    from PyQt6 import QtCore, QtGui, QtWidgets
+except ImportError:
+    from PyQt5 import QtCore, QtGui, QtWidgets  
+
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -22,7 +26,7 @@ class Ui_Form(object):
         self.label.setObjectName("label")
         self.gridLayout.addWidget(self.label, 7, 0, 1, 2)
         self.linkCombo = QtWidgets.QComboBox(Form)
-        self.linkCombo.setSizeAdjustPolicy(QtWidgets.QComboBox.AdjustToContents)
+        self.linkCombo.setSizeAdjustPolicy(QtWidgets.QComboBox.SizeAdjustPolicy.AdjustToContents)
         self.linkCombo.setObjectName("linkCombo")
         self.gridLayout.addWidget(self.linkCombo, 7, 2, 1, 2)
         self.autoPercentSpin = QtWidgets.QSpinBox(Form)

@@ -42,7 +42,7 @@ class RemoteGraphicsView(QtGui.QWidget):
         self._view._setProxyOptions(deferGetattr=True)
         
         self.setFocusPolicy(QtCore.Qt.StrongFocus)
-        self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        self.setSizePolicy(QtGui.QSizePolicy.Policy.Expanding, QtGui.QSizePolicy.Policy.Expanding)
         self.setMouseTracking(True)
         self.shm = None
         shmFileName = self._view.shmFileName()
@@ -85,7 +85,7 @@ class RemoteGraphicsView(QtGui.QWidget):
                 self.shm = mmap.mmap(self.shmFile.fileno(), size, mmap.MAP_SHARED, mmap.PROT_READ)
         self.shm.seek(0)
         data = self.shm.read(w*h*4)
-        self._img = QtGui.QImage(data, w, h, QtGui.QImage.Format_ARGB32)
+        self._img = QtGui.QImage(data, w, h, QtGui.QImage.Format.Format_ARGB32)
         self._img.data = data  # data must be kept alive or PySide 1.2.1 (and probably earlier) will crash.
         self.update()
         
@@ -211,19 +211,19 @@ class Renderer(GraphicsView):
             if USE_PYSIDE:
                 ch = ctypes.c_char.from_buffer(self.shm, 0)
                 #ch = ctypes.c_char_p(address)
-                self.img = QtGui.QImage(ch, self.width(), self.height(), QtGui.QImage.Format_ARGB32)
+                self.img = QtGui.QImage(ch, self.width(), self.height(), QtGui.QImage.Format.Format_ARGB32)
             else:
                 address = ctypes.addressof(ctypes.c_char.from_buffer(self.shm, 0))
 
                 # different versions of pyqt have different requirements here..
                 try:
-                    self.img = QtGui.QImage(sip.voidptr(address), self.width(), self.height(), QtGui.QImage.Format_ARGB32)
+                    self.img = QtGui.QImage(sip.voidptr(address), self.width(), self.height(), QtGui.QImage.Format.Format_ARGB32)
                 except TypeError:
                     try:
-                        self.img = QtGui.QImage(memoryview(buffer(self.shm)), self.width(), self.height(), QtGui.QImage.Format_ARGB32)
+                        self.img = QtGui.QImage(memoryview(buffer(self.shm)), self.width(), self.height(), QtGui.QImage.Format.Format_ARGB32)
                     except TypeError:
                         # Works on PyQt 4.9.6
-                        self.img = QtGui.QImage(address, self.width(), self.height(), QtGui.QImage.Format_ARGB32)
+                        self.img = QtGui.QImage(address, self.width(), self.height(), QtGui.QImage.Format.Format_ARGB32)
             self.img.fill(0xffffffff)
             p = QtGui.QPainter(self.img)
             self.render(p, self.viewRect(), self.rect())
@@ -254,7 +254,7 @@ class Renderer(GraphicsView):
     def wheelEvent(self, pos, gpos, d, btns, mods, ori):
         btns = QtCore.Qt.MouseButtons(btns)
         mods = QtCore.Qt.KeyboardModifiers(mods)
-        ori = (None, QtCore.Qt.Horizontal, QtCore.Qt.Vertical)[ori]
+        ori = (None, QtCore.Qt.Orientation.Horizontal, QtCore.Qt.Vertical)[ori]
         return GraphicsView.wheelEvent(self, QtGui.QWheelEvent(pos, gpos, d, btns, mods, ori))
 
     def keyEvent(self, typ, mods, text, autorep, count):

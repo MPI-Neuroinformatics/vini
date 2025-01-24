@@ -84,7 +84,7 @@ class ArrowItem(QtGui.QGraphicsPathItem):
             self.setFlags(self.flags() & ~self.ItemIgnoresTransformations)
         
     def paint(self, p, *args):
-        p.setRenderHint(QtGui.QPainter.Antialiasing)
+        p.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing)
         QtGui.QGraphicsPathItem.paint(self, p, *args)
         
         #p.setPen(fn.mkPen('r'))

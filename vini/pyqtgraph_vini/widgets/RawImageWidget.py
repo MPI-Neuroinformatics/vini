@@ -22,7 +22,7 @@ class RawImageWidget(QtGui.QWidget):
         Setting scaled=True will cause the entire image to be displayed within the boundaries of the widget. This also greatly reduces the speed at which it will draw frames.
         """
         QtGui.QWidget.__init__(self, parent=None)
-        self.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Expanding))
+        self.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Policy.Expanding,QtGui.QSizePolicy.Policy.Expanding))
         self.scaled = scaled
         self.opts = None
         self.image = None

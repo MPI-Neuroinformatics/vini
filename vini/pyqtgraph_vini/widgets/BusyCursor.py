@@ -1,4 +1,4 @@
-from ..Qt import QtGui, QtCore
+from ..Qt import QtGui, QtCore, QtWidgets
 
 __all__ = ['BusyCursor']
 
@@ -14,11 +14,11 @@ class BusyCursor(object):
     active = []
 
     def __enter__(self):
-        QtGui.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.WaitCursor))
+        QtWidgets.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.WaitCursor))
         BusyCursor.active.append(self)
 
     def __exit__(self, *args):
         BusyCursor.active.pop(-1)
         if len(BusyCursor.active) == 0:
-            QtGui.QApplication.restoreOverrideCursor()
+            QtWidgets.QApplication.restoreOverrideCursor()
         

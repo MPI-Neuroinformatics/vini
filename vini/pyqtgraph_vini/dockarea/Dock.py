@@ -1,4 +1,4 @@
-from ..Qt import QtCore, QtGui
+from ..Qt import QtCore, QtGui, QtWidgets
 
 from .DockDrop import *
 from ..widgets.VerticalLabel import VerticalLabel
@@ -34,7 +34,7 @@ class Dock(QtGui.QWidget, DockDrop):
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setSpacing(0)
         self.widgetArea.setLayout(self.layout)
-        self.widgetArea.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        self.widgetArea.setSizePolicy(QtGui.QSizePolicy.Policy.Expanding, QtGui.QSizePolicy.Policy.Expanding)
         self.widgets = []
         self.currentRow = 0
         #self.titlePos = 'top'
@@ -210,7 +210,7 @@ class Dock(QtGui.QWidget, DockDrop):
         self.drag.setMimeData(mime)
         self.widgetArea.setStyleSheet(self.dragStyle)
         self.update()
-        action = self.drag.exec_()
+        action = self.drag.exec()
         self.updateStyle()
         
     def float(self):
@@ -277,7 +277,7 @@ class DockLabel(VerticalLabel):
         if showCloseButton:
             self.closeButton = QtGui.QToolButton(self)
             self.closeButton.clicked.connect(self.sigCloseClicked)
-            self.closeButton.setIcon(QtGui.QApplication.style().standardIcon(QtGui.QStyle.SP_TitleBarCloseButton))
+            self.closeButton.setIcon(QtWidgets.QApplication.style().standardIcon(QtGui.QStyle.SP_TitleBarCloseButton))
 
     def updateStyle(self):
         r = '3px'
@@ -329,13 +329,13 @@ class DockLabel(VerticalLabel):
         self.updateStyle()
 
     def mousePressEvent(self, ev):
-        if ev.button() == QtCore.Qt.LeftButton:
+        if ev.button() == QtCore.Qt.MouseButton.LeftButton:
             self.pressPos = ev.pos()
             self.startedDrag = False
             ev.accept()
         
     def mouseMoveEvent(self, ev):
-        if not self.startedDrag and (ev.pos() - self.pressPos).manhattanLength() > QtGui.QApplication.startDragDistance():
+        if not self.startedDrag and (ev.pos() - self.pressPos).manhattanLength() > QtWidgets.QApplication.startDragDistance():
             self.dock.startDrag()
         ev.accept()
             
@@ -345,7 +345,7 @@ class DockLabel(VerticalLabel):
         ev.accept()
         
     def mouseDoubleClickEvent(self, ev):
-        if ev.button() == QtCore.Qt.LeftButton:
+        if ev.button() == QtCore.Qt.MouseButton.LeftButton:
             self.dock.float()
             
     def resizeEvent (self, ev):

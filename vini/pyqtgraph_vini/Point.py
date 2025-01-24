@@ -152,4 +152,4 @@ class Point(QtCore.QPointF):
         return Point(self)
         
     def toQPoint(self):
-        return QtCore.QPoint(*self)
+        return self.toPoint()

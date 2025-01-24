@@ -235,7 +235,7 @@ class InfiniteLine(GraphicsObject):
             return (0,0)
 
     def mouseDragEvent(self, ev):
-        if self.movable and ev.button() == QtCore.Qt.LeftButton:
+        if self.movable and ev.button() == QtCore.Qt.MouseButton.LeftButton:
             if ev.isStart():
                 self.moving = True
                 self.cursorOffset = self.pos() - self.mapToParent(ev.buttonDownPos())
@@ -252,7 +252,7 @@ class InfiniteLine(GraphicsObject):
                 self.sigPositionChangeFinished.emit(self)
 
     def mouseClickEvent(self, ev):
-        if self.moving and ev.button() == QtCore.Qt.RightButton:
+        if self.moving and ev.button() == QtCore.Qt.MouseButton.RightButton:
             ev.accept()
             self.setPos(self.startPosition)
             self.moving = False
@@ -260,7 +260,7 @@ class InfiniteLine(GraphicsObject):
             self.sigPositionChangeFinished.emit(self)
 
     def hoverEvent(self, ev):
-        if (not ev.isExit()) and self.movable and ev.acceptDrags(QtCore.Qt.LeftButton):
+        if (not ev.isExit()) and self.movable and ev.acceptDrags(QtCore.Qt.MouseButton.LeftButton):
             self.setMouseHover(True)
         else:
             self.setMouseHover(False)
@@ -430,7 +430,7 @@ class InfLineLabel(TextItem):
         self.valueChanged()
         
     def mouseDragEvent(self, ev):
-        if self.movable and ev.button() == QtCore.Qt.LeftButton:
+        if self.movable and ev.button() == QtCore.Qt.MouseButton.LeftButton:
             if ev.isStart():
                 self._moving = True
                 self._cursorOffset = self._posToRel(ev.buttonDownPos())
@@ -447,14 +447,14 @@ class InfLineLabel(TextItem):
                 self._moving = False
 
     def mouseClickEvent(self, ev):
-        if self.moving and ev.button() == QtCore.Qt.RightButton:
+        if self.moving and ev.button() == QtCore.Qt.MouseButton.RightButton:
             ev.accept()
             self.orthoPos = self._startPosition
             self.moving = False
 
     def hoverEvent(self, ev):
         if not ev.isExit() and self.movable:
-            ev.acceptDrags(QtCore.Qt.LeftButton)
+            ev.acceptDrags(QtCore.Qt.MouseButton.LeftButton)
 
     def viewTransformChanged(self):
         self.updatePosition()

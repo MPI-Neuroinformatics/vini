@@ -139,7 +139,7 @@ class SplitContainer(Container, QtGui.QSplitter):
 
 class HContainer(SplitContainer):
     def __init__(self, area):
-        SplitContainer.__init__(self, area, QtCore.Qt.Horizontal)
+        SplitContainer.__init__(self, area, QtCore.Qt.Orientation.Horizontal)
         
     def type(self):
         return 'horizontal'
@@ -235,7 +235,7 @@ class TContainer(Container, QtGui.QWidget):
         self.tabClicked(item.label)
         
     def tabClicked(self, tab, ev=None):
-        if ev is None or ev.button() == QtCore.Qt.LeftButton:
+        if ev is None or ev.button() == QtCore.Qt.MouseButton.LeftButton:
             for i in range(self.count()):
                 w = self.widget(i)
                 if w is tab.dock:

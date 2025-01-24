@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from .Qt import QtCore, QtGui
+from .Qt import QtCore, QtGui, QtWidgets
 from .Point import Point
 import numpy as np
 
@@ -90,7 +90,7 @@ class SRTTransform(QtGui.QTransform):
         self.update()
         
     def translate(self, *args):
-        """Acceptable arguments are: 
+        """acceptable arguments are: 
            x, y
            [x, y]
            Point(x,y)"""
@@ -98,7 +98,7 @@ class SRTTransform(QtGui.QTransform):
         self.setTranslate(self._state['pos']+t)
         
     def setTranslate(self, *args):
-        """Acceptable arguments are: 
+        """acceptable arguments are: 
            x, y
            [x, y]
            Point(x,y)"""
@@ -106,7 +106,7 @@ class SRTTransform(QtGui.QTransform):
         self.update()
         
     def scale(self, *args):
-        """Acceptable arguments are: 
+        """acceptable arguments are: 
            x, y
            [x, y]
            Point(x,y)"""
@@ -114,7 +114,7 @@ class SRTTransform(QtGui.QTransform):
         self.setScale(self._state['scale'] * s)
         
     def setScale(self, *args):
-        """Acceptable arguments are: 
+        """acceptable arguments are: 
            x, y
            [x, y]
            Point(x,y)"""
@@ -172,13 +172,13 @@ if __name__ == '__main__':
     from . import widgets
     import GraphicsView
     from .functions import *
-    app = QtGui.QApplication([])
+    app = QtWidgets.QApplication([])
     win = QtGui.QMainWindow()
     win.show()
     cw = GraphicsView.GraphicsView()
     #cw.enableMouse()  
     win.setCentralWidget(cw)
-    s = QtGui.QGraphicsScene()
+    s = QtWidgets.QGraphicsScene()
     cw.setScene(s)
     win.resize(600,600)
     cw.enableMouse()

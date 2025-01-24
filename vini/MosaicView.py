@@ -61,12 +61,12 @@ class MosaicView(QtGui.QWidget):
         self.setLayout(self.layout)
 
         self.zoom_in = QtGui.QAction('ZoomIn', self)
-        self.zoom_in.setShortcut(QtGui.QKeySequence.ZoomIn)
+        self.zoom_in.setShortcut(QtGui.QKeySequence.StandardKey.ZoomIn)
         self.zoom_in.triggered.connect(self.zoomIn)
         self.addAction(self.zoom_in)
 
         self.zoom_out = QtGui.QAction('ZoomOut', self)
-        self.zoom_out.setShortcut(QtGui.QKeySequence.ZoomOut)
+        self.zoom_out.setShortcut(QtGui.QKeySequence.StandardKey.ZoomOut)
         self.zoom_out.triggered.connect(self.zoomOut)
         self.addAction(self.zoom_out)
 
@@ -77,7 +77,7 @@ class MosaicView(QtGui.QWidget):
 
         self.exit_action = QtGui.QAction(
             QtGui.QIcon.fromTheme("window-close"), '&Exit', self)
-        self.exit_action.setShortcut(QtGui.QKeySequence.Quit)
+        self.exit_action.setShortcut(QtGui.QKeySequence.StandardKey.Quit)
         self.exit_action.triggered.connect(self.close)
         
         self.addAction(self.exit_action)

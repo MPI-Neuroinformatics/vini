@@ -1,4 +1,4 @@
-from ..Qt import QtGui, QtCore
+from ..Qt import QtGui, QtCore, QtWidgets
 from .. import functions as fn
 from .GraphicsWidget import GraphicsWidget
 ## Must be imported at the end to avoid cyclic-dependency hell:
@@ -25,12 +25,8 @@ class GraphicsLayout(GraphicsWidget):
         self.rows = {}   ## row: {col1: item1, col2: item2, ...}    maps cell location to item
         self.currentRow = 0
         self.currentCol = 0
-        self.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding))
+        self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding))
     
-    #def resizeEvent(self, ev):
-        #ret = GraphicsWidget.resizeEvent(self, ev)
-        #print self.pos(), self.mapToDevice(self.rect().topLeft())
-        #return ret
 
     def setBorder(self, *args, **kwds):
         """

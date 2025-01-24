@@ -163,7 +163,7 @@ class TextItem(GraphicsObject):
             self.updateTransform()
             p.setTransform(self.sceneTransform())
         
-        if self.border.style() != QtCore.Qt.NoPen or self.fill.style() != QtCore.Qt.NoBrush:
+        if self.border.style() != QtCore.Qt.PenStyle.NoPen or self.fill.style() != QtCore.Qt.BrushStyle.NoBrush:
             p.setPen(self.border)
             p.setBrush(self.fill)
             p.setRenderHint(p.Antialiasing, True)

@@ -50,6 +50,11 @@ class MosaicDialog(QtGui.QDialog):
         self.form.addRow("Choose slice plane:", self.slice_plane)
 
         # range slider
+
+        self.slider_timer = QtCore.QTimer(self)
+        self.slider_timer.setSingleShot(True) 
+        self.slider_timer.timeout.connect(self.setRangeFromSlider)
+
         self.slider_color = QtGui.QColor()
         self.slider_color.setRgb(255, 110, 0)
         self.slider_block = False
@@ -58,7 +63,7 @@ class MosaicDialog(QtGui.QDialog):
         self.range_sld.setSpan(0, 255)
         self.range_sld.setGradientLeftColor(self.slider_color)
         self.range_sld.setGradientRightColor(self.slider_color)
-        self.range_sld.spanChanged.connect(self.setRangeFromSlider)
+        self.range_sld.spanChanged.connect(self.startSliderTimer)
         self.form.addRow("Range:", self.range_sld)
 
         self.start_le = QtGui.QLineEdit("0")
@@ -83,17 +88,17 @@ class MosaicDialog(QtGui.QDialog):
 
         self.increment_label = QtGui.QLabel("increment:")
         self.increment_label.setAlignment(
-            QtCore.Qt.AlignVCenter | QtCore.Qt.AlignCenter)
+           QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignCenter)
 
         # close button
         self.close_button = QtGui.QPushButton('close', self)
-        self.close_button.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.close_button.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
         self.close_button.clicked.connect(self.closeEvent)
-        self.close_button.setShortcut(QtGui.QKeySequence.Quit)
+        self.close_button.setShortcut(QtGui.QKeySequence.StandardKey.Quit)
 
         # Slice Button
         self.slice_button = QtGui.QPushButton('Slice to mosaic!', self)
-        self.slice_button.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.slice_button.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
         self.slice_button.clicked.connect(self.slice)
 
         self.layout.addWidget(self.form_part, 0, 0, 6, 6)
@@ -132,6 +137,9 @@ class MosaicDialog(QtGui.QDialog):
 
     def slice(self):
         self.sigFinished.emit()
+
+    def startSliderTimer(self):
+        self.slider_timer.start(1) 
 
     def setRangeFromSlider(self):
         """
@@ -172,21 +180,21 @@ class MosaicDialog(QtGui.QDialog):
             return 0
         if self.slice_plane.currentIndex() == 1:
             self.plane = 's'
-            self.range_sld.setRange(0, self.dims[0]-1)
+            self.range_sld.setRange(0, int(self.dims[0])-1)
             if self.end >= self.dims[0]:
                 self.end = self.dims[0]-1
                 self.end_le.setText(str(int(self.end)))
             self.range_sld.setUpperPosition(self.end)
         if self.slice_plane.currentIndex() == 2:
             self.plane = 'c'
-            self.range_sld.setRange(0, self.dims[1]-1)
+            self.range_sld.setRange(0, int(self.dims[1])-1)
             if self.end >= self.dims[1]:
                 self.end = self.dims[1]-1
                 self.end_le.setText(str(int(self.end)))
             self.range_sld.setUpperPosition(self.end)
         if self.slice_plane.currentIndex() == 0:
             self.plane = 't'
-            self.range_sld.setRange(0, self.dims[2]-1)
+            self.range_sld.setRange(0, int(self.dims[2])-1)
             if self.end >= self.dims[2]:
                 self.end = self.dims[2]-1
                 self.end_le.setText(str(int(self.end)))

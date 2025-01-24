@@ -34,7 +34,7 @@ class ScatterPlotWidget(QtGui.QSplitter):
     4) A PlotWidget for displaying the data.
     """
     def __init__(self, parent=None):
-        QtGui.QSplitter.__init__(self, QtCore.Qt.Horizontal)
+        QtGui.QSplitter.__init__(self, QtCore.Qt.Orientation.Horizontal)
         self.ctrlPanel = QtGui.QSplitter(QtCore.Qt.Vertical)
         self.addWidget(self.ctrlPanel)
         self.fieldList = QtGui.QListWidget()

@@ -1,4 +1,4 @@
-from ..Qt import QtCore, QtGui
+from ..Qt import QtCore, QtGui, QtWidgets
 from ..widgets.TreeWidget import TreeWidget
 import os, weakref, re
 from .ParameterItem import ParameterItem
@@ -18,14 +18,14 @@ class ParameterTree(TreeWidget):
         ============== ========================================================
         """
         TreeWidget.__init__(self, parent)
-        self.setVerticalScrollMode(self.ScrollPerPixel)
-        self.setHorizontalScrollMode(self.ScrollPerPixel)
+        self.setVerticalScrollMode(self.ScrollMode.ScrollPerPixel)
+        self.setHorizontalScrollMode(self.ScrollMode.ScrollPerPixel)
         self.setAnimated(False)
         self.setColumnCount(2)
         self.setHeaderLabels(["Parameter", "Value"])
         self.setAlternatingRowColors(True)
         self.paramSet = None
-        self.header().setResizeMode(QtGui.QHeaderView.ResizeToContents)
+        self.header().setResizeMode(QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
         self.setHeaderHidden(not showHeader)
         self.itemChanged.connect(self.itemChangedEvent)
         self.lastSel = None
