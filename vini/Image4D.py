@@ -93,7 +93,7 @@ class Image4D(Image):
         """
         if self.playing == False:
             if coord is not None:
-                coord = map(lambda x: int(x),coord)
+                coord = list(map(int, coord))
                 return self.image_res[coord[0],coord[1],coord[2]]
             else:
                 return self.image_res[self.coord[0],self.coord[1],self.coord[2]]

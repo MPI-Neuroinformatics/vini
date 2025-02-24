@@ -552,23 +552,42 @@ class Viff(QtGui.QMainWindow):
         button_row_fmrislider.addWidget(spacer,1)
         
         self.l.addLayout(button_row_fmrislider, 5, self.listoffset+2, 1, 1)
-        
-        
-        
-        
-                
-        row_intensity = QtGui.QHBoxLayout()
-        self.intensity_value = QtGui.QLabel('none')
-        self.intensity_value.setAlignment(QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft)
-        row_intensity.addWidget(self.intensity_value,1)
-        
+
+        intensity_layout = QtGui.QHBoxLayout()
+
         self.intensity_image_name= QtGui.QLabel('')
         self.intensity_image_name.setAlignment(QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft)
-        row_intensity.addWidget(self.intensity_image_name,1)
-        
-        self.l.addLayout(row_intensity, 6, self.listoffset+2, 1, 4)
-        
-        
+        self.intensity_image_name.setFixedWidth(120)
+        intensity_layout.addWidget(self.intensity_image_name,1)
+        intensity_layout.addSpacing(20)
+
+        icon_label =  QtGui.QToolButton(self)
+        icon_cross = QtGui.QIcon(pkg_resources.resource_filename(__name__, 'icons/cross.svg'))
+        icon_label.setIcon(icon_cross)
+        icon_label.setIconSize(QtCore.QSize(20, 20))
+        intensity_layout.addWidget(icon_label)
+        intensity_layout.addSpacing(10)
+
+        self.intensity_value = QtGui.QLabel("nan")
+        self.intensity_value.setAlignment(QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft)
+        self.intensity_value.setFixedWidth(80)
+        intensity_layout.addWidget(self.intensity_value)
+        intensity_layout.addSpacing(10)
+
+        icon_label =  QtGui.QToolButton(self)
+        icon_cursor = QtGui.QIcon(pkg_resources.resource_filename(__name__, 'icons/cursor.svg'))
+        icon_label.setIcon(icon_cursor)
+        icon_label.setIconSize(QtCore.QSize(20, 20))
+        intensity_layout.addWidget(icon_label)
+        intensity_layout.addSpacing(10)
+
+        self.intensity_value_mouse = QtGui.QLabel("nan")
+        self.intensity_value_mouse.setAlignment(QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft)
+        self.intensity_value_mouse.setFixedWidth(80)
+        intensity_layout.addWidget(self.intensity_value_mouse)
+        intensity_layout.addSpacing(10)
+
+        self.l.addLayout(intensity_layout, 6, self.listoffset + 2, 1, 4)
         
         
         # upper threshold slider
@@ -948,7 +967,7 @@ class Viff(QtGui.QMainWindow):
             # Set state as True, because it's visible in the main window.
             self.states.insert(0, True)
             # Add image list entry.
-            itemname = os.path.split(filename_list[i])[-1]
+            itemname = filename_list[i]
             self.addToList(itemname)
         
         self.checkIf2DAndRemovePanes()
@@ -1275,7 +1294,7 @@ class Viff(QtGui.QMainWindow):
             posx = self.preferences['window_posx']
             posy = self.preferences['window_posy']
             log1("setupUI: window posx: {}, posy: {}, width: {}, height: {}".format(posx, posy, width, height))
-            self.setGeometry(posx, posy, width/2, height)
+            self.setGeometry(posx, posy, round(width/2), height)
             self.blockSavingWindowSize = True
         
         
@@ -1285,9 +1304,12 @@ class Viff(QtGui.QMainWindow):
         spacer = QtGui.QWidget()
         spacer.setSizePolicy(QtGui.QSizePolicy.Policy.Minimum, QtGui.QSizePolicy.Policy.Minimum)
 
+        fixed_width = 175
 
         pos_gradient.setMaxDim(pixels=self.grad_size)
+        pos_gradient.setFixedWidth(fixed_width)
         neg_gradient.setMaxDim(pixels=self.grad_size)
+        neg_gradient.setFixedWidth(fixed_width)
     
         button_row_thresh_pos = QtGui.QHBoxLayout()
         button_row_thresh_pos.addWidget(self.min_pos, 1)
@@ -1302,7 +1324,7 @@ class Viff(QtGui.QMainWindow):
         button_row_thresh_neg.addWidget(self.min_neg, 1)
         self.l.addLayout(button_row_thresh_neg, 10, self.listoffset+2, 1, 1)
         log2("addPosNegWidget called")
-        
+
     
         
 
@@ -1787,9 +1809,10 @@ class Viff(QtGui.QMainWindow):
         """
         self.cursor_coord = [xyz[i] if xyz[i] is not None else
             self.img_coord[i] for i in range(3)]
+        self.updateIntensityLabel(self.cursor_coord)
 
 
-    def updateCrossIntensityLabel(self):
+    def updateIntensityLabel(self, cursor_coord= None):
         """
         Updates the intensity labels in the main window and the value window
         for the crosshair.
@@ -1807,8 +1830,13 @@ class Viff(QtGui.QMainWindow):
                 
                 if (self.playstate or self.slicestate) and self.images[i].type_d() == "4D":
                     intensity = self.images[i].xhairval
+                elif cursor_coord is not None:
+                    if all(0 <= int(cursor_coord[j]) < self.images[i].image_res.shape[j] for j in range(3)):
+                        intensity = self.images[i].getIntensity(cursor_coord)
+                    else: intensity = np.nan
                 else:
                     intensity = self.images[i].getIntensity()
+                intensity = np.round(intensity, 3)
                 
                 str_tooltip = "%g \t %s" %(intensity,str_img)
                 if i > 0:
@@ -1821,12 +1849,14 @@ class Viff(QtGui.QMainWindow):
                         str_img = str_img[0:15] + "..."
                     str_image_name += str_img
                 str_intens_tooltip += str_tooltip
-                    
-            self.intensity_value.setText((str_intens))
-            
-            self.intensity_image_name.setText((str_image_name))
-            
-            self.intensity_value.setToolTip(str_intens_tooltip)
+
+            if cursor_coord is None:
+                self.intensity_value.setText((str_intens))
+                self.intensity_image_name.setText((str_image_name))
+                self.intensity_value.setToolTip(str_intens_tooltip)
+            else:
+                self.intensity_value_mouse.setText((str_intens))
+                self.intensity_image_name.setText((str_image_name))
             
             log1("updateCrossIntensityLabel was called")
             
@@ -2001,7 +2031,7 @@ class Viff(QtGui.QMainWindow):
                 self.y_box.setText(str(m[1]))
                 self.z_box.setText(str(m[2]))
             # Is this needed?
-            self.updateCrossIntensityLabel()
+            self.updateIntensityLabel()
 
 
     ## Section: Zoom and Pan Views ##
@@ -2050,8 +2080,14 @@ class Viff(QtGui.QMainWindow):
         self.updateImageItems()
 
     def updateSlices(self):
-        for img in self.images:
-            img.slice(np.asarray(self.img_coord).astype(np.int32))
+        threads = [threading.Thread(target = self.updateSlice,args = (img,)) for img in self.images]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+        
+    def updateSlice(self, img):
+        img.slice(np.asarray(self.img_coord).astype(np.int32))
 
     def updateImageItems(self):
         for index in range(len(self.images)):
@@ -2345,7 +2381,7 @@ class Viff(QtGui.QMainWindow):
                     self.images[index].getPosSldValueLow(),
                     self.images[index].getPosSldValueHigh())
 
-            self.updateCrossIntensityLabel()
+            self.updateIntensityLabel()
             self.updateDisplayCoordinates()
             self.setThresholdsToBoxes()
             # If there is a histogram window, update that, too.
@@ -2625,7 +2661,7 @@ class Viff(QtGui.QMainWindow):
             index += 1
             self.imagelist.setCurrentRow(index)
             self.resetZValues()
-        self.updateCrossIntensityLabel()
+        self.updateIntensityLabel()
 
     def swapUp(self):
         """
@@ -2640,7 +2676,7 @@ class Viff(QtGui.QMainWindow):
             index -= 1
             self.imagelist.setCurrentRow(index)
             self.resetZValues()
-        self.updateCrossIntensityLabel()
+        self.updateIntensityLabel()
 
     def swapItems(self, ind):
         """
@@ -2869,7 +2905,7 @@ class Viff(QtGui.QMainWindow):
                     self.updateImageItem(i)
         self.setFrameToBox()
         self.setFrameToSlider()
-        self.updateCrossIntensityLabel()
+        self.updateIntensityLabel()
         self.refreshMosaicView()
         log1("setFrame called (self.frame {})".format(self.frame))
         
@@ -2917,9 +2953,10 @@ class Viff(QtGui.QMainWindow):
         Takes the alpha value of the current image and sets that the slider.
         """
         
+        alpha_fract = 1.0
         alpha = 100
         for i in range(len(self.images)):
-            self.images[i].alpha = alpha
+            self.images[i].alpha = alpha_fract
 
         self.alpha_sld.setValue(alpha)
         
@@ -3319,7 +3356,7 @@ class Viff(QtGui.QMainWindow):
         """
         self.value_window.show()
         # refresh the text
-        self.updateCrossIntensityLabel()
+        self.updateIntensityLabel()
 
     def openMosaic(self):
         """

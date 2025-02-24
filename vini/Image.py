@@ -7,6 +7,7 @@ from nibabel.affines import apply_affine
 from nibabel.volumeutils import shape_zoom_affine
 from nibabel import Nifti1Image
 import copy
+import threading
 
 from .pyqtgraph_vini import *
 from .pyqtgraph_vini.colormap import ColorMap
@@ -368,18 +369,7 @@ class Image(object):
     def setHistogram(self):
         c_hist = self.getHistogram()
 
-    def slice(self, coord=None):
-        """
-        Slices through the resampled data cube and applies the colormaps.
-        """
-        if self.image_res is None:
-            return 0
-        if coord is not None:
-            self.coord = coord
-
-        if not self.state:
-            return 0
-
+    def slice_pos(self):
         [self.image_slices_pos[0], truth] = \
             mymakeARGB(
                 self.image_res[int(self.coord[0]),:,:], lut=self.cmap_pos,
@@ -395,23 +385,44 @@ class Image(object):
                 self.image_res[:,:,int(self.coord[2])], lut=self.cmap_pos,
                 levels=[self.threshold_pos[0], self.threshold_pos[1]],
                 useRGBA=True)
+        
+    def slice_neg(self):
+        [self.image_slices_neg[0], truth] = \
+            mymakeARGB(
+                self.image_res[int(self.coord[0]),:,:], self.cmap_neg,
+                levels=[self.threshold_neg[0], self.threshold_neg[1]],
+                useRGBA=True)
+        [self.image_slices_neg[1], truth] = \
+            mymakeARGB(
+                self.image_res[:,int(self.coord[1]),:], self.cmap_neg,
+                levels=[self.threshold_neg[0], self.threshold_neg[1]],
+                useRGBA=True)
+        [self.image_slices_neg[2], truth] = \
+            mymakeARGB(
+                self.image_res[:,:,int(self.coord[2])], self.cmap_neg,
+                levels=[self.threshold_neg[0], self.threshold_neg[1]],
+                useRGBA=True)
 
+    def slice(self, coord=None):
+        """
+        Slices through the resampled data cube and applies the colormaps.
+        """
+        if self.image_res is None:
+            return 0
+        if coord is not None:
+            self.coord = coord
+
+        if not self.state:
+            return 0
+        
         if self.two_cm:
-            [self.image_slices_neg[0], truth] = \
-                mymakeARGB(
-                    self.image_res[int(self.coord[0]),:,:], self.cmap_neg,
-                    levels=[self.threshold_neg[0], self.threshold_neg[1]],
-                    useRGBA=True)
-            [self.image_slices_neg[1], truth] = \
-                mymakeARGB(
-                    self.image_res[:,int(self.coord[1]),:], self.cmap_neg,
-                    levels=[self.threshold_neg[0], self.threshold_neg[1]],
-                    useRGBA=True)
-            [self.image_slices_neg[2], truth] = \
-                mymakeARGB(
-                    self.image_res[:,:,int(self.coord[2])], self.cmap_neg,
-                    levels=[self.threshold_neg[0], self.threshold_neg[1]],
-                    useRGBA=True)
+            threads = [threading.Thread(target = self.slice_pos), threading.Thread(target = self.slice_neg)]
+            for t in threads:
+                t.start()
+            for t in threads:
+                t.join()
+        else: 
+            self.slice_pos()
 
         # add positive and negative parts
         if (self.two_cm and
