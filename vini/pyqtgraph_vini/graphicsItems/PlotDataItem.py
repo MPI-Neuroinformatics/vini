@@ -514,7 +514,6 @@ class PlotDataItem(GraphicsObject):
         if self.xDisp is None:
             x = self.xData
             y = self.yData
-            x = np.clip(x, 1e-10, np.inf) 
             y = np.clip(y, 1e-10, np.inf) 
             
             #ds = self.opts['downsample']
@@ -529,7 +528,10 @@ class PlotDataItem(GraphicsObject):
                     x=x[1:]
                     y=y[1:]                
             if self.opts['logMode'][0]:
-                x = np.log10(x)
+                if (x < 0).any():
+                    raise Exception("Log scale not supported for color maps with negative values")
+                else:
+                    x = np.log10(np.clip(x, 1e-10, np.inf))
             if self.opts['logMode'][1]:
                 y = np.log10(y)
             #if any(self.opts['logMode']):  ## re-check for NANs after log
