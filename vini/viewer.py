@@ -317,9 +317,13 @@ class Viff(QtGui.QMainWindow):
         self.slice_popouts[1] = SingleSlice('s')
         self.slice_popouts[2] = SingleSlice('t')
 
+        spacer = QtWidgets.QSpacerItem(7, ydim_slicewidget, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        self.l.addItem(spacer, 0, 36, ydim_slicewidget, 1)
+        #self.l.addItem(spacer, 0, 50, ydim_slicewidget, ydim_slicewidget)
 
 
         imagelist_layout = QtGui.QGridLayout()
+        imagelist_layout.setSpacing(0)
 
         # Imagelist widget (containing the names of all images)
         self.imagelist = QtGui.QListWidget()
@@ -366,11 +370,25 @@ class Viff(QtGui.QMainWindow):
         self.del_button.setToolTip("remove currently selected image")
         imagelist_layout.addWidget(self.del_button, 3, 4, 1, 1)
         
-        self.l.addLayout(imagelist_layout, 0, self.listoffset+2, 1, 1)
+        imagelist_layout_title = QtWidgets.QLabel("<b>Image List<b>")
+        imagelist_layout_title.setStyleSheet("""
+            font-family: Arial;
+            font-size: 15px;
+        """)
+        imagelist_layout_title.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
+
+        upper_layout = QtWidgets.QVBoxLayout()
+        upper_layout.setContentsMargins(0, 20, 0, 30)
+        upper_layout.addWidget(imagelist_layout_title)
+        upper_layout.addSpacing(10)
+        upper_layout.addLayout(imagelist_layout)
+
+        self.l.addLayout(upper_layout, 0, self.listoffset+2, 1, 1)
         
         
         # Crosshair button toggle
         button_row_crosshair = QtGui.QHBoxLayout()
+        button_row_crosshair.setSpacing(0)
         self.cross_button = QtGui.QToolButton(self)
         self.cross_button.setCheckable(True)
         self.cross_button.setChecked(True)
@@ -406,7 +424,6 @@ class Viff(QtGui.QMainWindow):
         spacer.setSizePolicy(QtGui.QSizePolicy.Policy.Minimum, QtGui.QSizePolicy.Policy.Fixed)
         button_row_crosshair.addWidget(spacer,5)
         
-        self.l.addLayout(button_row_crosshair, 1, self.listoffset+2, 1, 1)
         
         self.alpha_sld_timer = QtCore.QTimer(self)
         self.alpha_sld_timer.setSingleShot(True)
@@ -414,6 +431,7 @@ class Viff(QtGui.QMainWindow):
         # alpha slider
         # ypos = 8
         button_row_alpha = QtGui.QHBoxLayout()
+        button_row_alpha.setSpacing(0)
         self.alpha_sld = JumpSlider(QtCore.Qt.Orientation.Horizontal)
         self.alpha_sld.setMinimum(0)
         self.alpha_sld.setMaximum(100)
@@ -425,9 +443,6 @@ class Viff(QtGui.QMainWindow):
         self.alpha_label = QtGui.QLabel('100% opacity')
         self.alpha_label.setAlignment( QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft)
         button_row_alpha.addWidget(self.alpha_label, 3)
-        self.l.addLayout(button_row_alpha, 2, self.listoffset+2, 1, 1)
-        
-  
         
 
         # coordinate labels
@@ -472,12 +487,13 @@ class Viff(QtGui.QMainWindow):
         spacer = QtGui.QWidget()
         spacer.setSizePolicy(QtGui.QSizePolicy.Policy.Minimum, QtGui.QSizePolicy.Policy.Minimum)
         button_row_coordinates.addWidget(spacer,5)
-        
-        self.l.addLayout(button_row_coordinates, 3, self.listoffset+2, 1, 1)
+        button_row_coordinates.setSpacing(0)
+
         
         # ypos = 6
         # one frame backward button
         button_row_fmri = QtGui.QHBoxLayout()
+        button_row_fmri.setSpacing(0)
         self.backward_button = QtGui.QToolButton(self)
         self.backward_button.pressed.connect(self.prevFrame)
         self.backward_button.released.connect(self.setSliceStateOff)
@@ -529,7 +545,6 @@ class Viff(QtGui.QMainWindow):
         spacer = QtGui.QWidget()
         spacer.setSizePolicy(QtGui.QSizePolicy.Policy.Minimum, QtGui.QSizePolicy.Policy.Fixed)
         button_row_fmri.addWidget(spacer,5)
-        self.l.addLayout(button_row_fmri, 4, self.listoffset+2, 1, 1)
 
         self.frame_sld_timer = QtCore.QTimer(self)
         self.frame_sld_timer.setSingleShot(True)
@@ -550,9 +565,56 @@ class Viff(QtGui.QMainWindow):
         spacer = QtGui.QWidget()
         spacer.setSizePolicy(QtGui.QSizePolicy.Policy.Minimum, QtGui.QSizePolicy.Policy.Fixed)
         button_row_fmrislider.addWidget(spacer,1)
-        
-        self.l.addLayout(button_row_fmrislider, 5, self.listoffset+2, 1, 1)
 
+        slider_box_title = QtWidgets.QLabel("<b>Sliders<b>")
+        slider_box_title.setStyleSheet("""
+            font-family: Arial;
+            font-size: 15px;
+        """)
+        slider_box_title.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
+
+        slider_box_layout = QtWidgets.QVBoxLayout()
+        slider_box_layout.setSpacing(0)
+        slider_box_layout.setContentsMargins(0, 30, 0, 30)
+        slider_box_layout.addWidget(slider_box_title)
+
+        box_layout = QtWidgets.QVBoxLayout()
+
+        button_row_alpha_title = QtWidgets.QLabel("<b><Opacity</b>")
+        button_row_alpha_title.setStyleSheet("""
+            font-family: Arial;
+            font-size: 12px;
+        """)
+        box_layout.addWidget(button_row_alpha_title)
+        box_layout.addLayout(button_row_alpha)
+
+        box_layout.addSpacing(10)
+        line = QtWidgets.QFrame()
+        line.setFrameShape(QtWidgets.QFrame.Shape.HLine) 
+        line.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
+        box_layout.addWidget(line)
+        box_layout.addSpacing(10)
+
+        button_row_fmri_title = QtWidgets.QLabel("<b>Time series toolbar<b>")
+        button_row_fmri_title.setStyleSheet("""
+            font-family: Arial;
+            font-size: 12px;
+        """)
+        box_layout.addWidget(button_row_fmri_title)
+        box_layout.addLayout(button_row_fmri)
+        box_layout.addLayout(button_row_fmrislider)
+
+
+        slider_box = QtWidgets.QGroupBox()
+        slider_box.setStyleSheet("QGroupBox { border: 2px solid gray; border-radius: 5px; margin-top: 10px; } ")
+
+        slider_box.setLayout(box_layout)
+        slider_box_layout.addWidget(slider_box)
+
+        self.l.addLayout(slider_box_layout, 1, self.listoffset+2, 1, 1)
+        
+
+        #intensity layout
         intensity_layout = QtGui.QHBoxLayout()
 
         self.intensity_image_name= QtGui.QLabel('')
@@ -587,7 +649,76 @@ class Viff(QtGui.QMainWindow):
         intensity_layout.addWidget(self.intensity_value_mouse)
         intensity_layout.addSpacing(10)
 
-        self.l.addLayout(intensity_layout, 6, self.listoffset + 2, 1, 4)
+
+        crosshair_info_layout_title = QtWidgets.QLabel("<b>Crosshair Toolbar<b>")
+        crosshair_info_layout_title.setStyleSheet("""
+            font-family: Arial;
+            font-size: 15px;
+        """)
+        crosshair_info_layout_title.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
+
+        crosshair_info_layout = QtWidgets.QVBoxLayout()
+        crosshair_info_layout.setSpacing(0)
+        crosshair_info_layout.setContentsMargins(0, 30, 0, 60)
+        crosshair_info_layout.addWidget(crosshair_info_layout_title)
+
+    
+        button_row_coordinates_title = QtWidgets.QLabel("<b>Crosshair position<b>")
+        button_row_coordinates_title .setStyleSheet("""
+            font-family: Arial;
+            font-size: 12px;
+        """)
+
+        crosshair_box_layout = QtWidgets.QVBoxLayout()
+        crosshair_box_layout.addWidget(button_row_coordinates_title)
+        crosshair_box_layout.addLayout(button_row_coordinates)
+
+        spacer = QtGui.QWidget()
+        spacer.setSizePolicy(QtGui.QSizePolicy.Policy.Minimum, QtGui.QSizePolicy.Policy.Fixed)
+        spacer.setFixedHeight(10)
+
+        crosshair_box_layout.addWidget(spacer)
+        
+        line = QtWidgets.QFrame()
+        line.setFrameShape(QtWidgets.QFrame.Shape.HLine) 
+        line.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
+
+        crosshair_box_layout.addWidget(line)
+        crosshair_box_layout.addWidget(spacer)
+
+
+        button_row_crosshair_title = QtWidgets.QLabel("<b>Crosshair actions<b>")
+        button_row_crosshair_title.setStyleSheet("""
+            font-family: Arial;
+            font-size: 12px;
+        """)
+        crosshair_box_layout.addWidget(button_row_crosshair_title)
+        crosshair_box_layout.addLayout(button_row_crosshair)
+
+        crosshair_box_layout.addWidget(spacer)
+        
+        line = QtWidgets.QFrame()
+        line.setFrameShape(QtWidgets.QFrame.Shape.HLine) 
+        line.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
+
+        crosshair_box_layout.addWidget(line)
+        crosshair_box_layout.addWidget(spacer)
+
+        intensity_layout_title = QtWidgets.QLabel("<b>Crosshair and cursor intensities<b>")
+        intensity_layout_title.setStyleSheet("""
+            font-family: Arial;
+            font-size: 12px;
+        """)
+        crosshair_box_layout.addWidget(intensity_layout_title)
+        crosshair_box_layout.addLayout(intensity_layout)
+
+        crosshair_box = QtWidgets.QGroupBox()
+        crosshair_box.setStyleSheet("QGroupBox { border: 2px solid gray; border-radius: 5px; margin-top: 10px; } ")
+        crosshair_box.setLayout(crosshair_box_layout)
+        crosshair_info_layout.addWidget(crosshair_box)
+
+        self.l.addLayout(crosshair_info_layout, 2, self.listoffset+2, 1, 1)
+
         
         
         # upper threshold slider
@@ -683,9 +814,16 @@ class Viff(QtGui.QMainWindow):
         button_row_thresh_neg.addWidget(self.max_neg)
         button_row_thresh_neg.addWidget(self.min_neg)
 
+        colormaps_title = QtWidgets.QLabel("<b>Colormaps Toolbar<b>")
+        colormaps_title .setStyleSheet("""
+            font-family: Arial;
+            font-size: 15px;
+        """)
+        colormaps_title.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.l.addWidget(colormaps_title, 7, self.listoffset+2, 1, 1)
         
         self.l.addWidget(self.slider_pos, 8, self.listoffset+2, 1, 1)
-        self.l.addLayout(button_row_thresh_pos,9, self.listoffset+2, 1, 1)
+        self.l.addLayout(button_row_thresh_pos, 9, self.listoffset+2, 1, 1)
         self.l.addLayout(button_row_thresh_neg, 10, self.listoffset+2, 1, 1)
         self.l.addWidget(self.slider_neg, 11, self.listoffset+2, 1, 1)
         
