@@ -143,6 +143,13 @@ def loadImageFromFile(filename, pref, f_type):
             hdr = temp_img.header
         except RuntimeError:
             print("Cannot load .nii or nii.gz file: {}".format(filename))
+    elif (filetype=='.mgz'):
+        try:
+            temp_img = load(filename)
+            image = Nifti2Image(np.asanyarray(temp_img.dataobj), temp_img.affine)
+            hdr = temp_img.header
+        except RuntimeError:
+            print("Cannot load .nii or nii.gz file: {}".format(filename))
     elif (filetype=='.hdr' or filetype=='.img'):
         try:
             temp_img = load(filename)

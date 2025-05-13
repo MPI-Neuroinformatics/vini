@@ -20,12 +20,6 @@ then install the vini viewer with
         
         pip install .
 
-### Improvements 
-- improved performace of resampling
-- new requirement: indexed-gzip
-- supports PyQt6 (requires libxcb)
-- compatible with updated versions of previously supported packages
-
 
 # Upgrading
 Upgrading the already installed vini viewer works as follows:
@@ -110,10 +104,6 @@ You can jump to the local maximum or minimum of the selected image. For this, cl
 ## Mosaicing
 You can create a mosaic view of the currently selected images and thresholds. For this, click on Tools/Open Mosaic Dialogue or hit "m". You can determine the grid of the mosaic by setting the numbers of rows and columns, which determines the number of slices. The starting frame and end frame set the slice end points. If the slices are perfectly divisible the *increment* field shown on the bottom will be in bold. Having the increment in bold ensures that the slice distance is the same within the mosaic. Hit "slice to mosaic" to render it. Note that in the mosaic you will still be able to zoom and pan.
 
-## bring window out. link views
-
-## linked views
-
 ## Resampling options
 Images usually come with affine transformations (saved in the header), that encode a translation and rotation. You can disable the resampling and sample to the next closest voxel resolution by clicking on Resampling/Ignore affine and pray.
 
@@ -129,3 +119,10 @@ Images usually come with affine transformations (saved in the header), that enco
 * space: start/stop playing movie for time series
 * n/b: move to next or previous frame in time series
 * w/s: select the image above or below
+
+# Improvements to older vini
+- improved performace of resampling
+- new requirement: indexed-gzip
+- supports PyQt6 (requires libxcb)
+- compatible with updated versions of previously supported packages
+

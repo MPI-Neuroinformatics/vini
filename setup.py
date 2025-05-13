@@ -16,7 +16,7 @@ NAME = 'vini'
 DESCRIPTION = 'A visualization tool for 2D/3D/4D data (e.g. from MRI)'
 URL = ''
 EMAIL = ''
-AUTHOR = "Malte Kuhlmann, Eric Lacosse, Johannes Stelzer"
+AUTHOR = "Malte Kuhlmann, Eric Lacosse, Johannes Stelzer, Lucas Mahler, Amelie Flietel"
 REQUIRES_PYTHON = '>=3.5.0'
 VERSION = "0.0.5"
 
