@@ -98,7 +98,7 @@ class Image(object):
 
         self.pos_gradient.item.loadPreset('grey')
         self.neg_gradient.item.loadPreset('grey')
-
+        self.calledSetNegThreshold = False
         # This can only be set after initilizing the gradients.
         self.dialog.setPreferences(
         alpha=self.alpha, interp=self.interp_type, two_cm=self.two_cm,
@@ -235,8 +235,10 @@ class Image(object):
         Set negative thresholds from slider value.
         """
         self.threshold_neg = list(self.threshold_neg)
-        self.threshold_neg[0] = (upper_value)/1000.0 * self.extremum[0] -self.deadzone
+        if self.calledSetNegThreshold == False:
+            self.threshold_neg[0] = (upper_value)/1000.0 * self.extremum[0] -self.deadzone
         self.threshold_neg[1] = (lower_value)/1000.0 * self.extremum[0] -self.deadzone
+        self.calledSetNegThreshold = False
 
     def setPosThresholds(self, threshold):
         """
@@ -249,6 +251,7 @@ class Image(object):
         Sets the negative thresholds.
         """
         self.threshold_neg = copy.copy(threshold)
+        self.calledSetNegThreshold = True
 
     def getPosSldValueLow(self):
         """
