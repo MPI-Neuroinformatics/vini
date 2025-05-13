@@ -649,7 +649,7 @@ class Viff(QtGui.QMainWindow):
         intensity_layout.addWidget(self.intensity_value_mouse)
         intensity_layout.addSpacing(10)
 
-        self.l.addLayout(intensity_layout, 6, self.listoffset+2, 1, 4)
+        #self.l.addLayout(intensity_layout, 6, self.listoffset+2, 1, 4)
 
 
         crosshair_info_layout_title = QtWidgets.QLabel("<b>Crosshair Toolbar<b>")
