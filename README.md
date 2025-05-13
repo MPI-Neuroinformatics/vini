@@ -1,10 +1,10 @@
-![vini_main](https://github.com/mpi-neuroinformatics/vini/blob/master/docs/vini.png)
+![](https://github.com/mpi-neuroinformatics/vini/blob/master/docs/vini.png)
 **vini** is a light-weight viewer for MR data. The strives to be fast and simple, yet powerful. Vini also features many practical keyboard shortcuts.
 
 
 Currently, the following file formats are supported:
 
-.nii, .nii.gz,.img/.hdr, .v (lipsia's vista format)
+.nii, .nii.gz,.img/.hdr, .mgz, .v (lipsia's vista format)
 
 Furthermore, numpy arrays are *.npy (numpy arrays on disk)
 
@@ -14,17 +14,13 @@ The viewer is written in python and does not have any external dependencies.
 
 First, install the required python packages by navigating to the project directory and running the command below. If you specifically want to use PyQt6 istead of PyQT5 please make sure to adjust this in the requirements.txt file
 
-        pip install -r requirements.txt
-
-then install the vini viewer with
-        
-        pip install .
+        pip install vini
 
 
 # Upgrading
 Upgrading the already installed vini viewer works as follows:
 
-        pip3 install git+https://github.com/MPI-Neuroinformatics/vini.git --upgrade
+        pip install vini --upgrade
 
 # How-to
 

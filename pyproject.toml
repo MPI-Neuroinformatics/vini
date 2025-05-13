@@ -1,0 +1,59 @@
+[build-system]
+requires      = ["setuptools >= 77.0.3", "wheel"]     # PEP 517 builder
+build-backend = "setuptools.build_meta"
+
+# ------------------------------------------------------------------
+# Core project metadata -- replaces the old setup() call
+# ------------------------------------------------------------------
+[project]
+name            = "vini"
+version         = "1.0.0"
+description     = "A visualization tool for 2D/3D/4D data (e.g. from MRI)"
+readme          = "README.md"
+requires-python = ">=3.5"
+
+authors = [
+  { name = "Malte Kuhlmann" },
+  { name = "Eric Lacosse"  },
+  { name = "Johannes Stelzer" },
+  { name = "Lucas Mahler" },
+  { name = "Amelie Flietel" },
+]
+
+dependencies = [
+  "ipython",
+  "nibabel",
+  "numpy",
+  "scipy",
+  "matplotlib",
+  "sip",
+]
+
+classifiers = [
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.6",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+[project.urls]                  
+Homepage = "https://github.com/MPI-Neuroinformatics/vini"
+
+[project.scripts]
+vini = "vini._cli_wrapper:main"
+# ------------------------------------------------------------------
+# Setuptools-specific configuration
+# ------------------------------------------------------------------
+[tool.setuptools]
+include-package-data = true      
+
+[tool.setuptools.packages.find]
+where    = ["."]
+exclude  = ["tests", "*.tests", "*.tests.*", "tests.*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.svg"]
